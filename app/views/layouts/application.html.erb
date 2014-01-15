@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cloudspace</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <!-- logo -->
+
+    <%= link_to 'CloudSpace', root_path, class: 'navbar-brand' %>
+
+    <% if current_user.blank? %>
+      <!-- signup and login -->
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to 'Sign up', new_user_registration_path %></li>
+        <li><%= link_to 'Log in', new_user_session_path %></li>
+      </ul>
+    <% else %>
+      <!-- user selection -->
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><%= link_to 'Profile', edit_user_registration_path %></li>
+            <li class="divider"></li>
+            <li><%= link_to 'Log out', destroy_user_session_path, method: :delete %></li>
+          </ul>
+        </li>
+      </ul>
+    <% end %>
+
+  </div>
+</nav>
+<%= yield %>
+
+</body>
+</html>

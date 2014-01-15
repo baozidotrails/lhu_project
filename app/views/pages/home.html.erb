@@ -1,0 +1,13 @@
+<div class="container">
+  <% @blocks.each do |block| %>
+
+    <div id="block-<%= block.id %>" class="newdiv" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><br><%= link_to 'Destroy', block, method: :delete, data: { confirm: 'Are you sure?' } %></div>
+
+  <% end %>
+
+  <div class="editor"></div>
+
+  <button id="view" class="btn btn-default">View datas</button>
+  <button id="next" class="btn btn-default">Next</button>
+  <button id="clear" class="btn btn-default">Clear</button>
+</div>
