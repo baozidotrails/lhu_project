@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140115124316) do
+ActiveRecord::Schema.define(version: 20140116084926) do
 
   create_table "blocks", force: true do |t|
     t.string   "name"
@@ -20,7 +20,18 @@ ActiveRecord::Schema.define(version: 20140115124316) do
     t.string   "width"
     t.string   "height"
     t.integer  "space_id"
-    t.boolean  "is_leaf",    default: true
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "block_type_cd", default: 0
+  end
+
+  create_table "spaces", force: true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.integer  "city_id"
+    t.integer  "county_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -36,8 +36,12 @@
     <%= f.number_field :space_id %>
   </div>
   <div class="field">
-    <%= f.label :is_leaf %><br>
-    <%= f.check_box :is_leaf %>
+    <%= f.label :block_type %><br>
+    <%= f.number_field :block_type %>
+  </div>
+  <div class="field">
+    <%= f.label :parent_id %><br>
+    <%= f.number_field :parent_id %>
   </div>
   <div class="actions">
     <%= f.submit %>

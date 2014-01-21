@@ -28,7 +28,7 @@ class BlocksController < ApplicationController
 
     respond_to do |format|
       if @block.save
-        format.html { redirect_to @block, notice: 'Block was successfully created.' }
+        format.html { render @block, notice: "#{@block.id}" }
         format.json { render action: 'show', status: :created, location: @block }
       else
         format.html { render action: 'new' }
@@ -51,14 +51,14 @@ class BlocksController < ApplicationController
     end
   end
 
+
   # DELETE /blocks/1
   # DELETE /blocks/1.json
   def destroy
+
     @block.destroy
-    respond_to do |format|
-      format.html { redirect_to root_url }
-      format.json { head :no_content }
-    end
+
+    redirect_to new_space_path
   end
 
   private
@@ -69,6 +69,6 @@ class BlocksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def block_params
-      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :is_leaf)
+      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id)
     end
 end

@@ -18,7 +18,7 @@ class BlocksControllerTest < ActionController::TestCase
 
   test "should create block" do
     assert_difference('Block.count') do
-      post :create, block: { height: @block.height, is_leaf: @block.is_leaf, left: @block.left, name: @block.name, space_id: @block.space_id, top: @block.top, width: @block.width }
+      post :create, block: { block_type: @block.block_type, height: @block.height, left: @block.left, name: @block.name, parent_id: @block.parent_id, space_id: @block.space_id, top: @block.top, width: @block.width }
     end
 
     assert_redirected_to block_path(assigns(:block))
@@ -35,7 +35,7 @@ class BlocksControllerTest < ActionController::TestCase
   end
 
   test "should update block" do
-    patch :update, id: @block, block: { height: @block.height, is_leaf: @block.is_leaf, left: @block.left, name: @block.name, space_id: @block.space_id, top: @block.top, width: @block.width }
+    patch :update, id: @block, block: { block_type: @block.block_type, height: @block.height, left: @block.left, name: @block.name, parent_id: @block.parent_id, space_id: @block.space_id, top: @block.top, width: @block.width }
     assert_redirected_to block_path(assigns(:block))
   end
 

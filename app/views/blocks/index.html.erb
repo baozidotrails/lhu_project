@@ -1,16 +1,18 @@
 <div class="container">
   <h1>Listing blocks</h1>
 
-  <table class="table table-hover">
+  <table class="table">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Name</th>
         <th>Left</th>
         <th>Top</th>
         <th>Width</th>
         <th>Height</th>
         <th>Space</th>
-        <th>Is leaf</th>
+        <th>Block type</th>
+        <th>Parent</th>
         <th></th>
         <th></th>
         <th></th>
@@ -20,13 +22,15 @@
     <tbody>
       <% @blocks.each do |block| %>
         <tr>
+          <td><%= block.id %></td>
           <td><%= block.name %></td>
           <td><%= block.left %></td>
           <td><%= block.top %></td>
           <td><%= block.width %></td>
           <td><%= block.height %></td>
           <td><%= block.space_id %></td>
-          <td><%= block.is_leaf %></td>
+          <td><%= block.block_type %></td>
+          <td><%= block.parent_id %></td>
           <td><%= link_to 'Show', block %></td>
           <td><%= link_to 'Edit', edit_block_path(block) %></td>
           <td><%= link_to 'Destroy', block, method: :delete, data: { confirm: 'Are you sure?' } %></td>

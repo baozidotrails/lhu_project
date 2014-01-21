@@ -1,6 +1,6 @@
 $.widget("ui.boxer", $.ui.mouse, {
   options: {
-    appendTo: '.editor',
+    appendTo: 'body',
     distance: 0
   },
   _init: function() {

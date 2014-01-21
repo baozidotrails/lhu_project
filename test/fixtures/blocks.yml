@@ -7,7 +7,8 @@ one:
   width: MyString
   height: MyString
   space_id: 1
-  is_leaf: false
+  block_type: 1
+  parent_id: 1
 
 two:
   name: MyString
@@ -16,4 +17,5 @@ two:
   width: MyString
   height: MyString
   space_id: 1
-  is_leaf: false
+  block_type: 1
+  parent_id: 1

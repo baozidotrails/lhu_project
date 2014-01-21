@@ -1,5 +1,6 @@
 class CreateBlocks < ActiveRecord::Migration
   def change
+    drop_table :blocks
     create_table :blocks do |t|
       t.string :name
       t.string :left
@@ -7,7 +8,8 @@ class CreateBlocks < ActiveRecord::Migration
       t.string :width
       t.string :height
       t.integer :space_id
-      t.boolean :is_leaf, default: true
+      t.integer :block_type
+      t.integer :parent_id
 
       t.timestamps
     end

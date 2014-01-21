@@ -43,7 +43,19 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+# none of us do not know these
 gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.0.3.0'
+
+# authtication
 gem 'devise'
+
+# figured out the issues between jQuery and turbolinks
 gem 'jquery-turbolinks'
+
+# let active record supports enum
+gem 'simple_enum'
+
+# wizard form
+gem 'wicked'
