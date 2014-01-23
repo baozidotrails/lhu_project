@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>使用者登入</h2>
+  <h2 align="center">使用者登入</h2>
   <div class="signin-card">
 
     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
@@ -14,6 +14,8 @@
     <% end %>
   </div>
 
-  <%= render "devise/shared/links" %>
+  <div align="center">
+    <%= render "devise/shared/links" %>
+  </div>
 
 </div>

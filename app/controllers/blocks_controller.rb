@@ -1,6 +1,7 @@
 class BlocksController < ApplicationController
   before_action :set_block, only: [:show, :edit, :update, :destroy]
 
+
   # GET /blocks
   # GET /blocks.json
   def index
@@ -10,6 +11,7 @@ class BlocksController < ApplicationController
   # GET /blocks/1
   # GET /blocks/1.json
   def show
+    render layout: false
   end
 
   # GET /blocks/new
@@ -58,7 +60,7 @@ class BlocksController < ApplicationController
 
     @block.destroy
 
-    redirect_to new_space_path
+    redirect_to :back
   end
 
   private

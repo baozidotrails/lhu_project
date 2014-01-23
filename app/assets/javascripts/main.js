@@ -1,47 +1,22 @@
 $(function() {
 
-  $('#ground_selecton').click(function() {
-    sessionStorage.setItem('now_status', 0);
-  });
-
-  $('#floor_selecton').click(function() {
-    sessionStorage.setItem('now_status', 1);
-  });
-
-  $('#next_step').click(function() {
-    $('.editor').fadeIn();
-    alert(block_last_id);
-  });
-
+  // apply exised block
+  dragAndResizeBlock($('.newdiv'));
 
   // block
   $('.editor').boxer({
     // when stop drawing
     stop: function(event, ui) {
 
-      // add a class
-      ui.box.addClass('newdiv');
-
-
-      // add css
-      ui.box.css({ 'border': '1px solid #3f3f3f', 'background': '#f2f2f2' });
-
-      // nameing
-      ui.box.append('block' + $('.newdiv').length);
-
-      // block tools
-      initBlock(ui.box);
-
-      // block object
+      // generate block object when finish drawing
       var block = {
         'name': 'block' + $('.newdiv').length,
         'width': ui.box.width(),
         'height': ui.box.height(),
         'left': ui.box.offset().left,
-        'top': ui.box.offset().top
+        'top': ui.box.offset().top,
+        'space_id': $('#space_number').val()
       }
-
-
 
       // storage to database
       $.ajax({
@@ -54,125 +29,90 @@ $(function() {
 
           // set ID to current finished div
           ui.box.attr('id', 'block-' + data.id);
-          sessionStorage.setItem('block-' + data.id, JSON.stringify(block));
 
-        },
-        error: function() {
-          alert('oh no.');
+          // block tools
+          initBlock(ui.box, ui.box.attr('id').split('-')[1]);
+
+          // resizable and draggable at beginning
+          dragAndResizeBlock(ui.box);
+
+          // add li
+          $('.space_children').append('<li>' + data.name + '</li>');
+
+
         }
       });
 
-
-      // resizable and draggable
-      ui.box.resizable({
-        stop: function(event, ui) {
-          // get new width
-          var width = ui.size.width;
-
-          // get new height
-          var height = ui.size.height;
-
-          // get block id
-          var id = $(this).attr('id');
-
-          // get block datas and name to newData
-          var newData = JSON.parse(sessionStorage.getItem(id));
-
-          // set width
-          newData.width = width;
-
-          // set height
-          newData.height = height;
-
-          // update the block
-          sessionStorage.setItem(id, JSON.stringify(newData));
-
-          $.ajax({
-            type: 'PUT',
-            url: '/blocks/' + $(this).attr('id').split('-')[1],
-            data: sessionStorage.getItem(id),
-            dataType: 'json',
-            contentType: 'application/json',
-          });
-
-
-
-        }
-      }).draggable({
-        stop: function(event, ui) {
-          // get new width
-          var left = ui.position.left;
-
-          // get new height
-          var top = ui.position.top;
-
-          // get block id
-          var id = $(this).attr('id');
-
-          // get block datas and name to newData
-          var newData = JSON.parse(sessionStorage.getItem(id));
-
-          // set width
-          newData.left = left;
-
-          // set height
-          newData.top = top;
-
-          // update the block
-          sessionStorage.setItem(id, JSON.stringify(newData));
-
-          $.ajax({
-            type: 'PUT',
-            url: '/blocks/' + $(this).attr('id').split('-')[1],
-            data: sessionStorage.getItem(id),
-            dataType: 'json',
-            contentType: 'application/json',
-          });
-
-        }
-      });
     }
-  });
+  }); // boxer
 
-  function initBlock(block) {
-    block.append('<span class="block_close">&times;</span>');
+  function initBlock(block, id) {
+    // add class
+    block.addClass('newdiv');
+
+    // css
+    block.css({ 'border': '1px solid #3f3f3f', 'background': '#f2f2f2' });
+
+    // naming
+    block.append('block' + ($('.newdiv').length - 1));
+
+    // delete block
+    block.append('<a class="block_close" data-confirm="確定要刪除？" data-method="delete" href="/blocks/' + id + '" rel="nofollow">×</a>');
+
+    // edit block
     block.append('<i class="fa fa-pencil-square-o block_edit"></i>');
-    block.find('.block_close').click(function() {
-      var target = $(this).parent().attr('id').split('-')[1];
-      if(confirm('確定要刪除？')) {
-        $.ajax({
-          type: 'DELETE',
-          url: '/blocks/' + target,
 
-          success: function() {
-            $('#block-' + target).remove();
-          }
+
+
+  } // initBlock
+
+  function dragAndResizeBlock(block) {
+
+    // edit block ajax
+    $('.block_edit').click(function() {
+      var id = $(this).parent().attr('id').split('-')[1];
+      sessionStorage.setItem('parent_id', id);
+      $('.block_selection').load('/blocks/' + id);
+    });
+
+    block.resizable({
+      containment: 'parent',
+      stop: function(event, ui) {
+
+        var $this = $(this);
+
+        var block = {
+          'width': ui.size.width,
+          'height' : ui.size.height
+        }
+
+        $.ajax({
+          type: 'PUT',
+          url: '/blocks/' + $this.attr('id').split('-')[1],
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+      }
+    }).draggable({
+      containment: 'parent',
+      stop: function(event, ui) {
+
+        var $this = $(this);
+
+        var block = {
+          'left': ui.position.left,
+          'top' : ui.position.top
+        }
+
+        $.ajax({
+          type: 'PUT',
+          url: '/blocks/' + $this.attr('id').split('-')[1],
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
         });
       }
     });
-
-  }
-
-  $('#view').click(function() {
-    console.log(sessionStorage);
-  });
-
-  $('#next').click(function() {
-    $.ajax({
-      type: 'POST',
-      url: '/blocks/',
-      data: JSON.stringify(),
-      contentType: 'application/json',
-      dataType: 'json',
-
-      error: function() {
-        alert('plz..');
-      }
-    });
-  });
-
-  $('#clear').click(function() {
-    $('.editor').find('div').remove();
-    sessionStorage.clear();
-  });
-});
+  } // dran and resize block
+}); // document ready

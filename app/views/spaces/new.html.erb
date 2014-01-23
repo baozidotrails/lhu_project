@@ -1,98 +1,16 @@
-<br>
 <div class="container">
-  <!-- <h1>請選擇場地類型</h1>
-  <a href="#" id="ground_selecton">平面</a> <br>
-  <a href="#" id="floor_selecton">大樓</a>
+<br>
+  <%= form_for(@space) do |f| %>
+    <%= f.text_field :name, value: current_user.name + '的場地', style: 'display: none' %>
+    <%= f.submit '平面圖', id: 'surface_pic', class: 'btn btn-default' %>
+  <% end %>
 
-  <br>
-  <button class="btn btn-default" id="next_step">next step</button>
-  <br> -->
 
-  <div class="main_function">
-    <div class="sidebar"></div> <!-- sidebar -->
-    <div class="editor">
-      <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="newdiv" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %><i class="fa fa-pencil-square-o block_edit"></i></div>
-      <% end %>
-    </div> <!-- editor -->
-  </div> <!-- main_function -->
+  <ul>
+    <% current_user.spaces.each do |space| %>
+      <p><a href="/spaces/<%= space.id %>"><%= space.name %></a></p>
+    <% end %>
+  </ul>
+
+
 </div> <!-- container -->
-
-<!-- initial blocks -->
-<script>
-  $(function() {
-    $('.newdiv').draggable({
-      'containment': 'parent',
-      stop: function(event, ui) {
-        // get new width
-        var left = ui.position.left;
-
-        // get new height
-        var top = ui.position.top;
-
-        // get block id
-        var id = $(this).attr('id');
-
-        // get block datas and name to newData
-        var newData = JSON.parse(sessionStorage.getItem(id));
-
-        // set width
-        newData.left = left;
-
-        // set height
-        newData.top = top;
-
-        // update the block
-        sessionStorage.setItem(id, JSON.stringify(newData));
-
-        $.ajax({
-          type: 'PUT',
-          url: '/blocks/' + $(this).attr('id').split('-')[1],
-          data: sessionStorage.getItem(id),
-          dataType: 'json',
-          contentType: 'application/json',
-        });
-      }
-    }).resizable({
-      stop: function(event, ui) {
-        // get new width
-        var width = ui.size.width;
-
-        // get new height
-        var height = ui.size.height;
-
-        // get block id
-        var id = $(this).attr('id');
-
-        // get block datas and name to newData
-        var newData = JSON.parse(sessionStorage.getItem(id));
-
-        // set width
-        newData.width = width;
-
-        // set height
-        newData.height = height;
-
-        // update the block
-        sessionStorage.setItem(id, JSON.stringify(newData));
-
-        $.ajax({
-          type: 'PUT',
-          url: '/blocks/' + $(this).attr('id').split('-')[1],
-          data: sessionStorage.getItem(id),
-          dataType: 'json',
-          contentType: 'application/json',
-        });
-      }
-    });
-
-    // want to delete?
-    $('.newdiv').find('.block_close').click(function() {
-      $(document).on('confirm:complete', function(e, answer) {
-        if(answer) {
-          console.log('yes');
-        }
-      });
-    });
-  });
-</script>
