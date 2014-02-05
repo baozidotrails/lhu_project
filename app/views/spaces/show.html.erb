@@ -7,20 +7,31 @@
   <br><br>
 
   <!-- space id -->
-  <input type="text" value="<%= @space.id %>" id="space_number", style="display: none">
+  <input type="text" value="<%= @space.id %>" id="space_number" style="display: none">
 
   <div class="main_function">
     <div class="sidebar">
-      <ul class="space_children">
-        <%= @space.name %>
-        <% @blocks.each do |block| %>
-          <li id="block_li-<%= block.id %>"><%= block.name %></li>
-        <% end %>
-      </ul>
+
+
+
+      <%= link_to '主平面圖', @space, id: 'reload_and_main_pic' %>
+
+      <% @blocks.each do |block| %>
+        <ul class="grandpa closed" id="block_ul-<%= block.id %>">
+          <%= block.name %>
+          <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
+            <ul class="father" id="block_fa-<%= father.id %>">
+              <%= father.name %>
+            </ul>
+          <% end %>
+        </ul>
+      <% end %>
     </div> <!-- sidebar -->
+
+    <!-- blocks -->
     <div class="editor">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="newdiv" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+        <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="block_name-<%= block.id %>" data-type="text" data-title="修改區塊名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
       <% end %>
     </div> <!-- editor -->
   </div> <!-- main_function -->
@@ -28,4 +39,11 @@
 
 </div> <!-- container -->
 
-<div class="block_selection"></div>
+
+<script>
+  $(function() {
+    $('#reload_and_main_pic').click(function() {
+      location.reload();
+    });
+  });
+</script>

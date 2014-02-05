@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140116084926) do
+ActiveRecord::Schema.define(version: 20140129095612) do
 
   create_table "blocks", force: true do |t|
     t.string   "name"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140116084926) do
     t.integer  "parent_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "block_type_cd", default: 0
+    t.integer  "block_type", default: 0
   end
 
   create_table "spaces", force: true do |t|

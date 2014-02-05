@@ -10,5 +10,7 @@
  *
  *= require_self
  *= require jquery.ui.all
+ *= require bootstrap
+ *= require editable/bootstrap-editable
  *= require_tree .
  */

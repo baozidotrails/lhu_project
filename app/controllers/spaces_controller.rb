@@ -27,7 +27,16 @@ class SpacesController < ApplicationController
   end
 
   def destroy
-    @space = current_user.spaces.find(params[:id]).destroy
+
+
+    @space = current_user.spaces.find(params[:id])
+
+    # find all sons
+    @space.blocks.each do |block|
+      Block.where(parent_id: block.id).destroy_all
+    end
+
+    @space.destroy
     redirect_to new_space_path
   end
 

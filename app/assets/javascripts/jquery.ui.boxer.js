@@ -1,6 +1,6 @@
 $.widget("ui.boxer", $.ui.mouse, {
   options: {
-    appendTo: 'body',
+    appendTo: '.editor',
     distance: 0
   },
   _init: function() {
@@ -45,7 +45,9 @@ $.widget("ui.boxer", $.ui.mouse, {
       "left": event.clientX,
       "top": event.clientY,
       "width": 0,
-      "height": 0
+      "height": 0,
+      "border": "1px solid #3f3f3f",
+      "background": "#f2f2f2"
     });
   },
 

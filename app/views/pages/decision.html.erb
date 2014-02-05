@@ -1,0 +1,67 @@
+<%= link_to '上一頁', :back, class: 'btn btn-default btn-lg' %>
+<button id="surface_pic" class="btn btn-default btn-lg">平面圖</button>
+<button id="floor_pic" class="btn btn-default btn-lg">樓層圖</button>
+
+<script>
+  $('#floor_pic').click(function() {
+
+    $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
+    $('#confirm_floor_count').click(function() {
+
+
+      var floor_count = $('#floor_count').val();
+      var parentId = sessionStorage.getItem('parent_id');
+
+      for(var i = floor_count; i >= 1; i--) {
+
+        var j = i;
+
+        // chain '0' to preposition of floor name
+        if(i < 10) {
+          j = '0' + j;
+        }
+
+        var block = {
+          'name': sessionStorage.getItem('parent_name') + ' ' + j + ' 樓 ',
+          'parent_id': parentId,
+          'width': '750',
+          'height': '50',
+          'block_type': 2
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: '/blocks',
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+
+      }
+
+      // change block type
+      $.ajax({
+        type: 'PUT',
+        url: '/blocks/' + parentId,
+        data: JSON.stringify({ 'block_type': 1 }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function() {
+          sessionStorage.setItem('redirectPage', parentId);
+          location.reload();
+        }
+      });
+    });
+  }); // floor_pic
+
+  $('#surface_pic').click(function() {
+
+  });
+
+
+  // is floor container
+  if(sessionStorage.getItem('block_type') == 2) {
+    $('#floor_pic').hide();
+  }
+
+</script>

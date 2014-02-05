@@ -1,7 +1,7 @@
 <div class="container">
 <br>
   <%= form_for(@space) do |f| %>
-    <%= f.text_field :name, value: current_user.name + '的場地', style: 'display: none' %>
+    <%= f.text_field :name, value: current_user.name, style: 'display: none' %>
     <%= f.submit '平面圖', id: 'surface_pic', class: 'btn btn-default' %>
   <% end %>
 

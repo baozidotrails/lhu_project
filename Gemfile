@@ -55,7 +55,10 @@ gem 'devise'
 gem 'jquery-turbolinks'
 
 # let active record supports enum
-gem 'simple_enum'
+# gem 'simple_enum'
 
 # wizard form
 gem 'wicked'
+
+
+gem 'x-editable-rails'

@@ -16,5 +16,7 @@
 //= require jquery.ui.draggable
 //= require jquery.ui.resizable
 //= require bootstrap
+//= require editable/bootstrap-editable
+//= require editable/rails
 //= require turbolinks
 //= require_tree .

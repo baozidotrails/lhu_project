@@ -11,6 +11,11 @@ class BlocksController < ApplicationController
   # GET /blocks/1
   # GET /blocks/1.json
   def show
+
+    @blocks = Block.where(parent_id: params[:id]).order('name DESC')
+
+
+
     render layout: false
   end
 
@@ -58,6 +63,10 @@ class BlocksController < ApplicationController
   # DELETE /blocks/1.json
   def destroy
 
+    # delete associate block
+    Block.where(parent_id: params[:id]).destroy_all
+
+    # delete the main block
     @block.destroy
 
     redirect_to :back
