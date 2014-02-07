@@ -8,7 +8,6 @@
     $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
     $('#confirm_floor_count').click(function() {
 
-
       var floor_count = $('#floor_count').val();
       var parentId = sessionStorage.getItem('parent_id');
 
@@ -55,8 +54,44 @@
   }); // floor_pic
 
   $('#surface_pic').click(function() {
+    $('.selection_panel').remove();
+    $('.sidebar').after('<div class="editor"></div>');
 
-  });
+    block_editor();
+
+    function block_editor() {
+      $('.editor').boxer({
+        // when stop drawing
+        stop: function(event, ui) {
+
+          // generate block object when finish drawing
+          var block = {
+            'name': 'block' + $('.newdiv').length,
+            'width': ui.box.width(),
+            'height': ui.box.height(),
+            'left': ui.box.offset().left,
+            'top': ui.box.offset().top,
+            'parent_id': sessionStorage.getItem('parent_id')
+          }
+
+          console.log(block);
+
+          // storage to database
+          $.ajax({
+            type: 'POST',
+            url: '/blocks',
+            data: JSON.stringify(block),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(data) {
+              location.reload();
+            }
+          });
+        }
+      });
+    }
+
+  }); // surface_pic
 
 
   // is floor container

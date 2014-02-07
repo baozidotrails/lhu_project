@@ -4,6 +4,7 @@ $(function() {
   // load page if it exists
   loadPageFirst();
 
+  // in place editing
   $('.block_name').editable({
     success: function(response, newValue) {
       var id = $(this).attr('id').split('-')[1];
@@ -30,11 +31,10 @@ $(function() {
   bindSideBarBlockLink();
 
   // block
-
   block_editor();
 
   function block_editor() {
-      $('.editor').boxer({
+    $('.editor').boxer({
       // when stop drawing
       stop: function(event, ui) {
 
@@ -56,51 +56,12 @@ $(function() {
           dataType: 'json',
           contentType: 'application/json',
           success: function(data) {
-
-            // // set ID to current finished div
-            // ui.box.attr('id', 'block-' + data.id);
-
-            // // block tools
-            // initBlock(ui.box, ui.box.attr('id').split('-')[1]);
-
-            // // resizable and draggable at beginning
-            // dragAndResizeBlock(ui.box);
-
-            // applyNextStepToBlock();
-
-            // // add li
-            // $('.sidebar').append('<ul class="grandpa" id="block_ul-' + data.id + '">' + data.name + '</ul>');
-
-            // bindSideBarBlockLink();
             location.reload();
-
-
           }
         });
-
       }
     });
   }
-
-  function initBlock(block, id) {
-    // add class
-    block.addClass('newdiv');
-
-    // css
-    block.css({ 'border': '1px solid #3f3f3f', 'background': '#f2f2f2' });
-
-    // naming
-    block.append('block' + ($('.newdiv').length - 1));
-
-    // delete block
-    block.append('<a class="block_close" data-confirm="確定要刪除？" data-method="delete" href="/blocks/' + id + '" rel="nofollow">×</a>');
-
-    // edit block
-    block.append('<i class="fa fa-pencil-square-o block_edit"></i>');
-
-
-
-  } // initBlock
 
   function dragAndResizeBlock(block) {
 
@@ -159,7 +120,7 @@ $(function() {
 
       // hight light the sidebar li
       $('#block_ul-' + id).css({ 'color': 'red' });
-      $('.father').css({ 'color': 'black' });
+      $('.father_ul').css({ 'color': 'black' });
       if($('#block_ul-' + id).siblings().hasClass('open')) {
         $('#block_ul-' + id).siblings().removeClass('open');
         $('#block_ul-' + id).siblings().addClass('closed');
@@ -204,7 +165,7 @@ $(function() {
 
         $('.selection_panel').load('/pages/decision');
 
-        $('.grandpa').click(function() {
+        $('.grandpa_ul').click(function() {
 
           var id = $(this).attr('id').split('-')[1];
           $('.selection_panel').remove();
@@ -224,9 +185,9 @@ $(function() {
 
   function bindSideBarBlockLink() {
 
-    $('.closed').children().hide();
 
-    $('.sidebar').find('.grandpa').click(function() {
+
+    $('.sidebar').find('.grandpa_ul').click(function() {
 
       if($(this).siblings().hasClass('open')) {
         $(this).siblings().removeClass('open');
@@ -241,7 +202,7 @@ $(function() {
 
 
 
-      $('.grandpa').css({ 'color': 'black' });
+      $('.grandpa_ul').css({ 'color': 'black' });
 
 
       $('.selection_panel').remove();
@@ -262,22 +223,24 @@ $(function() {
       $('.father_reader').load('/blocks/' + id);
 
       $('#block_ul-' + id).css({ 'color': 'red' });
-      $('.father').css({ 'color': 'black' });
+      $('.father_ul').css({ 'color': 'black' });
+
+
 
 
 
     });
 
-    $('.sidebar').find('.father').click(function() {
+    $('.sidebar').find('.father_ul').click(function() {
       $('.selection_panel').remove();
       $('.father_reader').remove();
       $('.editor').remove();
       $('.newdiv').remove();
 
+      // $('.grandpa').unbind();
+
       var father_id = $(this).attr('id').split('-')[1];
       console.log(father_id);
-
-
 
 
 
@@ -311,7 +274,7 @@ $(function() {
       $('#block_ul-' + redirectPage).removeClass('closed');
       $('#block_ul-' + redirectPage).addClass('open');
       $('#block_ul-' + redirectPage).css({ 'color': 'red' });
-      $('.father').css({ 'color': 'black' });
+      $('.father_ul').css({ 'color': 'black' });
       sessionStorage.clear();
     }
 

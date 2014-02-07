@@ -12,16 +12,17 @@
   <div class="main_function">
     <div class="sidebar">
 
-
-
       <%= link_to '主平面圖', @space, id: 'reload_and_main_pic' %>
 
       <% @blocks.each do |block| %>
-        <ul class="grandpa closed" id="block_ul-<%= block.id %>">
-          <%= block.name %>
+        <ul class="grandpa_ul closed" id="block_ul-<%= block.id %>">
+          <span class="grandpa"><%= block.name %></span>
           <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
-            <ul class="father" id="block_fa-<%= father.id %>">
+            <ul class="father_ul" id="block_fa-<%= father.id %>">
               <%= father.name %>
+              <% Block.where(parent_id: father.id).each do |child| %>
+                <li class="child_ul"><%= child.name %></li>
+              <% end %>
             </ul>
           <% end %>
         </ul>

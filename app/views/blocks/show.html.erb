@@ -3,8 +3,15 @@
   <h1>沒有任何子區塊</h1>
 <% else %>
   <% @blocks.each do |block| %>
-    <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+
+    <!-- put floors -->
+    <% if block.block_type == 2 %>
+      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+    <% else %>
+      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+    <% end %>
   <% end %>
+
 <% end %>
 
 
