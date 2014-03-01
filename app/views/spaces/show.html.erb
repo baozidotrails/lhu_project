@@ -1,27 +1,32 @@
 <br>
-<div class="container">
+<div class="container space-show-container">
 
   <%= link_to '上一頁', new_space_path, class: 'btn btn-default' %>
-  <%= link_to '刪除該場地', @space, method: :delete, data: { confirm: '確定要刪除？' }, class: 'btn btn-default' %>
 
   <br><br>
 
-  <!-- space id -->
-  <input type="text" value="<%= @space.id %>" id="space_number" style="display: none">
+  <div class="main_display">
+    <div class="show_sidebar">
 
-  <div class="main_function">
-    <div class="sidebar">
-
-      <%= link_to '主平面圖', @space, id: 'reload_and_main_pic' %>
+      <p><%= link_to '主平面圖', @space %></p>
 
       <% @blocks.each do |block| %>
-        <ul class="grandpa_ul closed" id="block_ul-<%= block.id %>">
-          <span class="grandpa"><%= block.name %></span>
+        <ul class="closed">
+
+          <!-- grandpa block name -->
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<%= Block.where(parent_id: block.id).count %>) <% end %> </span>
+
+          <!-- father blocks -->
           <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
-            <ul class="father_ul" id="block_fa-<%= father.id %>">
-              <%= father.name %>
+            <ul class="father_holder closed">
+
+              <!-- father name -->
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>"><%= father.name %> <% if Block.where(parent_id: father.id).count > 0 %> (<%= Block.where(parent_id: father.id).count %>) <% end %></span>
+
+
+              <!-- child blocks -->
               <% Block.where(parent_id: father.id).each do |child| %>
-                <li class="child_ul"><%= child.name %></li>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>"><span><%= child.name %></span></li>
               <% end %>
             </ul>
           <% end %>
@@ -30,21 +35,97 @@
     </div> <!-- sidebar -->
 
     <!-- blocks -->
-    <div class="editor">
+    <div class="blocks_display">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="block_name-<%= block.id %>" data-type="text" data-title="修改區塊名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
       <% end %>
-    </div> <!-- editor -->
-  </div> <!-- main_function -->
+    </div> <!-- blocks_display -->
+  </div> <!-- main_display -->
 
 
 </div> <!-- container -->
 
 
 <script>
-  $(function() {
-    $('#reload_and_main_pic').click(function() {
-      location.reload();
+
+  space_show_sidebar();
+
+  function space_show_sidebar() {
+
+    // hide father and child
+    $('ul.closed').find('.father_holder, .sidebar_child_name').hide();
+
+    $('.show_sidebar').find('.sidebar_grandpa_name').click(function() {
+
+      // menu controler
+      if($(this).parent().siblings('ul').hasClass('open')) {
+        $(this).parent().siblings('ul').addClass('closed').removeClass('open');
+        $(this).parent().siblings('ul').find('.father_holder').slideUp('fast');
+      }
+
+
+      $(this).closest('ul').addClass('open')
+                      .removeClass('closed')
+                      .find('.father_holder')
+                      .slideDown('fast');
+
+
+      // remove other readers
+      $('.blocks_display').remove();
+
+
+      // fetch current status
+      var id = $(this).attr('id').split('-')[1];
+
+      // if no father reader
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+
+      // load father
+      $('.blocks_display').load('/blocks/' + id);
+
+      // hightlight
+      $('.sidebar_grandpa_name').css({ 'color': 'black' });
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      $(this).css({ 'color': 'red' });
     });
-  });
+
+
+    // ex: click floor
+    $('.show_sidebar').find('.sidebar_father_name').click(function() {
+
+      // menu controller
+      if($(this).closest('ul').siblings('ul').hasClass('open')) {
+        $(this).closest('ul').siblings('ul').addClass('closed').removeClass('open');
+        $(this).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
+      }
+
+      $(this).closest('ul').addClass('open')
+                           .removeClass('closed')
+                           .find('.sidebar_child_name').slideDown('fast');
+
+      // remove other readers
+      $('.blocks_display').remove();
+
+      // fetch current status
+      var id = $(this).attr('id').split('-')[1];
+
+      // if no editor then put one
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+
+      // then load the block show page
+      $('.blocks_display').load('/blocks/' + id);
+
+      // hightlight
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      $(this).css({ 'color': 'blue' });
+    });
+  } // bindSideBarBlockLink
+
+
 </script>

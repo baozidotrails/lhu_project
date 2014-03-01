@@ -6,4 +6,8 @@ class PagesController < ApplicationController
   def decision
     render layout: false
   end
+
+  def sandbox
+
+  end
 end

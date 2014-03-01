@@ -46,8 +46,9 @@ $.widget("ui.boxer", $.ui.mouse, {
       "top": event.clientY,
       "width": 0,
       "height": 0,
-      "border": "1px solid #3f3f3f",
-      "background": "#f2f2f2"
+      "border": "1px solid #ffffff",
+      "opacity": .65,
+      "background": "#b0d4ff"
     });
   },
 

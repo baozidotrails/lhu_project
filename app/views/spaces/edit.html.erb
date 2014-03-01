@@ -1,0 +1,73 @@
+<ol class="breadcrumb">
+  <li><a href="./post-1.html">刊登</a></li>
+  <li ><a href="#">場地規劃</a></li>
+  <li class="active">輸入場地資訊</li>
+  <li class="active">租借時間設定</li>
+  <li class="active">瀏覽</li>
+  <li class="active">完成</li>
+</ol>
+<div class="container space-edit-container">
+
+  <%= link_to '上一頁', new_space_path, class: 'btn btn-default' %>
+  <%= link_to '刪除該場地', @space, method: :delete, data: { confirm: '確定要刪除？' }, class: 'btn btn-default delete_block' %>
+
+  <br><br>
+
+  <!-- space id -->
+  <input type="text" value="<%= @space.id %>" id="space_number" style="display: none">
+
+  <div class="main_function">
+    <div class="sidebar">
+
+      <p><%= link_to '主平面圖', edit_space_path(@space), id: 'reload_and_main_pic' %></p>
+
+      <% @blocks.each do |block| %>
+        <ul class="closed">
+
+          <!-- grandpa block name -->
+          <%= link_to '×', block, class: 'block_close_sidebar delete_block', method: :delete, data: { confirm: '確定要刪除？' } %>
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<%= Block.where(parent_id: block.id).count %>) <% end %> </span>
+
+          <!-- father blocks -->
+          <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
+            <ul class="father_holder closed">
+
+              <!-- father name -->
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>"><%= father.name %> <% if Block.where(parent_id: father.id).count > 0 %> (<%= Block.where(parent_id: father.id).count %>) <% end %></span>
+
+
+              <!-- child blocks -->
+              <% Block.where(parent_id: father.id).each do |child| %>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>"><span><%= child.name %></span></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </ul>
+      <% end %>
+    </div> <!-- sidebar -->
+
+    <!-- blocks -->
+    <div class="editor">
+      <% @blocks.each do |block| %>
+        <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="block_name-<%= block.id %>" data-type="text" data-title="修改區塊名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <% end %>
+    </div> <!-- editor -->
+  </div> <!-- main_function -->
+
+
+</div> <!-- container -->
+
+
+<script>
+  $(function() {
+
+    $('.delete_block').click(function() {
+      sessionStorage.clear();
+    });
+
+    $('#reload_and_main_pic').click(function() {
+      sessionStorage.clear();
+      location.reload();
+    });
+  });
+</script>

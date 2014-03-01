@@ -26,6 +26,11 @@ class BlocksController < ApplicationController
 
   # GET /blocks/1/edit
   def edit
+    @blocks = Block.where(parent_id: params[:id]).order('name DESC')
+
+
+
+    render layout: false
   end
 
   # POST /blocks
@@ -64,7 +69,10 @@ class BlocksController < ApplicationController
   def destroy
 
     # delete associate block
-    Block.where(parent_id: params[:id]).destroy_all
+    Block.where(parent_id: params[:id]).each do |block|
+      Block.where(parent_id: block.id).destroy_all
+      block.destroy
+    end
 
     # delete the main block
     @block.destroy

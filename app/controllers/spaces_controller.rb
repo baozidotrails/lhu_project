@@ -8,10 +8,10 @@ class SpacesController < ApplicationController
   end
 
   def edit
+    @blocks = current_user.spaces.find(params[:id]).blocks
   end
 
   def show
-
     @blocks = current_user.spaces.find(params[:id]).blocks
   end
 
@@ -19,7 +19,7 @@ class SpacesController < ApplicationController
     @space = current_user.spaces.new(space_params)
 
     if @space.save
-      redirect_to @space
+      redirect_to edit_space_path(@space)
     end
   end
 
@@ -33,7 +33,10 @@ class SpacesController < ApplicationController
 
     # find all sons
     @space.blocks.each do |block|
-      Block.where(parent_id: block.id).destroy_all
+      Block.where(parent_id: block.id).each do |father|
+        Block.where(parent_id: father.id).destroy_all
+        father.destroy
+      end
     end
 
     @space.destroy

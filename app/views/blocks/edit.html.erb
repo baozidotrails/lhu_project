@@ -1,6 +1,189 @@
-<h1>Editing block</h1>
 
-<%= render 'form' %>
+<% if @blocks.length == 0 %>
+  <h1>沒有任何子區塊</h1>
+<% else %>
+  <% @blocks.each do |block| %>
 
-<%= link_to 'Show', @block %> |
-<%= link_to 'Back', blocks_path %>
+    <!-- put floors -->
+    <% if block.block_type == 2 %>
+      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+    <% else %>
+      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+<script>
+
+  if($('.newdiv').length > 0) {
+    sessionStorage.setItem('is_drawing', true);
+  } else {
+    sessionStorage.removeItem('is_drawing');
+  }
+
+  // naming
+  $('.block_name').editable({
+    success: function(response, newValue) {
+      var id = $(this).attr('id').split('-')[1];
+      $.ajax({
+        type: 'PUT',
+        url: '/blocks/' + id,
+        data: JSON.stringify({ 'name': newValue }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function() {
+          sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+          location.reload();
+        }
+      });
+    }
+  });
+
+  // S 棟例子
+  $('.block_edit').click(function() {
+    var id = $(this).parent().attr('id').split('-')[1];
+    var name = $(this).parent().find('.block_name').text();
+
+    // in order to bind the sidebar
+    sessionStorage.setItem('parent_id', id);
+
+    // in order to chain name into new element
+    sessionStorage.setItem('parent_name', name);
+
+    // in order to hide the logic button
+    sessionStorage.setItem('block_type', $(this).parent().data('blocktype'));
+
+    // sidebar highlight
+    $('.sidebar_father_name').css({ 'color': 'black' });
+    $('#block_fa-' + id).css({ 'color': 'blue' });
+
+
+    $('.sidebar').after('<div class="selection_panel"></div>');
+    $('.selection_panel').load('/pages/decision');
+
+    // sidebar changing
+    if($('#block_fa-' + id).closest('ul').siblings('ul').hasClass('open')) {
+      $('#block_fa-' + id).closest('ul').siblings('ul').addClass('closed').removeClass('open');
+      $('#block_fa-' + id).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
+    }
+
+    $('#block_fa-' + id).closest('ul').addClass('open')
+                                      .removeClass('closed')
+                                      .find('.sidebar_child_name').slideDown('fast');
+
+
+    // if it has something
+    if($('#block_fa-' + id).closest('ul').find('li').length > 0) {
+
+      $('.selection_panel').remove();
+      $('.tmp_reader').remove();
+      $('.editor').remove();
+      $('.newdiv').remove();
+
+      if ($('.editor').length == 0) {
+        $('.sidebar').after('<div class="editor"></div>');
+      };
+
+      $('.editor').load('/blocks/' + id + '/edit', function() {
+
+        dragAndResizeBlock($(this).find('.newdiv'));
+
+        $(this).boxer({
+          stop: function(event, ui) {
+            var block = {
+              'name': 'block',
+              'width': ui.box.width(),
+              'height': ui.box.height(),
+              'left': ui.box.offset().left,
+              'top': ui.box.offset().top,
+              'parent_id': sessionStorage.getItem('parent_id')
+            };
+
+            // storage to database
+            $.ajax({
+              type: 'POST',
+              url: '/blocks',
+              data: JSON.stringify(block),
+              dataType: 'json',
+              contentType: 'application/json',
+              success: function(data) {
+
+
+
+                sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+                sessionStorage.setItem('is_drawing', true);
+                location.reload();
+              }
+            });
+          }
+        });
+      });
+
+    } else {
+
+      $('.selection_panel').remove();
+      $('.tmp_reader').remove();
+      $('.editor').remove();
+      $('.newdiv').remove();
+
+      if ($('.selection_panel').length == 0) {
+        $('.sidebar').after('<div class="selection_panel"></div>');
+      };
+
+      $('.selection_panel').load('/pages/decision');
+    }
+  });
+
+
+
+  function dragAndResizeBlock(block) {
+
+    block.resizable({
+
+      stop: function(event, ui) {
+
+        var $this = $(this);
+
+        var block = {
+          'width': ui.size.width,
+          'height' : ui.size.height
+        };
+
+        $.ajax({
+          type: 'PUT',
+          url: '/blocks/' + $this.attr('id').split('-')[1],
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+      }
+    }).draggable({
+      containment: 'parent',
+      scroll: true,
+      opacity: 0.35,
+      stop: function(event, ui) {
+
+        var $this = $(this);
+
+        var block = {
+          'left': ui.position.left,
+          'top' : ui.position.top
+        };
+
+        $.ajax({
+          type: 'PUT',
+          url: '/blocks/' + $this.attr('id').split('-')[1],
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+      }
+    });
+  } // drag and resize block
+
+
+
+
+
+</script>

@@ -15,6 +15,7 @@
 //= require jquery_ujs
 //= require jquery.ui.draggable
 //= require jquery.ui.resizable
+//= require jquery.ui.selectable
 //= require bootstrap
 //= require editable/bootstrap-editable
 //= require editable/rails

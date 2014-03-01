@@ -5,6 +5,8 @@
 <script>
   $('#floor_pic').click(function() {
 
+
+
     $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
     $('#confirm_floor_count').click(function() {
 
@@ -21,7 +23,7 @@
         }
 
         var block = {
-          'name': sessionStorage.getItem('parent_name') + ' ' + j + ' 樓 ',
+          'name': j + '樓',
           'parent_id': parentId,
           'width': '750',
           'height': '50',
@@ -54,10 +56,17 @@
   }); // floor_pic
 
   $('#surface_pic').click(function() {
+
+
+
     $('.selection_panel').remove();
     $('.sidebar').after('<div class="editor"></div>');
 
+
+
+
     block_editor();
+
 
     function block_editor() {
       $('.editor').boxer({
@@ -66,7 +75,7 @@
 
           // generate block object when finish drawing
           var block = {
-            'name': 'block' + $('.newdiv').length,
+            'name': 'block',
             'width': ui.box.width(),
             'height': ui.box.height(),
             'left': ui.box.offset().left,
@@ -84,9 +93,16 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function(data) {
+
+
+              sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+              sessionStorage.setItem('is_drawing', true);
               location.reload();
             }
           });
+
+
+
         }
       });
     }

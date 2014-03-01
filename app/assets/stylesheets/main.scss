@@ -10,45 +10,44 @@
   margin-bottom: 0;
 }
 
+.container {
+  width: 90%;
+}
+
 
 // main function
-.main_function {
+.main_function, .main_display {
 
-  .sidebar {
+  .sidebar, .show_sidebar {
     display: block;
     width: 240px;
     height: 550px;
     background: #ffffff;
     border: 1px solid #e3e3e3;
     float: left;
-    overflow: auto;
-
-    .grandpa {
-      cursor: pointer;
-    }
-  }
-
-  .grandpa_ul {
 
   }
 
-  .father_ul {
-
+  ul {
+    list-style: none;
+    cursor: default;
   }
 
-  .child_ul {
-
+  .sidebar_child_name {
+    padding-left: 20px;
   }
 
-  .editor, .selection_panel, .father_reader {
-    display: block;
-    width: 860px;
+
+  .editor, .selection_panel, .tmp_reader, .blocks_display {
+    position: relative;
+    left: 10px;
+    width: 80%;
     height: 550px;
     overflow: auto;
     background: asset-url('blueprint-dark.png', image);
     border: 1px solid #e3e3e3;
     float: left;
-    margin-left: 20px;
+
   }
 
   .selection_panel {
@@ -56,7 +55,7 @@
   }
 }
 
-.newdiv {
+.newdiv, .block-show {
   position: absolute;
   border: 1px solid #3f3f3f;
   background: #f2f2f2;
@@ -88,6 +87,10 @@
   cursor: pointer;
   font-size: 16px;
   float: right;
+}
+
+.block_close_sidebar {
+
 }
 
 .block_edit {
