@@ -62,3 +62,5 @@ gem 'wicked'
 
 
 gem 'x-editable-rails'
+
+gem 'best_in_place', github: 'aaronchi/best_in_place'

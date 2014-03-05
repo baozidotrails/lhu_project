@@ -1,34 +1,29 @@
 $(function() {
 
-  // load page if it exists
   loadPageFirst();
+  sessionStorage.clear();
 
 
-  // in place editing
-  $('.block_name').editable({
-    success: function(response, newValue) {
-      var id = $(this).attr('id').split('-')[1];
-      $.ajax({
-        type: 'PUT',
-        url: '/blocks/' + id,
-        data: JSON.stringify({ 'name': newValue }),
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function() {
-          location.reload();
-        }
-      });
-    }
+  $('.best_in_place').best_in_place();
+
+  $('.best_in_place').bind("ajax:success", function(event) {
+    var whichBlock = event.currentTarget.id.split('_')[4];
+    var newName = event.currentTarget.innerText;
+
+    // 側邊選單名稱變更
+    $('#block_ul-' + whichBlock).text(newName);
+
   });
 
-  // apply exised block
+  // 綁定現有的 block
   dragAndResizeBlock($('.newdiv'));
 
-  // next step to block
+
   applyNextStepToBlock();
 
-  // bind block
+
   bindSideBarBlockLink();
+
 
   // block
 
@@ -78,9 +73,16 @@ $(function() {
           'space_id': $('#space_number').val()
         };
 
+        if(sessionStorage.getItem('parent_id')) {
+          block['parent_id'] = sessionStorage.getItem('parent_id');
+          delete block['space_id'];
+          console.log(block);
+        }
+
         console.log('begin ' + beginX + ',' + beginY);
         console.log('end ' + endX + ',' + endY);
         console.log(block);
+
 
 
 
@@ -93,13 +95,109 @@ $(function() {
           contentType: 'application/json',
           success: function(data) {
 
-            location.reload();
+            // block 畫出來, 移動 and 調整
+            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a> <i class="fa fa-pencil-square-o block_edit"></i> </div>').draggable({
+                opacity: 0.35,
+                stop: function(event, ui) {
+
+                  var $this = $(this);
+
+                  var block = {
+                    'left': ui.position.left,
+                    'top' : ui.position.top
+                  };
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: '/blocks/' + $this.attr('id').split('-')[1],
+                    data: JSON.stringify(block),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                  });
+                }
+              }).resizable({
+                stop: function(event, ui) {
+
+                  var $this = $(this);
+
+                  var block = {
+                    'width': ui.size.width,
+                    'height' : ui.size.height
+                  };
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: '/blocks/' + $this.attr('id').split('-')[1],
+                    data: JSON.stringify(block),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                  });
+                }
+              }).appendTo(obj);
+
+              $('.best_in_place').best_in_place();
+
+            // 側邊選單加入
+            if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 2) {
+
+              // alert("樓層");
+
+
+
+              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_ch-' + whichBlock).text(newName);
+
+              });
+            } else if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 0) {
+
+              // alert("體育館");
+              $('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
+
+                $('.best_in_place').bind("ajax:success", function(event) {
+
+                  var whichBlock = event.currentTarget.id.split('_')[4];
+                  var newName = event.currentTarget.innerText;
+
+                  // 側邊選單名稱變更
+                  $('#block_fa-' + whichBlock).text(newName);
+              });
+
+
+            } else {
+
+              // alert("主要場地");
+              $('<ul class="closed"><span class="sidebar_grandpa_name" id="block_ul-'+ data.id +'">block</span></ul>').appendTo('.sidebar');
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_ul-' + whichBlock).text(newName);
+              });
+            }
+
+            // 綁定側邊選單
+            bindSideBarBlockLink();
+
+            // 綁定修改
+            applyNextStepToBlock();
+
           }
         });
 
       }
     });
-  }
+  } // boxer
+
 
   function dragAndResizeBlock(block) {
 
@@ -145,7 +243,7 @@ $(function() {
     });
   } // drag and resize block
 
-  // for space show action
+  // 最外層 block_edit
   function applyNextStepToBlock() {
     // when click the edit icon
     $('.block_edit').click(function() {
@@ -155,13 +253,13 @@ $(function() {
       var name = $('#block_name-' + id).text();
 
       // in order to hide the logic button
-      sessionStorage.setItem('block_type', $(this).parent().data('blocktype'));
+      sessionStorage.setItem('parent_type', $(this).parent().data('blocktype'));
 
         // in order to bind the sidebar
       sessionStorage.setItem('parent_id', id);
 
       // in order to chain name into new element
-      sessionStorage.setItem('parent_name', name);
+      // sessionStorage.setItem('parent_name', name);
 
       // hight light the sidebar li
       $('#block_ul-' + id).css({ 'color': 'red' });
@@ -179,7 +277,7 @@ $(function() {
 
 
 
-
+      //
       if($('#block_ul-' + id).closest('ul').find('ul').length > 0) {
 
         $('.selection_panel').remove();
@@ -197,34 +295,7 @@ $(function() {
           // 體育館例子
           if (sessionStorage.getItem('is_drawing')) {
             dragAndResizeBlock($('.newdiv'));
-            $(this).boxer({
-              stop: function(event, ui) {
-                var block = {
-                  'name': 'block',
-                  'width': ui.box.width(),
-                  'height': ui.box.height(),
-                  'left': ui.box.offset().left,
-                  'top': ui.box.offset().top,
-                  'parent_id': sessionStorage.getItem('parent_id')
-                };
-
-                // storage to database
-                $.ajax({
-                  type: 'POST',
-                  url: '/blocks',
-                  data: JSON.stringify(block),
-                  dataType: 'json',
-                  contentType: 'application/json',
-                  success: function(data) {
-
-
-                    sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-                    sessionStorage.setItem('is_drawing', true);
-                    location.reload();
-                  }
-                });
-              }
-            });
+            boxer($(this));
           };
         });
 
@@ -235,7 +306,7 @@ $(function() {
 
         // storage it in order to get parent_id
         sessionStorage.setItem('parent_id', id);
-        sessionStorage.setItem('parent_name', name);
+        // sessionStorage.setItem('parent_name', name);
 
         // decisions
         $('.selection_panel').remove();
@@ -261,6 +332,8 @@ $(function() {
 
     $('.sidebar').find('.sidebar_grandpa_name').click(function() {
 
+      // 設定 global
+      sessionStorage.setItem('parent_type', $(this).data('blocktype'));
 
       // menu controler
       if($(this).parent().siblings('ul').hasClass('open')) {
@@ -287,7 +360,7 @@ $(function() {
 
       // storage
       sessionStorage.setItem('parent_id', id);
-      sessionStorage.setItem('parent_name', name)
+      // sessionStorage.setItem('parent_name', name)
 
 
       if($('.newdiv').length > 0) {
@@ -305,33 +378,7 @@ $(function() {
       $('.editor').load('/blocks/' + id + '/edit', function() {
         if (sessionStorage.getItem('is_drawing')) {
           dragAndResizeBlock($('.newdiv'));
-          $(this).boxer({
-            stop: function(event, ui) {
-              var block = {
-                'name': 'block',
-                'width': ui.box.width(),
-                'height': ui.box.height(),
-                'left': ui.box.offset().left,
-                'top': ui.box.offset().top,
-                'parent_id': sessionStorage.getItem('parent_id')
-              };
-
-              // storage to database
-              $.ajax({
-                type: 'POST',
-                url: '/blocks',
-                data: JSON.stringify(block),
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(data) {
-
-                  sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-                  sessionStorage.setItem('is_drawing', true);
-                  location.reload();
-                }
-              });
-            }
-          });
+          boxer($(this));
         };
       });
 
@@ -344,6 +391,8 @@ $(function() {
 
     // ex: click floor
     $('.sidebar').find('.sidebar_father_name').click(function() {
+
+      sessionStorage.setItem('parent_type', 2);
 
       // menu controller
       if($(this).closest('ul').siblings('ul').hasClass('open')) {
@@ -367,7 +416,7 @@ $(function() {
 
       // storage
       sessionStorage.setItem('parent_id', id);
-      sessionStorage.setItem('parent_name', name)
+      // sessionStorage.setItem('parent_name', name)
 
       if($('.newdiv').length > 0) {
         sessionStorage.setItem('is_drawing', true);
@@ -385,34 +434,7 @@ $(function() {
       $('.editor').load('/blocks/' + id + '/edit', function() {
         if (sessionStorage.getItem('is_drawing')) {
           dragAndResizeBlock($('.newdiv'));
-          $(this).boxer({
-            stop: function(event, ui) {
-              var block = {
-                'name': 'block',
-                'width': ui.box.width(),
-                'height': ui.box.height(),
-                'left': ui.box.offset().left,
-                'top': ui.box.offset().top,
-                'parent_id': sessionStorage.getItem('parent_id')
-              };
-
-              // storage to database
-              $.ajax({
-                type: 'POST',
-                url: '/blocks',
-                data: JSON.stringify(block),
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(data) {
-
-
-                  sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-                  sessionStorage.setItem('is_drawing', true);
-                  location.reload();
-                }
-              });
-            }
-          });
+          boxer($(this));
         };
       });
 
@@ -460,36 +482,11 @@ $(function() {
 
         $('.editor').load('/blocks/' + redirectPage + '/edit', function() {
 
+          if(sessionStorage.getItem('is_drawing')) {
+            dragAndResizeBlock($('.editor').find('.newdiv'));
+            boxer($(this));
+          }
 
-          dragAndResizeBlock($('.editor').find('.newdiv'));
-          $(this).boxer({
-            stop: function(event, ui) {
-              var block = {
-                'name': 'block',
-                'width': ui.box.width(),
-                'height': ui.box.height(),
-                'left': ui.box.offset().left,
-                'top': ui.box.offset().top,
-                'parent_id': sessionStorage.getItem('parent_id')
-              };
-
-              // storage to database
-              $.ajax({
-                type: 'POST',
-                url: '/blocks',
-                data: JSON.stringify(block),
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(data) {
-
-
-                  sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-                  sessionStorage.setItem('is_drawing', true);
-                  location.reload();
-                }
-              });
-            }
-          });
         });
       } else {
         if($('.tmp_reader').length == 0) {

@@ -13,9 +13,10 @@
 //= require jquery
 //= require jquery.turbolinks
 //= require jquery_ujs
-//= require jquery.ui.draggable
-//= require jquery.ui.resizable
-//= require jquery.ui.selectable
+//= require jquery.ui.all
+//= require jquery.purr
+//= require best_in_place
+//= require best_in_place.purr
 //= require bootstrap
 //= require editable/bootstrap-editable
 //= require editable/rails

@@ -1,10 +1,9 @@
-<%= link_to '上一頁', :back, class: 'btn btn-default btn-lg' %>
+
 <button id="surface_pic" class="btn btn-default btn-lg">平面圖</button>
 <button id="floor_pic" class="btn btn-default btn-lg">樓層圖</button>
 
 <script>
   $('#floor_pic').click(function() {
-
 
 
     $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
@@ -48,6 +47,7 @@
         dataType: 'json',
         contentType: 'application/json',
         success: function() {
+          sessionStorage.removeItem('is_drawing');
           sessionStorage.setItem('redirectPage', parentId);
           location.reload();
         }
@@ -57,62 +57,155 @@
 
   $('#surface_pic').click(function() {
 
-
-
     $('.selection_panel').remove();
     $('.sidebar').after('<div class="editor"></div>');
 
+    boxer($('.editor'));
 
 
 
-    block_editor();
-
-
-    function block_editor() {
-      $('.editor').boxer({
-        // when stop drawing
-        stop: function(event, ui) {
-
-          // generate block object when finish drawing
-          var block = {
-            'name': 'block',
-            'width': ui.box.width(),
-            'height': ui.box.height(),
-            'left': ui.box.offset().left,
-            'top': ui.box.offset().top,
-            'parent_id': sessionStorage.getItem('parent_id')
-          }
-
-          console.log(block);
-
-          // storage to database
-          $.ajax({
-            type: 'POST',
-            url: '/blocks',
-            data: JSON.stringify(block),
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function(data) {
-
-
-              sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-              sessionStorage.setItem('is_drawing', true);
-              location.reload();
-            }
-          });
-
-
-
-        }
-      });
-    }
 
   }); // surface_pic
 
 
   // is floor container
-  if(sessionStorage.getItem('block_type') == 2) {
+  if(sessionStorage.getItem('parent_type') == 2) {
     $('#floor_pic').hide();
   }
+
+  // ------------------------------------------------------------------
+  function boxer(obj) {
+    var beginX, beginY, endX, endY, width, height;
+
+    $(obj).selectable({
+
+      start: function(e) {
+        var posX = $(this).position().left, posY = $(this).position().top;
+
+        beginX = e.pageX - posX;
+        beginY = e.pageY - posY;
+
+      },
+
+      stop: function(e) {
+        var posX = $(this).offset().left, posY = $(this).offset().top;
+
+        endX = e.pageX - posX;
+        endY = e.pageY - posY;
+
+        if(beginX > endX) { var tmp = beginX; beginX = endX; endX = tmp; }
+        if(beginY > endY) { var tmp = beginY; beginY = endY; endY = tmp; }
+
+        width = endX - beginX;
+        height = endY - beginY;
+
+
+
+        // generate block object when finish drawing
+        var block = {
+          'name': 'block',
+          'width': width,
+          'height': height,
+          'left': beginX,
+          'top': beginY,
+          'parent_id': sessionStorage.getItem('parent_id')
+        };
+
+        console.log('begin ' + beginX + ',' + beginY);
+        console.log('end ' + endX + ',' + endY);
+        console.log(block);
+
+
+
+        // storage to database
+        $.ajax({
+          type: 'POST',
+          url: '/blocks',
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(data) {
+            // block 畫出來, 移動 and 調整
+            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
+                opacity: 0.35,
+                stop: function(event, ui) {
+
+                  var $this = $(this);
+
+                  var block = {
+                    'left': ui.position.left,
+                    'top' : ui.position.top
+                  };
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: '/blocks/' + $this.attr('id').split('-')[1],
+                    data: JSON.stringify(block),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                  });
+                }
+            }).resizable({
+              stop: function(event, ui) {
+
+                var $this = $(this);
+
+                var block = {
+                  'width': ui.size.width,
+                  'height' : ui.size.height
+                };
+
+                $.ajax({
+                  type: 'PUT',
+                  url: '/blocks/' + $this.attr('id').split('-')[1],
+                  data: JSON.stringify(block),
+                  dataType: 'json',
+                  contentType: 'application/json'
+                });
+              }
+            }).appendTo(obj);
+
+
+            // 體育館平面圖
+            if(sessionStorage.getItem('parent_type') == 0) {
+
+              // 側邊選單加入
+              $('<ul class="father_holder closed"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_fa-' + whichBlock).text(newName);
+
+              });
+            }
+
+
+
+            // 樓層內的平面圖
+            if(sessionStorage.getItem('parent_type') == 2) {
+
+              // 側邊選單加入
+              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').appendTo('#block_fa-' + data.parent_id);
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_ch-' + whichBlock).text(newName);
+
+              });
+
+            }
+
+          }
+        });
+
+      }
+    });
+  } // boxer
 
 </script>

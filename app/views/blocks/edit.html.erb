@@ -6,15 +6,31 @@
 
     <!-- put floors -->
     <% if block.block_type == 2 %>
-      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
     <% else %>
-      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><a href="#" class="block_name" id="father_name-<%= block.id %>" data-type="text" data-title="修改樓層名稱："><%= block.name %></a><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
     <% end %>
   <% end %>
 
 <% end %>
 
 <script>
+
+  // 如果是葉子，就移除「編輯按鈕」
+  if($('.newdiv').data('blocktype') == 0) {
+    $('.fa').remove();
+  }
+
+  $('.best_in_place').best_in_place();
+
+  $('.best_in_place').bind("ajax:success", function(event) {
+    var whichBlock = event.currentTarget.id.split('_')[4];
+    var newName = event.currentTarget.innerText;
+
+    // 側邊選單名稱變更
+    $('#block_fa-' + whichBlock).text(newName);
+    $('#block_ch-' + whichBlock).text(newName);
+  });
 
   if($('.newdiv').length > 0) {
     sessionStorage.setItem('is_drawing', true);
@@ -23,24 +39,24 @@
   }
 
   // naming
-  $('.block_name').editable({
-    success: function(response, newValue) {
-      var id = $(this).attr('id').split('-')[1];
-      $.ajax({
-        type: 'PUT',
-        url: '/blocks/' + id,
-        data: JSON.stringify({ 'name': newValue }),
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function() {
-          sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-          location.reload();
-        }
-      });
-    }
-  });
+  // $('.block_name').editable({
+  //   success: function(response, newValue) {
+  //     var id = $(this).attr('id').split('-')[1];
+  //     $.ajax({
+  //       type: 'PUT',
+  //       url: '/blocks/' + id,
+  //       data: JSON.stringify({ 'name': newValue }),
+  //       dataType: 'json',
+  //       contentType: 'application/json',
+  //       success: function() {
+  //         sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+  //         location.reload();
+  //       }
+  //     });
+  //   }
+  // });
 
-  // S 棟例子
+  // 7 樓例子（鉛筆）
   $('.block_edit').click(function() {
     var id = $(this).parent().attr('id').split('-')[1];
     var name = $(this).parent().find('.block_name').text();
@@ -49,10 +65,10 @@
     sessionStorage.setItem('parent_id', id);
 
     // in order to chain name into new element
-    sessionStorage.setItem('parent_name', name);
+    // sessionStorage.setItem('parent_name', name);
 
     // in order to hide the logic button
-    sessionStorage.setItem('block_type', $(this).parent().data('blocktype'));
+    sessionStorage.setItem('parent_type', $(this).parent().data('blocktype'));
 
     // sidebar highlight
     $('.sidebar_father_name').css({ 'color': 'black' });
@@ -87,37 +103,13 @@
 
       $('.editor').load('/blocks/' + id + '/edit', function() {
 
-        dragAndResizeBlock($(this).find('.newdiv'));
-
-        $(this).boxer({
-          stop: function(event, ui) {
-            var block = {
-              'name': 'block',
-              'width': ui.box.width(),
-              'height': ui.box.height(),
-              'left': ui.box.offset().left,
-              'top': ui.box.offset().top,
-              'parent_id': sessionStorage.getItem('parent_id')
-            };
-
-            // storage to database
-            $.ajax({
-              type: 'POST',
-              url: '/blocks',
-              data: JSON.stringify(block),
-              dataType: 'json',
-              contentType: 'application/json',
-              success: function(data) {
+        if(sessionStorage.getItem('is_drawing')){
+          dragAndResizeBlock($(this).find('.newdiv'));
+          boxer($(this));
+        }
 
 
 
-                sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-                sessionStorage.setItem('is_drawing', true);
-                location.reload();
-              }
-            });
-          }
-        });
       });
 
     } else {
@@ -135,6 +127,109 @@
     }
   });
 
+
+  // ----------------------------------------------------------------------
+  function boxer(obj) {
+    var beginX, beginY, endX, endY, width, height;
+
+    $(obj).selectable({
+
+      start: function(e) {
+        var posX = $(this).position().left, posY = $(this).position().top;
+
+        beginX = e.pageX - posX;
+        beginY = e.pageY - posY;
+
+      },
+
+      stop: function(e) {
+        var posX = $(this).offset().left, posY = $(this).offset().top;
+
+        endX = e.pageX - posX;
+        endY = e.pageY - posY;
+
+        if(beginX > endX) { var tmp = beginX; beginX = endX; endX = tmp; }
+        if(beginY > endY) { var tmp = beginY; beginY = endY; endY = tmp; }
+
+        width = endX - beginX;
+        height = endY - beginY;
+
+
+
+        // generate block object when finish drawing
+        var block = {
+          'name': 'block',
+          'width': width,
+          'height': height,
+          'left': beginX,
+          'top': beginY,
+          'parent_id': sessionStorage.getItem('parent_id')
+        };
+
+        // storage to database
+        $.ajax({
+          type: 'POST',
+          url: '/blocks',
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(data) {
+            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
+                opacity: 0.35,
+                stop: function(event, ui) {
+
+                  var $this = $(this);
+
+                  var block = {
+                    'left': ui.position.left,
+                    'top' : ui.position.top
+                  };
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: '/blocks/' + $this.attr('id').split('-')[1],
+                    data: JSON.stringify(block),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                  });
+                }
+            }).resizable({
+              stop: function(event, ui) {
+
+                var $this = $(this);
+
+                var block = {
+                  'width': ui.size.width,
+                  'height' : ui.size.height
+                };
+
+                $.ajax({
+                  type: 'PUT',
+                  url: '/blocks/' + $this.attr('id').split('-')[1],
+                  data: JSON.stringify(block),
+                  dataType: 'json',
+                  contentType: 'application/json'
+                });
+              }
+            }).appendTo(obj);
+
+            $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
+            $('.best_in_place').bind("ajax:success", function(event) {
+              var whichBlock = event.currentTarget.id.split('_')[4];
+              var newName = event.currentTarget.innerText;
+
+              // 側邊選單名稱變更
+              $('#block_ch-' + whichBlock).text(newName);
+
+            });
+
+          }
+        });
+
+      }
+    });
+  } // boxer
 
 
   function dragAndResizeBlock(block) {
@@ -159,8 +254,6 @@
         });
       }
     }).draggable({
-      containment: 'parent',
-      scroll: true,
       opacity: 0.35,
       stop: function(event, ui) {
 

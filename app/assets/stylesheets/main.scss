@@ -20,12 +20,12 @@
 
   .sidebar, .show_sidebar {
     display: block;
-    width: 240px;
+    width: 20%;
     height: 550px;
     background: #ffffff;
     border: 1px solid #e3e3e3;
     float: left;
-
+    overflow: auto;
   }
 
   ul {
