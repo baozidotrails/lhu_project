@@ -88,6 +88,6 @@ class BlocksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def block_params
-      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id)
+      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor)
     end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140129095612) do
+ActiveRecord::Schema.define(version: 20140306133306) do
 
   create_table "blocks", force: true do |t|
     t.string   "name"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20140129095612) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "block_type", default: 0
+    t.boolean  "is_floor",   default: false
   end
 
   create_table "spaces", force: true do |t|

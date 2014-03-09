@@ -1,14 +1,14 @@
 
 <% if @blocks.length == 0 %>
-  <h1>沒有任何子區塊</h1>
+  <h1>沒有任何子區塊，請<a href="#">新增</a></h1>
 <% else %>
   <% @blocks.each do |block| %>
 
     <!-- put floors -->
-    <% if block.block_type == 2 %>
-      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+    <% if block.is_floor %>
+      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" > <%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
     <% else %>
-      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
     <% end %>
   <% end %>
 
@@ -38,25 +38,7 @@
     sessionStorage.removeItem('is_drawing');
   }
 
-  // naming
-  // $('.block_name').editable({
-  //   success: function(response, newValue) {
-  //     var id = $(this).attr('id').split('-')[1];
-  //     $.ajax({
-  //       type: 'PUT',
-  //       url: '/blocks/' + id,
-  //       data: JSON.stringify({ 'name': newValue }),
-  //       dataType: 'json',
-  //       contentType: 'application/json',
-  //       success: function() {
-  //         sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-  //         location.reload();
-  //       }
-  //     });
-  //   }
-  // });
-
-  // 7 樓例子（鉛筆）
+  // pencil
   $('.block_edit').click(function() {
     var id = $(this).parent().attr('id').split('-')[1];
     var name = $(this).parent().find('.block_name').text();
@@ -64,11 +46,14 @@
     // in order to bind the sidebar
     sessionStorage.setItem('parent_id', id);
 
+
     // in order to chain name into new element
     // sessionStorage.setItem('parent_name', name);
 
     // in order to hide the logic button
     sessionStorage.setItem('parent_type', $(this).parent().data('blocktype'));
+
+    sessionStorage.setItem('is_floor', $(this).parent().data('isfloor'));
 
     // sidebar highlight
     $('.sidebar_father_name').css({ 'color': 'black' });
@@ -274,6 +259,12 @@
       }
     });
   } // drag and resize block
+
+
+  // for the existed block
+  $('.block_close').click(function() {
+    sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+  });
 
 
 

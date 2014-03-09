@@ -25,19 +25,19 @@
         <ul class="closed">
 
           <!-- grandpa block name -->
-          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>" data-blocktype="<%= block.block_type %>"><%= block.name %><% if Block.where(parent_id: block.id).count > 0 %> (<%= Block.where(parent_id: block.id).count %>) <% end %> </span>
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>" data-blocktype="<%= block.block_type %>"><%= block.name %><% if Block.where(parent_id: block.id).count > 0 %> (<span class="b_count"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </span>
 
           <!-- father blocks -->
           <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
             <ul class="father_holder closed">
 
               <!-- father name -->
-              <span class="sidebar_father_name" id="block_fa-<%= father.id %>" data-blocktype="<%= block.block_type %>"><%= father.name %><% if Block.where(parent_id: father.id).count > 0 %> (<%= Block.where(parent_id: father.id).count %>) <% end %></span>
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>" data-blocktype="<%= father.block_type %>"><%= father.name %><% if Block.where(parent_id: father.id).count > 0 %> (<%= Block.where(parent_id: father.id).count %>) <% end %></span>
 
 
               <!-- child blocks -->
               <% Block.where(parent_id: father.id).each do |child| %>
-                <li class="sidebar_child_name" id="block_ch-<%= child.id %>" data-blocktype="<%= block.block_type %>"><%= child.name %></li>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>" data-blocktype="<%= child.block_type %>"><%= child.name %></li>
               <% end %>
             </ul>
           <% end %>
@@ -48,7 +48,7 @@
     <!-- blocks -->
     <div class="editor">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+        <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-spaceid="<%= block.space_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-cog block_edit"></i> </div>
       <% end %>
     </div> <!-- editor -->
   </div> <!-- main_function -->
@@ -66,7 +66,6 @@
 
     $('#reload_and_main_pic').click(function() {
       sessionStorage.clear();
-      location.reload();
     });
   });
 </script>

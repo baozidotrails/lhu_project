@@ -4,6 +4,21 @@
   outline: none !important;
 }
 
+.breadcrumb {
+  padding:10px 10px 10px 6%;
+  background: #fcff62;
+  border-bottom: 1px #D8CD01 solid;
+  a{
+    color: #000;
+  }
+}
+
+.breadcrumb > li + li:before {
+  content: ">\00a0";
+  padding: 0 10px;
+  color: #000;
+}
+
 // remove radius
 .navbar {
   border-radius: 0px;
@@ -83,23 +98,19 @@
 
 .block_close {
   position: relative;
-  top: -6px;
+  top: -9px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   float: right;
+  font-weight: bold;
 }
 
-.block_close_sidebar {
-
-}
 
 .block_edit {
   margin-right: 5px;
   cursor: pointer;
   float: right;
 }
-
-
 
 // yellow board
 .board {

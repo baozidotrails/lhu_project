@@ -3,7 +3,6 @@ $(function() {
   loadPageFirst();
   sessionStorage.clear();
 
-
   $('.best_in_place').best_in_place();
 
   $('.best_in_place').bind("ajax:success", function(event) {
@@ -70,7 +69,7 @@ $(function() {
           'height': height,
           'left': beginX,
           'top': beginY,
-          'space_id': $('#space_number').val()
+          'space_id': $('#space_number').val(),
         };
 
         if(sessionStorage.getItem('parent_id')) {
@@ -95,8 +94,7 @@ $(function() {
           contentType: 'application/json',
           success: function(data) {
 
-            // block 畫出來, 移動 and 調整
-            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a> <i class="fa fa-pencil-square-o block_edit"></i> </div>').draggable({
+            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> </div>').draggable({
                 opacity: 0.35,
                 stop: function(event, ui) {
 
@@ -135,14 +133,20 @@ $(function() {
                 }
               }).appendTo(obj);
 
-              $('.best_in_place').best_in_place();
+            var block_count = parseInt($('#block_ul-' + data.parent_id).find('.b_count').text()) + 1;
+            $('#block_ul-' + data.parent_id).find('.b_count').text(block_count);
+
+            // remove edit icon if its a leaf
+            if(sessionStorage.getItem('parent_type') == 3 || sessionStorage.getItem('parent_type') == 2) {
+              $('.block_edit').remove();
+            }
+
+            $('.best_in_place').best_in_place();
 
             // 側邊選單加入
             if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 2) {
 
-              // alert("樓層");
-
-
+              alert("樓層");
 
               $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
 
@@ -155,9 +159,10 @@ $(function() {
                 $('#block_ch-' + whichBlock).text(newName);
 
               });
-            } else if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 0) {
+            } else if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 3) {
 
-              // alert("體育館");
+              alert("體育館");
+
               $('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
 
                 $('.best_in_place').bind("ajax:success", function(event) {
@@ -172,7 +177,7 @@ $(function() {
 
             } else {
 
-              // alert("主要場地");
+              alert("主要場地");
               $('<ul class="closed"><span class="sidebar_grandpa_name" id="block_ul-'+ data.id +'">block</span></ul>').appendTo('.sidebar');
 
               $('.best_in_place').bind("ajax:success", function(event) {
@@ -254,6 +259,8 @@ $(function() {
 
       // in order to hide the logic button
       sessionStorage.setItem('parent_type', $(this).parent().data('blocktype'));
+
+      sessionStorage.setItem('space_id', $(this).parent().data('spaceid'));
 
         // in order to bind the sidebar
       sessionStorage.setItem('parent_id', id);
@@ -392,7 +399,7 @@ $(function() {
     // ex: click floor
     $('.sidebar').find('.sidebar_father_name').click(function() {
 
-      sessionStorage.setItem('parent_type', 2);
+      sessionStorage.setItem('parent_type', $(this).data('blocktype'));
 
       // menu controller
       if($(this).closest('ul').siblings('ul').hasClass('open')) {
@@ -485,10 +492,12 @@ $(function() {
           if(sessionStorage.getItem('is_drawing')) {
             dragAndResizeBlock($('.editor').find('.newdiv'));
             boxer($(this));
+            alert('可以畫');
           }
 
         });
       } else {
+        alert('不行畫了');
         if($('.tmp_reader').length == 0) {
           $('.sidebar').after('<div class="tmp_reader"></div>');
           $('.tmp_reader').load('/blocks/' + redirectPage + '/edit');

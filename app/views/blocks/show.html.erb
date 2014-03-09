@@ -1,10 +1,10 @@
 <% if @blocks.length == 0 %>
   <h1>沒有任何子區塊</h1>
 <% else %>
+  <!-- put floors -->
   <% @blocks.each do |block| %>
 
-    <% if block.block_type == 2 %>
-      <!-- put floors -->
+    <% if block.is_floor %>
       <div id="block-<%= block.id %>" class="father_block"><%= block.name %></div>
     <% else %>
 
