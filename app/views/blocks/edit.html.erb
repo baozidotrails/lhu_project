@@ -16,6 +16,7 @@
 
 <script>
 
+console.log('-------block edit-------');
   // 如果是葉子，就移除「編輯按鈕」
   if($('.newdiv').data('blocktype') == 0) {
     $('.fa').remove();
@@ -198,18 +199,23 @@
               }
             }).appendTo(obj);
 
-            $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+            if(sessionStorage.getItem('parent_type') == 2) {
+              alert('plzzzz help me');
+            }
 
-            $('.best_in_place').bind("ajax:success", function(event) {
-              var whichBlock = event.currentTarget.id.split('_')[4];
-              var newName = event.currentTarget.innerText;
 
-              // 側邊選單名稱變更
-              $('#block_ch-' + whichBlock).text(newName);
 
-            });
+            // $('.best_in_place').bind("ajax:success", function(event) {
+            //   var whichBlock = event.currentTarget.id.split('_')[4];
+            //   var newName = event.currentTarget.innerText;
 
+            //   // 側邊選單名稱變更
+            //   $('#block_ch-' + whichBlock).text(newName);
+
+            // });
+            bindSideBarBlockLink();
           }
+
         });
 
       }
@@ -261,9 +267,12 @@
   } // drag and resize block
 
 
+
+
+
   // for the existed block
   $('.block_close').click(function() {
-    sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+    sessionStorage.setItem('prePage', sessionStorage.getItem('parent_id'));
   });
 
 

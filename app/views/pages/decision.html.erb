@@ -1,2 +1,230 @@
 <button id="surface_pic" class="btn btn-default btn-lg">平面圖</button>
 <button id="floor_pic" class="btn btn-default btn-lg">樓層圖</button>
+
+<script>
+console.log('-------decision-------');
+  if(sessionStorage.getItem('is_floor')) {
+    $('#floor_pic').remove();
+  }
+
+  $('#floor_pic').click(function() {
+
+
+    $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
+    $('#confirm_floor_count').click(function() {
+
+      var floor_count = $('#floor_count').val();
+      var parentId = sessionStorage.getItem('parent_id');
+
+      for(var i = floor_count; i >= 1; i--) {
+
+        var j = i;
+
+        // chain '0' to preposition of floor name
+        if(i < 10) {
+          j = '0' + j;
+        }
+
+        var block = {
+          'name': j + '樓',
+          'parent_id': parentId,
+          'width': '750',
+          'height': '50',
+          'block_type': 2,
+          'is_floor': true
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: '/blocks',
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+      }
+
+      // change block type
+      $.ajax({
+        type: 'PUT',
+        url: '/blocks/' + parentId,
+        data: JSON.stringify({ 'block_type': 1 }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function() {
+          sessionStorage.removeItem('is_drawing');
+          sessionStorage.setItem('parent_type', 1);
+          sessionStorage.setItem('pre_page', parentId);
+          location.reload();
+          // 之後就會跳到「main.js」
+        }
+      });
+    });
+  }); // floor_pic
+
+  $('#surface_pic').click(function() {
+
+
+
+    $('.selection_panel').remove();
+    $('.sidebar').after('<div class="editor"></div>');
+
+    if(sessionStorage.getItem('parent_type') == 0) {
+      sessionStorage.setItem('parent_type', 3)
+
+      $.ajax({
+        type: 'PUT',
+        url: '/blocks/' + sessionStorage.getItem('parent_id'),
+        data: JSON.stringify({ 'block_type': 3 }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function() {
+          $('#block_ul-' + sessionStorage.getItem('parent_id')).data('blocktype', 3);
+        }
+      });
+
+    }
+
+    boxer($('.editor'));
+
+
+
+
+  }); // surface_pic
+
+  // ------------------------------------------------------------------
+  function boxer(obj) {
+    var beginX, beginY, endX, endY, width, height;
+
+    $(obj).selectable({
+
+      start: function(e) {
+        var posX = $(this).position().left, posY = $(this).position().top;
+
+        beginX = e.pageX - posX;
+        beginY = e.pageY - posY;
+
+      },
+
+      stop: function(e) {
+        var posX = $(this).offset().left, posY = $(this).offset().top;
+
+        endX = e.pageX - posX;
+        endY = e.pageY - posY;
+
+        if(beginX > endX) { var tmp = beginX; beginX = endX; endX = tmp; }
+        if(beginY > endY) { var tmp = beginY; beginY = endY; endY = tmp; }
+
+        width = endX - beginX;
+        height = endY - beginY;
+
+
+
+        // generate block object when finish drawing
+        var block = {
+          'name': 'block',
+          'width': width,
+          'height': height,
+          'left': beginX,
+          'top': beginY,
+          'parent_id': sessionStorage.getItem('parent_id')
+        };
+
+
+        // storage to database
+        $.ajax({
+          type: 'POST',
+          url: '/blocks',
+          data: JSON.stringify(block),
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(data) {
+
+            // block 畫出來, 移動 and 調整
+            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
+                opacity: 0.35,
+                stop: function(event, ui) {
+
+                  var $this = $(this);
+
+                  var block = {
+                    'left': ui.position.left,
+                    'top' : ui.position.top
+                  };
+
+                  $.ajax({
+                    type: 'PUT',
+                    url: '/blocks/' + $this.attr('id').split('-')[1],
+                    data: JSON.stringify(block),
+                    dataType: 'json',
+                    contentType: 'application/json'
+                  });
+                }
+            }).resizable({
+              stop: function(event, ui) {
+
+                var $this = $(this);
+
+                var block = {
+                  'width': ui.size.width,
+                  'height' : ui.size.height
+                };
+
+                $.ajax({
+                  type: 'PUT',
+                  url: '/blocks/' + $this.attr('id').split('-')[1],
+                  data: JSON.stringify(block),
+                  dataType: 'json',
+                  contentType: 'application/json'
+                });
+              }
+            }).appendTo(obj);
+
+            // for the new block
+            $('.block_close').click(function() {
+              sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+            });
+
+
+            // 體育館平面圖
+            if(sessionStorage.getItem('parent_type') == 3) {
+
+              // 側邊選單加入
+              $('<ul class="father_holder closed"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_fa-' + whichBlock).text(newName);
+
+              });
+            }
+
+
+
+            // 樓層內的平面圖
+            if(sessionStorage.getItem('parent_type') == 2) {
+
+              // 側邊選單加入
+              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').appendTo('#block_fa-' + data.parent_id);
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_ch-' + whichBlock).text(newName);
+
+              });
+
+            }
+
+          }
+        });
+
+      }
+    });
+  } // boxer
+
+</script>

@@ -2,6 +2,7 @@ $(function() {
 
   loadPageFirst();
   sessionStorage.clear();
+  console.log('-------main.js-------');
 
   $('.best_in_place').best_in_place();
 
@@ -144,11 +145,18 @@ $(function() {
             $('.best_in_place').best_in_place();
 
             // 側邊選單加入
-            if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 2) {
+            if(sessionStorage.getItem('parent_type') == 2) {
 
-              alert("樓層");
+              alert("樓層" + data.parent_id);
+
+
+
 
               $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
+              $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">block</li>');
+
+              console.log('成功');
 
 
               $('.best_in_place').bind("ajax:success", function(event) {
@@ -158,8 +166,9 @@ $(function() {
                 // 側邊選單名稱變更
                 $('#block_ch-' + whichBlock).text(newName);
 
+
               });
-            } else if(sessionStorage.getItem('parent_id') && sessionStorage.getItem('parent_type') == 3) {
+            } else if(sessionStorage.getItem('parent_type') == 3) {
 
               alert("體育館");
 
@@ -256,6 +265,8 @@ $(function() {
       // fetch current status
       var id = $(this).parent().attr('id').split('-')[1];
       var name = $('#block_name-' + id).text();
+
+      sessionStorage.setItem('pre_page', id);
 
       // in order to hide the logic button
       sessionStorage.setItem('parent_type', $(this).parent().data('blocktype'));
@@ -455,9 +466,9 @@ $(function() {
 
 
   function loadPageFirst() {
-    var redirectPage = sessionStorage.getItem('redirectPage');
+    var prePage = sessionStorage.getItem('pre_page');
 
-    if(redirectPage) {
+    if(prePage) {
 
       $('.selection_panel').remove();
       $('.tmp_reader').remove();
@@ -467,18 +478,18 @@ $(function() {
 
 
       // highlight sidebar
-      $('#block_ul-' + redirectPage).closest('ul')
+      $('#block_ul-' + prePage).closest('ul')
                                                   .removeClass('closed')
                                                   .addClass('open')
                                                   .end()
                                                   .css({ 'color': 'red' });
 
       // grandpa highlight
-      $('#block_fa-' + redirectPage).closest('.father_holder').siblings('.sidebar_grandpa_name').css({ 'color': 'red' }).closest('ul').removeClass('closed').addClass('open');
+      $('#block_fa-' + prePage).closest('.father_holder').siblings('.sidebar_grandpa_name').css({ 'color': 'red' }).closest('ul').removeClass('closed').addClass('open');
 
       // father highlight
-      $('#block_fa-' + redirectPage).closest('.father_holder').removeClass('closed').addClass('open');
-      $('#block_fa-' + redirectPage).css({ 'color': 'blue' });
+      $('#block_fa-' + prePage).closest('.father_holder').removeClass('closed').addClass('open');
+      $('#block_fa-' + prePage).css({ 'color': 'blue' });
 
 
       if(sessionStorage.getItem('is_drawing')) {
@@ -487,7 +498,7 @@ $(function() {
           $('.sidebar').after('<div class="editor"></div>');
         }
 
-        $('.editor').load('/blocks/' + redirectPage + '/edit', function() {
+        $('.editor').load('/blocks/' + prePage + '/edit', function() {
 
           if(sessionStorage.getItem('is_drawing')) {
             dragAndResizeBlock($('.editor').find('.newdiv'));
@@ -500,14 +511,14 @@ $(function() {
         alert('不行畫了');
         if($('.tmp_reader').length == 0) {
           $('.sidebar').after('<div class="tmp_reader"></div>');
-          $('.tmp_reader').load('/blocks/' + redirectPage + '/edit');
+          $('.tmp_reader').load('/blocks/' + prePage + '/edit');
         }
       }
 
 
 
       // $('.sidebar_father_name').css({ 'color': 'black' });
-      sessionStorage.removeItem('redirectPage');
+      sessionStorage.removeItem('prePage');
     }
 
   }
