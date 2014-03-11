@@ -200,19 +200,20 @@ console.log('-------block edit-------');
             }).appendTo(obj);
 
             if(sessionStorage.getItem('parent_type') == 2) {
-              alert('plzzzz help me');
+              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
             }
 
 
 
-            // $('.best_in_place').bind("ajax:success", function(event) {
-            //   var whichBlock = event.currentTarget.id.split('_')[4];
-            //   var newName = event.currentTarget.innerText;
+            $('.best_in_place').bind("ajax:success", function(event) {
+              var whichBlock = event.currentTarget.id.split('_')[4];
+              var newName = event.currentTarget.innerText;
 
-            //   // 側邊選單名稱變更
-            //   $('#block_ch-' + whichBlock).text(newName);
+              // 側邊選單名稱變更
+              $('#block_ch-' + whichBlock).text(newName);
 
-            // });
+            });
             bindSideBarBlockLink();
           }
 

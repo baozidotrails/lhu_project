@@ -172,7 +172,8 @@ $(function() {
 
               alert("體育館");
 
-              $('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
+              $('#block_ul-' + data.parent_id).closest('ul').find('.father_holder, .closed').last().after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">block</span></ul>');
+
 
                 $('.best_in_place').bind("ajax:success", function(event) {
 
