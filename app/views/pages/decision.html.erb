@@ -3,7 +3,7 @@
 
 <script>
 console.log('-------decision-------');
-  if(sessionStorage.getItem('is_floor')) {
+  if(sessionStorage.getItem('is_floor') && sessionStorage.getItem('parent_type') == 2) {
     $('#floor_pic').remove();
   }
 
@@ -63,10 +63,10 @@ console.log('-------decision-------');
 
   $('#surface_pic').click(function() {
 
+    // sessionStorage.setItem('is_drawing', true);
 
-
-    $('.selection_panel').remove();
-    $('.sidebar').after('<div class="editor"></div>');
+    // $('.selection_panel').remove();
+    // $('.sidebar').after('<div class="editor"></div>');
 
     if(sessionStorage.getItem('parent_type') == 0) {
       sessionStorage.setItem('parent_type', 3)
@@ -78,153 +78,167 @@ console.log('-------decision-------');
         dataType: 'json',
         contentType: 'application/json',
         success: function() {
-          $('#block_ul-' + sessionStorage.getItem('parent_id')).data('blocktype', 3);
+          // $('#block_ul-' + sessionStorage.getItem('parent_id')).data('blocktype', 3);
+          sessionStorage.setItem('pre_page', sessionStorage.getItem('parent_id'));
+
+          location.reload();
         }
       });
-
+    } else {
+      sessionStorage.setItem('pre_page', sessionStorage.getItem('parent_id'));
+      location.reload();
     }
 
-    boxer($('.editor'));
+
+
+
+
+
+    // boxer($('.editor'));
 
 
 
 
   }); // surface_pic
 
-  // ------------------------------------------------------------------
-  function boxer(obj) {
-    var beginX, beginY, endX, endY, width, height;
+  // // ------------------------------------------------------------------
+  // function boxer(obj) {
+  //   var beginX, beginY, endX, endY, width, height;
 
-    $(obj).selectable({
+  //   $(obj).selectable({
 
-      start: function(e) {
-        var posX = $(this).position().left, posY = $(this).position().top;
+  //     start: function(e) {
+  //       var posX = $(this).position().left, posY = $(this).position().top;
 
-        beginX = e.pageX - posX;
-        beginY = e.pageY - posY;
+  //       beginX = e.pageX - posX;
+  //       beginY = e.pageY - posY;
 
-      },
+  //     },
 
-      stop: function(e) {
-        var posX = $(this).offset().left, posY = $(this).offset().top;
+  //     stop: function(e) {
+  //       var posX = $(this).offset().left, posY = $(this).offset().top;
 
-        endX = e.pageX - posX;
-        endY = e.pageY - posY;
+  //       endX = e.pageX - posX;
+  //       endY = e.pageY - posY;
 
-        if(beginX > endX) { var tmp = beginX; beginX = endX; endX = tmp; }
-        if(beginY > endY) { var tmp = beginY; beginY = endY; endY = tmp; }
+  //       if(beginX > endX) { var tmp = beginX; beginX = endX; endX = tmp; }
+  //       if(beginY > endY) { var tmp = beginY; beginY = endY; endY = tmp; }
 
-        width = endX - beginX;
-        height = endY - beginY;
-
-
-
-        // generate block object when finish drawing
-        var block = {
-          'name': 'block',
-          'width': width,
-          'height': height,
-          'left': beginX,
-          'top': beginY,
-          'parent_id': sessionStorage.getItem('parent_id')
-        };
-
-
-        // storage to database
-        $.ajax({
-          type: 'POST',
-          url: '/blocks',
-          data: JSON.stringify(block),
-          dataType: 'json',
-          contentType: 'application/json',
-          success: function(data) {
-
-            // block 畫出來, 移動 and 調整
-            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
-                opacity: 0.35,
-                stop: function(event, ui) {
-
-                  var $this = $(this);
-
-                  var block = {
-                    'left': ui.position.left,
-                    'top' : ui.position.top
-                  };
-
-                  $.ajax({
-                    type: 'PUT',
-                    url: '/blocks/' + $this.attr('id').split('-')[1],
-                    data: JSON.stringify(block),
-                    dataType: 'json',
-                    contentType: 'application/json'
-                  });
-                }
-            }).resizable({
-              stop: function(event, ui) {
-
-                var $this = $(this);
-
-                var block = {
-                  'width': ui.size.width,
-                  'height' : ui.size.height
-                };
-
-                $.ajax({
-                  type: 'PUT',
-                  url: '/blocks/' + $this.attr('id').split('-')[1],
-                  data: JSON.stringify(block),
-                  dataType: 'json',
-                  contentType: 'application/json'
-                });
-              }
-            }).appendTo(obj);
-
-            // for the new block
-            $('.block_close').click(function() {
-              sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
-            });
-
-
-            // 體育館平面圖
-            if(sessionStorage.getItem('parent_type') == 3) {
-
-              // 側邊選單加入
-              $('<ul class="father_holder closed"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block</span></ul>').appendTo('.open');
-
-              $('.best_in_place').bind("ajax:success", function(event) {
-                var whichBlock = event.currentTarget.id.split('_')[4];
-                var newName = event.currentTarget.innerText;
-
-                // 側邊選單名稱變更
-                $('#block_fa-' + whichBlock).text(newName);
-
-              });
-            }
+  //       width = endX - beginX;
+  //       height = endY - beginY;
 
 
 
-            // 樓層內的平面圖
-            if(sessionStorage.getItem('parent_type') == 2) {
+  //       // generate block object when finish drawing
+  //       var block = {
+  //         'name': 'block',
+  //         'width': width,
+  //         'height': height,
+  //         'left': beginX,
+  //         'top': beginY,
+  //         'parent_id': sessionStorage.getItem('parent_id')
+  //       };
 
-              // 側邊選單加入
-              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').appendTo('#block_fa-' + data.parent_id);
 
-              $('.best_in_place').bind("ajax:success", function(event) {
-                var whichBlock = event.currentTarget.id.split('_')[4];
-                var newName = event.currentTarget.innerText;
+  //       // storage to database
+  //       $.ajax({
+  //         type: 'POST',
+  //         url: '/blocks',
+  //         data: JSON.stringify(block),
+  //         dataType: 'json',
+  //         contentType: 'application/json',
+  //         success: function(data) {
 
-                // 側邊選單名稱變更
-                $('#block_ch-' + whichBlock).text(newName);
+  //           // block 畫出來, 移動 and 調整
+  //           $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
+  //               opacity: 0.35,
+  //               stop: function(event, ui) {
 
-              });
+  //                 var $this = $(this);
 
-            }
+  //                 var block = {
+  //                   'left': ui.position.left,
+  //                   'top' : ui.position.top
+  //                 };
 
-          }
-        });
+  //                 $.ajax({
+  //                   type: 'PUT',
+  //                   url: '/blocks/' + $this.attr('id').split('-')[1],
+  //                   data: JSON.stringify(block),
+  //                   dataType: 'json',
+  //                   contentType: 'application/json'
+  //                 });
+  //               }
+  //           }).resizable({
+  //             stop: function(event, ui) {
 
-      }
-    });
-  } // boxer
+  //               var $this = $(this);
+
+  //               var block = {
+  //                 'width': ui.size.width,
+  //                 'height' : ui.size.height
+  //               };
+
+  //               $.ajax({
+  //                 type: 'PUT',
+  //                 url: '/blocks/' + $this.attr('id').split('-')[1],
+  //                 data: JSON.stringify(block),
+  //                 dataType: 'json',
+  //                 contentType: 'application/json'
+  //               });
+  //             }
+  //           }).appendTo(obj);
+
+
+  //           var block_count = parseInt($('#block_ul-' + data.parent_id).find('.b_count').text()) + 1;
+  //           $('#block_ul-' + data.parent_id).find('.b_count').text(block_count);
+
+  //           // for the new block
+  //           $('.block_close').click(function() {
+  //             sessionStorage.setItem('redirectPage', sessionStorage.getItem('parent_id'));
+  //           });
+
+
+  //           // 體育館平面圖
+  //           if(sessionStorage.getItem('parent_type') == 3) {
+
+  //             // 側邊選單加入
+  //             $('<ul class="father_holder closed"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0">block (抓到你)</span></ul>').appendTo('.open');
+
+  //             $('.best_in_place').bind("ajax:success", function(event) {
+  //               var whichBlock = event.currentTarget.id.split('_')[4];
+  //               var newName = event.currentTarget.innerText;
+
+  //               // 側邊選單名稱變更
+  //               $('#block_fa-' + whichBlock).text(newName);
+
+  //             });
+  //           }
+
+
+
+  //           // 樓層內的平面圖
+  //           if(sessionStorage.getItem('parent_type') == 2) {
+
+  //             // 側邊選單加入
+  //             $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="' + data.block_type + '" style="display: list-item; color: #000">block</li>').appendTo('#block_fa-' + data.parent_id);
+
+  //             $('.best_in_place').bind("ajax:success", function(event) {
+  //               var whichBlock = event.currentTarget.id.split('_')[4];
+  //               var newName = event.currentTarget.innerText;
+
+  //               // 側邊選單名稱變更
+  //               $('#block_ch-' + whichBlock).text(newName);
+
+  //             });
+
+  //           }
+
+  //         }
+  //       });
+
+  //     }
+  //   });
+  // } // boxer
 
 </script>

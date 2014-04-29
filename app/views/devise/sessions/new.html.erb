@@ -3,8 +3,8 @@
   <div class="signin-card">
 
     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-      <%= f.email_field :email, :autofocus => true, class: 'form-control', placeholder: 'Email' %> <br>
-      <%= f.password_field :password, class: 'form-control', placeholder: '密碼' %> <br>
+      <%= f.email_field :email, :autofocus => true, placeholder: 'Email' %> <br>
+      <%= f.password_field :password, placeholder: '密碼' %> <br>
 
       <% if devise_mapping.rememberable? -%>
         <div><%= f.check_box :remember_me %> <%= f.label :記住我 %></div>

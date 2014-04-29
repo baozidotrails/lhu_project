@@ -1,15 +1,38 @@
 // remove components outline
 * {
   letter-spacing: 0.5px;
-  outline: none !important;
+  // outline: none !important;
+}
+
+body {
+  background: asset-url('bg_white_pattern.png', image);
+}
+
+input[type='text'], input[type='password'], input[type='email'] {
+  border: 1px solid #CCCCCC;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  border-radius: 4px;
+  color: #555;
+  font-size: 14px;
+  padding: 5px;
+  line-height: 18px;
+  margin-bottom: 10px;
+  width: 100px;
+  .form_in_place {
+    width: 10px;
+  }
 }
 
 .breadcrumb {
   padding:10px 10px 10px 6%;
-  background: #fcff62;
-  border-bottom: 1px #D8CD01 solid;
+  background: #ffffff;
+  border-bottom: 1px #e3e3e3 solid;
   a{
     color: #000;
+  }
+
+  .active {
+    background: #bfbfbf;
   }
 }
 
@@ -17,6 +40,7 @@
   content: ">\00a0";
   padding: 0 10px;
   color: #000;
+
 }
 
 // remove radius
@@ -34,18 +58,29 @@
 .main_function, .main_display {
 
   .sidebar, .show_sidebar {
+    // text-align: center;
     display: block;
-    width: 20%;
-    height: 550px;
-    background: #ffffff;
-    border: 1px solid #e3e3e3;
+    width: 14%;
+    height: 80vh;
+    // background: #ffffff;
+    // border: 1px solid #e3e3e3;
     float: left;
     overflow: auto;
   }
 
   ul {
+    margin: 0;
+    padding: 5px 0 5px 0;
     list-style: none;
     cursor: default;
+  }
+
+  ul.father_holder {
+    margin-left: 11%;
+  }
+
+  .sidebar_grandpa_name {
+    border-bottom: 1px #7f7f7f dotted;
   }
 
   .sidebar_child_name {
@@ -56,13 +91,13 @@
   .editor, .selection_panel, .tmp_reader, .blocks_display {
     position: relative;
     left: 10px;
-    width: 80%;
-    height: 550px;
+    width: 85%;
+    height: 80vh;
+    margin-bottom: 10px;
     overflow: auto;
     background: asset-url('blueprint-dark.png', image);
-    border: 1px solid #e3e3e3;
+    border: 1px solid #bfbfbf;
     float: left;
-
   }
 
   .selection_panel {
@@ -70,9 +105,15 @@
   }
 }
 
+.step_contro {
+  margin-right: 0.2%;
+  text-align: right;
+}
+
 .newdiv, .block-show {
   position: absolute;
-  border: 1px solid #3f3f3f;
+  box-shadow: 1px 1px 1px rgba(20%,20%,40%,0.2);
+  border: 1px solid #7f7f7f;
   background: #f2f2f2;
   a {
     color: black;
@@ -82,8 +123,10 @@
   }
 }
 
+
 .father_block {
-  border: 1px solid #3f3f3f;
+  border: 1px solid #7f7f7f;
+  box-shadow: 1px 1px 1px rgba(20%,20%,40%,0.2);
   background: #f2f2f2;
   margin: 20px;
   margin-bottom: 25px;
@@ -106,7 +149,7 @@
 }
 
 
-.block_edit {
+.block_edit, .block_info, .block_enter {
   margin-right: 5px;
   cursor: pointer;
   float: right;
@@ -161,5 +204,7 @@
   padding: 40px;
   background: #f7f7f7;
   margin: 30px auto 25px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  border: #e0e0e0 1px solid;
+  background: asset-url('bg_grey_pattern.png', image);
+  // box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }

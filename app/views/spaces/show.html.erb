@@ -1,7 +1,12 @@
-<br>
+<ol class="breadcrumb">
+  <li><a href="/spaces/<%= @space.id %>/edit">場地規劃</a></li>
+  <li class="active"><a href="#">輸入場地資訊</a></li>
+  <li>租借時間設定</li>
+  <li>瀏覽</li>
+</ol>
 <div class="container space-show-container">
 
-  <%= link_to '上一頁', new_space_path, class: 'btn btn-default' %>
+  <a href="#" class="btn btn-default" id="apply_block_info">下一步</a>
 
   <br><br>
 
@@ -44,88 +49,3 @@
 
 
 </div> <!-- container -->
-
-
-<script>
-
-  space_show_sidebar();
-
-  function space_show_sidebar() {
-
-    // hide father and child
-    $('ul.closed').find('.father_holder, .sidebar_child_name').hide();
-
-    $('.show_sidebar').find('.sidebar_grandpa_name').click(function() {
-
-      // menu controler
-      if($(this).parent().siblings('ul').hasClass('open')) {
-        $(this).parent().siblings('ul').addClass('closed').removeClass('open');
-        $(this).parent().siblings('ul').find('.father_holder').slideUp('fast');
-      }
-
-
-      $(this).closest('ul').addClass('open')
-                      .removeClass('closed')
-                      .find('.father_holder')
-                      .slideDown('fast');
-
-
-      // remove other readers
-      $('.blocks_display').remove();
-
-
-      // fetch current status
-      var id = $(this).attr('id').split('-')[1];
-
-      // if no father reader
-      if ($('.blocks_display').length == 0) {
-        $('.show_sidebar').after('<div class="blocks_display"></div>');
-      };
-
-      // load father
-      $('.blocks_display').load('/blocks/' + id);
-
-      // hightlight
-      $('.sidebar_grandpa_name').css({ 'color': 'black' });
-      $('.sidebar_father_name').css({ 'color': 'black' });
-
-      $(this).css({ 'color': 'red' });
-    });
-
-
-    // ex: click floor
-    $('.show_sidebar').find('.sidebar_father_name').click(function() {
-
-      // menu controller
-      if($(this).closest('ul').siblings('ul').hasClass('open')) {
-        $(this).closest('ul').siblings('ul').addClass('closed').removeClass('open');
-        $(this).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
-      }
-
-      $(this).closest('ul').addClass('open')
-                           .removeClass('closed')
-                           .find('.sidebar_child_name').slideDown('fast');
-
-      // remove other readers
-      $('.blocks_display').remove();
-
-      // fetch current status
-      var id = $(this).attr('id').split('-')[1];
-
-      // if no editor then put one
-      if ($('.blocks_display').length == 0) {
-        $('.show_sidebar').after('<div class="blocks_display"></div>');
-      };
-
-      // then load the block show page
-      $('.blocks_display').load('/blocks/' + id);
-
-      // hightlight
-      $('.sidebar_father_name').css({ 'color': 'black' });
-
-      $(this).css({ 'color': 'blue' });
-    });
-  } // bindSideBarBlockLink
-
-
-</script>

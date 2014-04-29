@@ -1,2 +1,0 @@
-class SpaceStepsController < ApplicationController
-end

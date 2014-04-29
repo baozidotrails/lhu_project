@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140306133306) do
+ActiveRecord::Schema.define(version: 20140423125332) do
 
   create_table "blocks", force: true do |t|
     t.string   "name"
@@ -23,8 +23,24 @@ ActiveRecord::Schema.define(version: 20140306133306) do
     t.integer  "parent_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "block_type", default: 0
-    t.boolean  "is_floor",   default: false
+    t.integer  "block_type",   default: 0
+    t.boolean  "is_floor",     default: false
+    t.integer  "max_head_cap"
+    t.integer  "footage"
+    t.string   "equipment"
+    t.integer  "fee"
+    t.date     "lease_date"
+    t.date     "end_date"
+    t.string   "lease_time"
+    t.string   "end_time"
+  end
+
+  create_table "searches", force: true do |t|
+    t.string   "keywords"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "spaces", force: true do |t|

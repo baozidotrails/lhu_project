@@ -57,12 +57,13 @@ gem 'jquery-turbolinks'
 # let active record supports enum
 # gem 'simple_enum'
 
-# wizard form
-gem 'wicked'
-
-
-gem 'x-editable-rails'
-
 gem 'best_in_place', github: 'aaronchi/best_in_place'
 
-gem 'wicked'
+gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
+
+gem 'momentjs-rails', '~> 2.5.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
+
+# search
+# gem "ransack", github: "activerecord-hackery/ransack", branch: "rails-4"
+# gem 'by_star', :git => "git://github.com/radar/by_star"

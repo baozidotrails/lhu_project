@@ -1,0 +1,238 @@
+<!-- <ol class="breadcrumb">
+  <li><a href="#">場地規劃</a></li>
+  <li class="active"><a href="#">場地資訊、租借時間設定</a></li>
+  <li>瀏覽</li>
+</ol> -->
+<div class="container space-show-container" style="width: 97%">
+
+
+
+<br>
+
+  <div class="main_display">
+    <div class="show_sidebar">
+
+
+      <% @blocks.each do |block| %>
+        <ul class="closed">
+
+          <!-- grandpa block name -->
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: block.id).count %>)</span> <% end %>
+
+          <!-- father blocks -->
+          <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
+            <ul class="father_holder closed">
+
+              <!-- father name -->
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>"><%= father.name %></span> <% if Block.where(parent_id: father.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: father.id).count %>)</span> <% end %>
+
+
+              <!-- child blocks -->
+              <% Block.where(parent_id: father.id).each do |child| %>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>"><span><%= child.name %></span></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </ul>
+      <% end %>
+    </div> <!-- sidebar -->
+
+    <!-- blocks -->
+    <div class="blocks_display">
+      <% @blocks.each do |block| %>
+        <div id="block-<%= block.id %>" class="block-show <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><%= "<i class='fa fa-pencil block_info'></i>".html_safe if block.block_type == 0 %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+      <% end %>
+    </div> <!-- blocks_display -->
+  </div> <!-- main_display -->
+
+  <div class="step_contro">
+    <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
+    <%= link_to '上一步', edit_space_path, class: 'btn btn-default' %>
+    <a href="#" class="btn btn-primary" id="apply_block_info">下一步</a>
+  </div>
+
+</div> <!-- container -->
+
+
+<script>
+
+
+  loadpage();
+
+  space_show_sidebar();
+
+  app_info();
+
+  $('#detail_index').click(function() {
+    sessionStorage.clear(); // clear session
+  });
+
+  // if the block has other block then
+  function app_info() {
+
+    // add the detail icon
+    $('.iamfather').append('<i class="fa fa-th block_enter"></i>');
+
+
+    $('.block_enter').click(function() {
+      var id = $(this).closest('.iamfather').attr('id').split('-')[1];
+
+      $('.sidebar_grandpa_name').css({ 'color': 'black' });
+      $('#block_ul-' + id).css({ 'color': 'red' });
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      // menu controller
+      if($('#block_ul-' + id).parent().siblings('ul').hasClass('open')) {
+        $('#block_ul-' + id).parent().siblings('ul').addClass('closed').removeClass('open');
+        $('#block_ul-' + id).parent().siblings('ul').find('.father_holder').slideUp('fast');
+      }
+
+      $('#block_ul-' + id).parent().addClass('open')
+                      .removeClass('closed')
+                      .find('.father_holder').slideDown('fast');
+
+
+      // remove other readers
+      $('.blocks_display').remove();
+
+      // if no father reader
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+
+      // load father
+      $('.blocks_display').load('/blocks/' + id);
+    });
+
+
+
+  }
+
+
+  function space_show_sidebar() {
+
+    // hide father and child
+    $('ul.closed').find('.father_holder, .sidebar_child_name').hide();
+
+    $('.show_sidebar').find('.sidebar_grandpa_name').click(function() {
+
+      // menu controler
+      if($(this).parent().siblings('ul').hasClass('open')) {
+        $(this).parent().siblings('ul').addClass('closed').removeClass('open');
+        $(this).parent().siblings('ul').find('.father_holder').slideUp('fast');
+      }
+
+
+      $(this).closest('ul').addClass('open')
+                      .removeClass('closed')
+                      .find('.father_holder')
+                      .slideDown('fast');
+
+
+      // remove other readers
+      $('.blocks_display').remove();
+
+
+      // fetch current status
+      var id = $(this).attr('id').split('-')[1];
+
+      // if no father reader
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+
+      // load father
+      $('.blocks_display').load('/blocks/' + id);
+
+      // hightlight
+      $('.sidebar_grandpa_name').css({ 'color': 'black' });
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      $(this).css({ 'color': 'red' });
+    });
+
+
+    // ex: click floor
+    $('.show_sidebar').find('.sidebar_father_name').click(function() {
+
+      // menu controller
+      if($(this).closest('ul').siblings('ul').hasClass('open')) {
+        $(this).closest('ul').siblings('ul').addClass('closed').removeClass('open');
+        $(this).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
+      }
+
+      $(this).closest('ul').addClass('open')
+                           .removeClass('closed')
+                           .find('.sidebar_child_name').slideDown('fast');
+
+      // remove other readers
+      $('.blocks_display').remove();
+
+      // fetch current status
+      var id = $(this).attr('id').split('-')[1];
+
+      // if no editor then put one
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+
+      // then load the block show page
+      $('.blocks_display').load('/blocks/' + id);
+
+      // hightlight
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      $(this).css({ 'color': 'blue' });
+    });
+
+    $('.show_sidebar').find('.sidebar_child_name').click(function() {
+      var id = $(this).attr('id').split('-')[1];
+      $('.blocks_display').remove();
+      // if no editor then put one
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+      // then load the block show page
+      $('.blocks_display').load('/blocks/' + id);
+
+      $('.sidebar_child_name').css({ 'color': 'black' });
+      $(this).css({ 'color': 'orange' });
+    });
+
+  } // bindSideBarBlockLink
+
+  function loadpage() {
+    var prePage;
+
+    if(sessionStorage.getItem('update_info_redir')) {
+      prePage = sessionStorage.getItem('update_info_redir');
+
+
+      // floor
+      $('#block_ch-' + prePage).closest('.father_holder').css({ 'color': 'blue' }).find('li').css({ 'color': 'black' }).end().removeClass('closed').addClass('open').siblings('.sidebar_grandpa_name').css({ 'color': 'red' }).closest('.closed').removeClass('closed').addClass('open');
+      $('#block_ch-' + prePage).css({ 'color': 'orange' });
+
+      // surface
+      $('#block_fa-' + prePage).closest('.father_holder').css({ 'color': 'blue' }).removeClass('closed').addClass('open').siblings('.sidebar_grandpa_name').closest('.closed').removeClass('closed').addClass('open').css({ 'color': 'red' }).find('.sidebar_father_name').css({ 'color': 'black' });
+
+      $('#block_fa-' + prePage).css({ 'color': 'blue' });
+
+      $('#block_ul-' + prePage).css({ 'color': 'red' });
+
+      $('.block_qty').css({ 'color': 'black' });
+
+
+
+      $('.blocks_display').remove();
+      // if no editor then put one
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+      // then load the block show page
+      $('.blocks_display').load('/blocks/' + prePage);
+      sessionStorage.clear();
+    }
+  }
+
+
+</script>

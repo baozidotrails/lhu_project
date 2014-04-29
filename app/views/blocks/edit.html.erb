@@ -1,22 +1,126 @@
-
 <% if @blocks.length == 0 %>
-  <h1>沒有任何子區塊，請<a href="#">新增</a></h1>
+  <div class="col-md-4"><h1>photo</h1></div>
+  <div class="col-md-8">
+
+
+      <%= form_for @block, html: { mutilpart: true } do |f| %>
+        <table class="table table-bordered">
+          <tr>
+            <th>最大容納人數</th>
+            <th>坪數</th>
+            <th>設備</th>
+          </tr>
+
+          <tr>
+            <td><%= f.text_field :max_head_cap %></td>
+            <td><%= f.text_field :footage %></td>
+            <td><%= f.text_field :fee %></td>
+          </tr>
+
+          <%= f.submit '編輯', class:'btn' %>
+        </table>
+
+        <table class="table table-bordered">
+          <tr>
+            <th>日期</th>
+            <th>時間</th>
+            <th>收費</th>
+          </tr>
+
+          <tr>
+            <td><%= f.text_field :lease_date, id: 'lease_date', :'data-date-format' => 'YYYY-MM-DD' %></td>
+            <td><%= f.text_field :lease_time, id: 'lease_time', :'data-date-format' => 'HH:mm' %> ~ <%= f.text_field :end_time, id: 'end_time', :'data-date-format' => 'HH:mm' %></td>
+          </tr>
+        </table>
+
+      <% end %>
+
+
+
+
+  </div>
+
 <% else %>
   <% @blocks.each do |block| %>
 
     <!-- put floors -->
     <% if block.is_floor %>
-      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" > <%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" > <%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
     <% else %>
-      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> </div>
+      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %> <a class="block_close" >×</a> <i class="fa fa-pencil-square-o block_edit"></i></div>
     <% end %>
   <% end %>
-
 <% end %>
+
+
+
 
 <script>
 
-console.log('-------block edit-------');
+
+  $('.block_close').click(function() {
+    var main_block = $(this).closest('.newdiv');
+    var id = main_block.attr('id').split('-')[1];
+    var parentid = main_block.data('parentid');
+
+    $.ajax({
+      type: 'DELETE',
+      url: '/blocks/' + id,
+      dataType: 'json',
+      contentType: 'application/json',
+      error: function() {
+        main_block.remove();
+
+        if(sessionStorage.getItem('parent_type') == 3) {
+          $('#block_fa-' + id).closest('.father_holder').remove();
+          $('#block_fa-' + id).remove();
+          $('#block_ul-' + parentid).siblings('.block_qty').text($('#block_ul-' + parentid).closest('ul').find('ul').length);
+
+
+        }
+
+        if(sessionStorage.getItem('parent_type') == 2) {
+          $('#block_ch-' + id).remove();
+          $('#block_fa-' + parentid).siblings('.block_qty').text($('#block_fa-' + parentid).siblings('.sidebar_child_name').length);
+        }
+
+      }
+    });
+  });
+
+
+  // $('#lease_begin_at').datetimepicker({
+  //   language: 'zh-TW'
+  // });
+
+  // $('#lease_end_at').datetimepicker({
+  //   language: 'zh-TW'
+  // });
+
+  // $("#lease_begin_at").on("dp.change",function (e) {
+  //    $('#lease_end_at').data("DateTimePicker").setMinDate(e.date);
+  // });
+  // $("#lease_end_at").on("dp.change",function (e) {
+  //    $('#lease_begin_at').data("DateTimePicker").setMaxDate(e.date);
+  // });
+
+  $('#lease_date').datetimepicker({
+    language: 'zh-TW',
+    pickTime: false
+  });
+
+  $('#lease_time').datetimepicker({
+    language: 'zh-TW',
+    pickDate: false
+  });
+
+  $('#end_time').datetimepicker({
+    language: 'zh-TW',
+    pickDate: false
+  });
+
+
+// console.log('-------block edit-------');
   // 如果是葉子，就移除「編輯按鈕」
   if($('.newdiv').data('blocktype') == 0) {
     $('.fa').remove();
@@ -84,7 +188,7 @@ console.log('-------block edit-------');
       $('.newdiv').remove();
 
       if ($('.editor').length == 0) {
-        $('.sidebar').after('<div class="editor"></div>');
+        $('.sidebar').after('<div class="editor" data-iam="' + sessionStorage.getItem('parent_id') + '" data-blocktype="' + sessionStorage.getItem('parent_type') + '"></div>');
       };
 
       $('.editor').load('/blocks/' + id + '/edit', function() {
@@ -93,9 +197,6 @@ console.log('-------block edit-------');
           dragAndResizeBlock($(this).find('.newdiv'));
           boxer($(this));
         }
-
-
-
       });
 
     } else {
@@ -115,6 +216,7 @@ console.log('-------block edit-------');
 
 
   // ----------------------------------------------------------------------
+  // 給樓層
   function boxer(obj) {
     var beginX, beginY, endX, endY, width, height;
 
@@ -141,34 +243,52 @@ console.log('-------block edit-------');
         height = endY - beginY;
 
 
+        if(!(width == 0) || !(height == 0)) {
+          // generate block object when finish drawing
+          var block = {
+            'name': 'block',
+            'width': width,
+            'height': height,
+            'left': beginX,
+            'top': beginY,
+            'parent_id': sessionStorage.getItem('parent_id')
+          };
 
-        // generate block object when finish drawing
-        var block = {
-          'name': 'block',
-          'width': width,
-          'height': height,
-          'left': beginX,
-          'top': beginY,
-          'parent_id': sessionStorage.getItem('parent_id')
-        };
+          // storage to database
+          $.ajax({
+            type: 'POST',
+            url: '/blocks',
+            data: JSON.stringify(block),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(data) {
+              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close">×</a></div>').draggable({
+                  opacity: 0.35,
+                  stop: function(event, ui) {
 
-        // storage to database
-        $.ajax({
-          type: 'POST',
-          url: '/blocks',
-          data: JSON.stringify(block),
-          dataType: 'json',
-          contentType: 'application/json',
-          success: function(data) {
-            $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close ui-selectee" data-confirm="確定要刪除？" data-method="delete" href="/blocks/'+ data.id +'" rel="nofollow">×</a></div>').draggable({
-                opacity: 0.35,
+                    var $this = $(this);
+
+                    var block = {
+                      'left': ui.position.left,
+                      'top' : ui.position.top
+                    };
+
+                    $.ajax({
+                      type: 'PUT',
+                      url: '/blocks/' + $this.attr('id').split('-')[1],
+                      data: JSON.stringify(block),
+                      dataType: 'json',
+                      contentType: 'application/json'
+                    });
+                  }
+              }).resizable({
                 stop: function(event, ui) {
 
                   var $this = $(this);
 
                   var block = {
-                    'left': ui.position.left,
-                    'top' : ui.position.top
+                    'width': ui.size.width,
+                    'height' : ui.size.height
                   };
 
                   $.ajax({
@@ -179,46 +299,43 @@ console.log('-------block edit-------');
                     contentType: 'application/json'
                   });
                 }
-            }).resizable({
-              stop: function(event, ui) {
+              }).appendTo(obj);
 
-                var $this = $(this);
 
-                var block = {
-                  'width': ui.size.width,
-                  'height' : ui.size.height
-                };
 
-                $.ajax({
-                  type: 'PUT',
-                  url: '/blocks/' + $this.attr('id').split('-')[1],
-                  data: JSON.stringify(block),
-                  dataType: 'json',
-                  contentType: 'application/json'
-                });
+              if($('.editor').data('blocktype') == 2) {
+
+                if($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').length > 0) {
+                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
+                    $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">block</li>');
+                } else {
+                  $('#block_fa-' + data.parent_id).after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item;">block</li>');
+                }
+
+
+                $('#block_fa-' + data.parent_id).siblings('.block_qty').text($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').length);
+
+
+                // $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
               }
-            }).appendTo(obj);
 
-            if(sessionStorage.getItem('parent_type') == 2) {
-              $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+
+
+
+
+              $('.best_in_place').bind("ajax:success", function(event) {
+                var whichBlock = event.currentTarget.id.split('_')[4];
+                var newName = event.currentTarget.innerText;
+
+                // 側邊選單名稱變更
+                $('#block_ch-' + whichBlock).text(newName);
+
+              });
 
             }
-
-
-
-            $('.best_in_place').bind("ajax:success", function(event) {
-              var whichBlock = event.currentTarget.id.split('_')[4];
-              var newName = event.currentTarget.innerText;
-
-              // 側邊選單名稱變更
-              $('#block_ch-' + whichBlock).text(newName);
-
-            });
-            bindSideBarBlockLink();
-          }
-
-        });
-
+          }); // ajax
+        }
       }
     });
   } // boxer
@@ -273,11 +390,12 @@ console.log('-------block edit-------');
 
   // for the existed block
   $('.block_close').click(function() {
-    sessionStorage.setItem('prePage', sessionStorage.getItem('parent_id'));
+    sessionStorage.setItem('prePage', $('.editor').data('iam'));
   });
 
 
-
-
+  if(window.location.pathname.split('/')[3] == 'drawing') {
+    $('#info_edit').hide();
+  }
 
 </script>

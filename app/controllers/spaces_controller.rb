@@ -3,11 +3,16 @@ class SpacesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_space, only: [:show, :edit, :update]
 
+
   def new
     @space = current_user.spaces.new
   end
 
   def edit
+    @blocks = current_user.spaces.find(params[:id]).blocks
+  end
+
+  def detailize
     @blocks = current_user.spaces.find(params[:id]).blocks
   end
 

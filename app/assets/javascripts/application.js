@@ -18,5 +18,9 @@
 //= require jquery.ui.selectable
 //= require best_in_place
 //= require bootstrap
+//= require moment
+//= require bootstrap-datetimepicker
+//= require moment/zh-tw
+//= require locales/bootstrap-datetimepicker.zh-TW.js
 //= require turbolinks
 //= require_tree .

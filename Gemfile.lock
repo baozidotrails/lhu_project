@@ -6,6 +6,16 @@ GIT
       jquery-rails
       rails (>= 3.1)
 
+GIT
+  remote: git://github.com/thoughtbot/paperclip.git
+  revision: 113198f979bc793882506114fcc3dc9f6c4e4575
+  specs:
+    paperclip (4.1.1)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.3)
+      mime-types
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -38,7 +48,13 @@ GEM
     bcrypt-ruby (3.1.1)
     bootstrap-sass (3.0.3.0)
       sass (~> 3.2)
+    bootstrap3-datetimepicker-rails (3.0.0)
+      momentjs-rails (~> 2.5.0)
     builder (3.1.4)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
+    cocaine (0.5.3)
+      climate_control (>= 0.0.3, < 1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -72,6 +88,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.25.1)
     minitest (4.7.5)
+    momentjs-rails (2.5.1)
+      railties (>= 3.1)
     multi_json (1.8.4)
     orm_adapter (0.4.0)
     polyglot (0.3.3)
@@ -127,10 +145,6 @@ GEM
       json (>= 1.8.0)
     warden (1.2.3)
       rack (>= 1.0)
-    wicked (1.0.2)
-      rails (>= 3.0.7)
-    x-editable-rails (1.5.2)
-      railties
 
 PLATFORMS
   ruby
@@ -138,17 +152,18 @@ PLATFORMS
 DEPENDENCIES
   best_in_place!
   bootstrap-sass (~> 3.0.3.0)
+  bootstrap3-datetimepicker-rails (~> 3.0.0)
   coffee-rails (~> 4.0.0)
   devise
   jbuilder (~> 1.2)
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
+  momentjs-rails (~> 2.5.0)
+  paperclip!
   rails (= 4.0.0)
   sass-rails (~> 4.0.0)
   sdoc
   sqlite3
   turbolinks
   uglifier (>= 1.3.0)
-  wicked
-  x-editable-rails

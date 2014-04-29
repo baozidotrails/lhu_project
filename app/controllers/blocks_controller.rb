@@ -5,7 +5,15 @@ class BlocksController < ApplicationController
   # GET /blocks
   # GET /blocks.json
   def index
+
     @blocks = Block.all
+
+    # @blocks = @blocks.where("name like ?", "%#{params[:search]}%") if params[:search]
+
+    # @blocks = @blocks.where("lease_date >= ?", "#{params[:start_at]}") if params[:start_at]
+
+    # @blocks = @blocks.where("lease_date <= ?", "#{params[:end_at]}") if params[:end_at]
+
   end
 
   # GET /blocks/1
@@ -15,8 +23,8 @@ class BlocksController < ApplicationController
     @blocks = Block.where(parent_id: params[:id]).order('name DESC')
 
 
-
     render layout: false
+
   end
 
   # GET /blocks/new
@@ -52,9 +60,9 @@ class BlocksController < ApplicationController
   # PATCH/PUT /blocks/1
   # PATCH/PUT /blocks/1.json
   def update
-    respond_to do |format|
+     respond_to do |format|
       if @block.update(block_params)
-        format.html { redirect_to @block, notice: 'Block was successfully updated.' }
+        format.html { redirect_to :back, notice: 'Block was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -84,10 +92,16 @@ class BlocksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_block
       @block = Block.find(params[:id])
+
+      if @block.lease_date
+        @lease_date = @block.lease_date.strftime('%Y-%m-%d')
+      else
+        @lease_date = "未設定"
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def block_params
-      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor)
+      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor, :max_head_cap, :footage, :equipment, :fee, :photo, :lease_date, :lease_time, :end_time)
     end
 end
