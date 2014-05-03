@@ -6,16 +6,6 @@ GIT
       jquery-rails
       rails (>= 3.1)
 
-GIT
-  remote: git://github.com/thoughtbot/paperclip.git
-  revision: 113198f979bc793882506114fcc3dc9f6c4e4575
-  specs:
-    paperclip (4.1.1)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      cocaine (~> 0.5.3)
-      mime-types
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -51,10 +41,14 @@ GEM
     bootstrap3-datetimepicker-rails (3.0.0)
       momentjs-rails (~> 2.5.0)
     builder (3.1.4)
-    climate_control (0.0.3)
-      activesupport (>= 3.0)
-    cocaine (0.5.3)
-      climate_control (>= 0.0.3, < 1.0)
+    carrierwave (0.10.0)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
+      json (>= 1.7)
+      mime-types (>= 1.16)
+    carrierwave-dropbox (1.2.1)
+      carrierwave (~> 0.9)
+      dropbox-sdk (~> 1.6)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -67,6 +61,13 @@ GEM
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
       warden (~> 1.2.3)
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
+    dotenv-rails (0.11.1)
+      dotenv (= 0.11.1)
+    dropbox-sdk (1.6.4)
+      json
     erubis (2.7.0)
     execjs (2.0.2)
     hike (1.2.3)
@@ -153,14 +154,15 @@ DEPENDENCIES
   best_in_place!
   bootstrap-sass (~> 3.0.3.0)
   bootstrap3-datetimepicker-rails (~> 3.0.0)
+  carrierwave-dropbox
   coffee-rails (~> 4.0.0)
   devise
+  dotenv-rails
   jbuilder (~> 1.2)
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
   momentjs-rails (~> 2.5.0)
-  paperclip!
   rails (= 4.0.0)
   sass-rails (~> 4.0.0)
   sdoc

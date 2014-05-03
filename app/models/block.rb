@@ -8,6 +8,8 @@ class Block < ActiveRecord::Base
 
   belongs_to :space
 
+  mount_uploader :image, ImageUploader
+
 
 
 

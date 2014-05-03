@@ -1,0 +1,40 @@
+<!-- block info -->
+<% if @block.block_type == 0 %>
+  <%= form_for @block, html: { mutilpart: true } do |f| %>
+    <div class="col-md-4">
+      <%= image_tag @block.image_url.to_s %>
+      <%= f.file_field :image %>
+    </div>
+
+    <div class="col-md-8">
+      <table class="table table-bordered">
+        <tr>
+          <th>最大容納人數</th>
+          <th>坪數</th>
+          <th>設備</th>
+        </tr>
+
+        <tr>
+          <td><%= f.text_field :max_head_cap %></td>
+          <td><%= f.text_field :footage %></td>
+          <td><%= f.text_field :fee %></td>
+        </tr>
+
+        <%= f.submit '編輯', class:'btn edit_target_block', id: @block.id %>
+      </table>
+
+      <table class="table table-bordered">
+        <tr>
+          <th>日期</th>
+          <th>時間</th>
+          <th>收費</th>
+        </tr>
+
+        <tr>
+          <td><%= f.text_field :lease_date, id: 'lease_date', :'data-date-format' => 'YYYY-MM-DD' %></td>
+          <td><%= f.text_field :lease_time, id: 'lease_time', :'data-date-format' => 'HH:mm' %> ~ <%= f.text_field :end_time, id: 'end_time', :'data-date-format' => 'HH:mm' %></td>
+        </tr>
+      </table>
+    </div>
+  <% end %>
+<% end %>

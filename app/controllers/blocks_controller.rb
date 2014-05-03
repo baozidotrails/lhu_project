@@ -88,6 +88,17 @@ class BlocksController < ApplicationController
     redirect_to :back
   end
 
+  def blockinfo
+    @block = Block.find(params[:id])
+    render layout: false
+  end
+
+  def blockview
+    @blocks = Block.where(parent_id: params[:id]).order('name DESC')
+    @block = Block.find(params[:id])
+    render layout: false
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_block
@@ -102,6 +113,6 @@ class BlocksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def block_params
-      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor, :max_head_cap, :footage, :equipment, :fee, :photo, :lease_date, :lease_time, :end_time)
+      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor, :max_head_cap, :footage, :equipment, :fee, :photo, :lease_date, :lease_time, :end_time, :image)
     end
 end

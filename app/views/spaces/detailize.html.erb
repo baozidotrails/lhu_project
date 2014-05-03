@@ -17,19 +17,19 @@
         <ul class="closed">
 
           <!-- grandpa block name -->
-          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: block.id).count %>)</span> <% end %>
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>" data-blocktype="<%= block.block_type %>"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: block.id).count %>)</span> <% end %>
 
           <!-- father blocks -->
           <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
             <ul class="father_holder closed">
 
               <!-- father name -->
-              <span class="sidebar_father_name" id="block_fa-<%= father.id %>"><%= father.name %></span> <% if Block.where(parent_id: father.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: father.id).count %>)</span> <% end %>
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>" data-blocktype="<%= father.block_type %>"><%= father.name %></span> <% if Block.where(parent_id: father.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: father.id).count %>)</span> <% end %>
 
 
               <!-- child blocks -->
               <% Block.where(parent_id: father.id).each do |child| %>
-                <li class="sidebar_child_name" id="block_ch-<%= child.id %>"><span><%= child.name %></span></li>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>" data-blocktype="<%= child.block_type %>"><span><%= child.name %></span></li>
               <% end %>
             </ul>
           <% end %>
@@ -48,7 +48,9 @@
   <div class="step_contro">
     <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
     <%= link_to '上一步', edit_space_path, class: 'btn btn-default' %>
-    <a href="#" class="btn btn-primary" id="apply_block_info">下一步</a>
+    <%= link_to '下一步', space_path, class: 'btn btn-primary' %>
+    <!-- <a href="#" class="btn btn-primary" id="apply_block_info">下一步</a> -->
+
   </div>
 
 </div> <!-- container -->
@@ -63,9 +65,6 @@
 
   app_info();
 
-  $('#detail_index').click(function() {
-    sessionStorage.clear(); // clear session
-  });
 
   // if the block has other block then
   function app_info() {
@@ -103,9 +102,6 @@
       // load father
       $('.blocks_display').load('/blocks/' + id);
     });
-
-
-
   }
 
 
@@ -115,6 +111,8 @@
     $('ul.closed').find('.father_holder, .sidebar_child_name').hide();
 
     $('.show_sidebar').find('.sidebar_grandpa_name').click(function() {
+
+      var blockType = $(this).data('blocktype');
 
       // menu controler
       if($(this).parent().siblings('ul').hasClass('open')) {
@@ -142,7 +140,12 @@
       };
 
       // load father
-      $('.blocks_display').load('/blocks/' + id);
+      if (blockType == 0) {
+        $('.blocks_display').load('/blocks/' + id + '/blockinfo');
+      } else {
+        $('.blocks_display').load('/blocks/' + id);
+      }
+
 
       // hightlight
       $('.sidebar_grandpa_name').css({ 'color': 'black' });
@@ -154,6 +157,8 @@
 
     // ex: click floor
     $('.show_sidebar').find('.sidebar_father_name').click(function() {
+
+      var blockType = $(this).data('blocktype');
 
       // menu controller
       if($(this).closest('ul').siblings('ul').hasClass('open')) {
@@ -177,7 +182,11 @@
       };
 
       // then load the block show page
-      $('.blocks_display').load('/blocks/' + id);
+      if (blockType == 0) {
+        $('.blocks_display').load('/blocks/' + id + '/blockinfo');
+      } else {
+        $('.blocks_display').load('/blocks/' + id);
+      }
 
       // hightlight
       $('.sidebar_father_name').css({ 'color': 'black' });
@@ -193,7 +202,7 @@
         $('.show_sidebar').after('<div class="blocks_display"></div>');
       };
       // then load the block show page
-      $('.blocks_display').load('/blocks/' + id);
+      $('.blocks_display').load('/blocks/' + id + '/blockinfo');
 
       $('.sidebar_child_name').css({ 'color': 'black' });
       $(this).css({ 'color': 'orange' });
@@ -202,7 +211,48 @@
   } // bindSideBarBlockLink
 
   function loadpage() {
-    var prePage;
+    var prePage, goalPage;
+
+    if (sessionStorage.getItem('back_to_top')) {
+      goalPage = sessionStorage.getItem('back_to_top');
+
+      $('#block_ul-' + goalPage).closest('ul').removeClass('closed').addClass('open').slideDown('fast').css({ 'color': 'red' });
+      $('.block_qty').css({ 'color': 'black' });
+      $('.sidebar_father_name').css({ 'color': 'black' });
+
+      $('#block_fa-' + goalPage).closest('.father_holder').siblings('.sidebar_grandpa_name').css({ 'color': 'red' }).closest('ul').removeClass('closed').addClass('open');
+
+      // father highlight
+      $('#block_fa-' + goalPage).closest('.father_holder').removeClass('closed').addClass('open');
+      $('#block_fa-' + goalPage).css({ 'color': 'blue' });
+
+      $('.blocks_display').remove();
+      // if no editor then put one
+      if ($('.blocks_display').length == 0) {
+        $('.show_sidebar').after('<div class="blocks_display"></div>');
+      };
+      // then load the block show page
+      $('.blocks_display').load('/blocks/' + goalPage, function() {
+        var id = $('#block_fa-' + $('.block-show').first().data('blockparentid')).closest('.father_holder').siblings('.sidebar_grandpa_name').attr('id').split('-')[1];
+
+        if ($('#block_ul-' + id).length > 0) {
+          $('#detail_index').text('回到上一層').click(function() {
+            sessionStorage.clear();
+            sessionStorage.setItem('back_to_top', id);
+          });
+        }
+
+      });
+
+      sessionStorage.clear();
+      // if (true) {
+      //   $('#detail_index').text('回到上一層').click(function() {
+
+      //   });
+      // }
+
+
+    };
 
     if(sessionStorage.getItem('update_info_redir')) {
       prePage = sessionStorage.getItem('update_info_redir');
@@ -229,9 +279,17 @@
         $('.show_sidebar').after('<div class="blocks_display"></div>');
       };
       // then load the block show page
-      $('.blocks_display').load('/blocks/' + prePage);
-      sessionStorage.clear();
+      $('.blocks_display').load('/blocks/' + prePage + '/blockinfo');
+
+
+      $('#detail_index').text('回到上一層').click(function() {
+        sessionStorage.removeItem('update_info_redir');
+        sessionStorage.setItem('back_to_top', sessionStorage.getItem('block_parent_id'));
+      });
+
+      // sessionStorage.removeItem('update_info_redir');
     }
+
   }
 
 

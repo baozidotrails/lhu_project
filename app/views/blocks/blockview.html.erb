@@ -1,0 +1,22 @@
+<!-- put floors -->
+<% if @blocks.length > 0 %>
+  <% @blocks.each do |block| %>
+
+    <% if block.is_floor %>
+      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+    <% else %>
+
+      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
+
+    <% end %>
+  <% end %>
+<% else %>
+  <h1>you are leaf</h1>
+<% end %>
+
+
+<script>
+  $('.iamfather, .block-show').hover(function() {
+    $(this).css({ 'cursor': 'pointer' });
+  });
+</script>

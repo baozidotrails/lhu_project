@@ -1,6 +1,11 @@
 Cloudspace::Application.routes.draw do
 
-  resources :blocks
+  resources :blocks do
+    member do
+      get 'blockinfo'
+      get 'blockview'
+    end
+  end
   resources :searches
 
 

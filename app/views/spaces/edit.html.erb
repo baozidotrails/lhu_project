@@ -76,9 +76,7 @@
       sessionStorage.clear();
     });
 
-    $('#reload_and_main_pic').click(function() {
-      sessionStorage.clear();
-    });
+
 
     loadPageFirst();
     sessionStorage.clear();
@@ -630,6 +628,7 @@
 
     function loadPageFirst() {
       var prePage = sessionStorage.getItem('pre_page');
+
       if(prePage) {
 
         // highlight sidebar

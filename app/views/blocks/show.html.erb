@@ -1,51 +1,25 @@
-<% if @blocks.length == 0 %>
+<!-- put floors -->
+<% @blocks.each do |block| %>
 
-  <% if @block.parent_id.nil? && @block.max_head_cap.nil? %>
-    <div class="col-md-4"><h1>photo</h1></div>
-    <div class="col-md-8">
-      <%= form_for @block, html: { mutilpart: true } do |f| %>
-        <p><%= f.label :max_head_cap, '最大容納人數' %> <%= f.text_field :max_head_cap %></p>
-        <p><%= f.label :footage, '坪數' %> <%= f.text_field :footage %></p>
-        <p><%= f.label :equipment, '設備' %> <%= f.text_field :equipment %></p>
-        <p><%= f.label :fee, '收費' %> <%= f.text_field :fee %></p>
-        <p><%= f.label :lease_date, '日期' %> <%= f.text_field :lease_date, id: 'lease_date', :'data-date-format' => 'YYYY-MM-DD' %></p>
-        <p><%= f.label :lease_time, '時間' %> <%= f.text_field :lease_time, id: 'lease_time', :'data-date-format' => 'HH:mm' %> ~ <%= f.text_field :end_time, id: 'end_time', :'data-date-format' => 'HH:mm' %></p>
-        <!-- <p><input type="text" id="free_begin" data-date-format="YYYY-MM-DD HH:mm:00"></p> -->
-        <%= f.submit '編輯' %>
-      <% end %>
-    </div>
+  <% if block.is_floor %>
+    <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
   <% else %>
-    <h1><%= @block.name %></h1>
 
-    <p>最大容納人數 <%= @block.max_head_cap %></p>
-    <p>坪數 <%= @block.footage %></p>
-    <p>設備 <%= @block.equipment %></p>
-    <p>收費 <%= @block.fee %></p>
-    <p>時間 <%= @lease_date %> <%= @block.lease_time %> ~ <%= @block.end_time %> </p>
-    <a href="#" id="edit_target_block" data-editblock="<%= @block.id %>">編輯</a>
-  <% end %>
+    <div id="block-<%= block.id %>" class="block-show<%= ' empty' if block.max_head_cap.nil? %>" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><%= "<a href='#' class='block_info' data-parentid=#{block.parent_id}><i class='fa fa-pencil'></i></a>".html_safe if block.block_type == 0 %></div>
 
-
-
-
-
-
-<% else %>
-  <!-- put floors -->
-  <% @blocks.each do |block| %>
-
-    <% if block.is_floor %>
-      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
-    <% else %>
-
-      <div id="block-<%= block.id %>" class="block-show<%= ' empty' if block.max_head_cap.nil? %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %><%= "<a href='#' class='block_info'><i class='fa fa-pencil'></i></a>".html_safe if block.block_type == 0 %></div>
-
-    <% end %>
   <% end %>
 <% end %>
 
 <script>
   $(function() {
+
+    // $('.edit_target_block').click(function() {
+    //   var id = $(this).closest('.block-show').attr('id').split('-')[1];
+    //   $('.blocks_display').remove();
+    //   $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');
+    //   $('.tmp_display').load('/blocks/' + id + '/blockinfo');
+    //   sessionStorage.setItem('update_info_redir', id);
+    // });
 
     // $('.father_block').hover(function() {
     //   if($(this).hasClass('iamfather')) {
@@ -99,8 +73,13 @@
 
     // add blick enter feature
     $('.block_enter').click(function() {
+      $('.sidebar_child_name').css({ 'color': 'black' });
 
       var id = $(this).closest('.father_block').attr('id').split('-')[1];
+      sessionStorage.setItem('block_parent_id', $(this).closest('.father_block').data('parentid'));
+      var parentid = $(this).closest('.father_block').data('parentid');
+
+
 
       // $('.sidebar_grandpa_name').css({ 'color': 'black' });
       $('#block_ul-' + id).css({ 'color': 'red' });
@@ -137,13 +116,25 @@
 
       // load father
       $('.blocks_display').load('/blocks/' + id);
+
+      if (sessionStorage.getItem('block_parent_id')) {
+        $('#detail_index').text('回到上一層').click(function() {
+          sessionStorage.clear();
+          sessionStorage.setItem('back_to_top', parentid);
+        });
+      };
+
     });
 
     // block info for the next page
     $('.block_info').click(function() {
 
-      var id = $(this).parent().attr('id').split('-')[1];
+      sessionStorage.setItem('block_parent_id', $(this).data('parentid'));
+
+      var id = $(this).closest('.block-show').attr('id').split('-')[1];
       sessionStorage.setItem('update_info_redir', id);
+
+      var parentid = $(this).data('parentid');
 
 
       $('.sidebar_father_name').css({ 'color': 'black' });
@@ -155,21 +146,19 @@
       $('.blocks_display').remove();
       $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');
 
-      if($(this).closest('.block-show').hasClass('empty')) {
-        $('.tmp_display').load('/blocks/' + id + '/edit');
-      } else {
-        $('.tmp_display').load('/blocks/' + id);
-      }
+      // if($(this).closest('.block-show').hasClass('empty')) {
+        $('.tmp_display').load('/blocks/' + id + '/blockinfo');
+      // } else {
+        // $('.tmp_display').load('/blocks/' + id);
+      // }
 
-    });
+      if (sessionStorage.getItem('update_info_redir')) {
+        $('#detail_index').text('回到上一層').click(function() {
+          sessionStorage.clear();
+          sessionStorage.setItem('back_to_top', parentid);
+        });
+      };
 
-
-    $('#edit_target_block').click(function() {
-      var id = $(this).data('editblock');
-      $('.blocks_display').remove();
-      $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');
-      $('.tmp_display').load('/blocks/' + id + '/edit');
-      sessionStorage.setItem('update_info_redir', id);
     });
 
   });

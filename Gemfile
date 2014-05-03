@@ -59,7 +59,7 @@ gem 'jquery-turbolinks'
 
 gem 'best_in_place', github: 'aaronchi/best_in_place'
 
-gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
+# gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
 
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
@@ -67,3 +67,6 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 # search
 # gem "ransack", github: "activerecord-hackery/ransack", branch: "rails-4"
 # gem 'by_star', :git => "git://github.com/radar/by_star"
+
+gem 'carrierwave-dropbox'
+gem 'dotenv-rails', :groups => [:development, :test]

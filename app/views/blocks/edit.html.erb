@@ -1,56 +1,14 @@
-<% if @blocks.length == 0 %>
-  <div class="col-md-4"><h1>photo</h1></div>
-  <div class="col-md-8">
 
+<% @blocks.each do |block| %>
 
-      <%= form_for @block, html: { mutilpart: true } do |f| %>
-        <table class="table table-bordered">
-          <tr>
-            <th>最大容納人數</th>
-            <th>坪數</th>
-            <th>設備</th>
-          </tr>
-
-          <tr>
-            <td><%= f.text_field :max_head_cap %></td>
-            <td><%= f.text_field :footage %></td>
-            <td><%= f.text_field :fee %></td>
-          </tr>
-
-          <%= f.submit '編輯', class:'btn' %>
-        </table>
-
-        <table class="table table-bordered">
-          <tr>
-            <th>日期</th>
-            <th>時間</th>
-            <th>收費</th>
-          </tr>
-
-          <tr>
-            <td><%= f.text_field :lease_date, id: 'lease_date', :'data-date-format' => 'YYYY-MM-DD' %></td>
-            <td><%= f.text_field :lease_time, id: 'lease_time', :'data-date-format' => 'HH:mm' %> ~ <%= f.text_field :end_time, id: 'end_time', :'data-date-format' => 'HH:mm' %></td>
-          </tr>
-        </table>
-
-      <% end %>
-
-
-
-
-  </div>
-
-<% else %>
-  <% @blocks.each do |block| %>
-
-    <!-- put floors -->
-    <% if block.is_floor %>
-      <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" > <%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
-    <% else %>
-      <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %> <a class="block_close" >×</a> <i class="fa fa-pencil-square-o block_edit"></i></div>
-    <% end %>
+  <!-- put floors -->
+  <% if block.is_floor %>
+    <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" > <%= best_in_place block, :name %><%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+  <% else %>
+    <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= best_in_place block, :name %> <a class="block_close" >×</a> <i class="fa fa-pencil-square-o block_edit"></i></div>
   <% end %>
 <% end %>
+
 
 
 
@@ -212,6 +170,13 @@
 
       $('.selection_panel').load('/pages/decision');
     }
+
+    if (sessionStorage.getItem('parent_type') == 2) {
+      $('#reload_and_main_pic').text('回到上一層').click(function() {
+        var id = $('#block_fa-' + sessionStorage.getItem('parent_id')).closest('.father_holder').siblings('.sidebar_grandpa_name').attr('id').split('-')[1];
+        sessionStorage.setItem('pre_page', id);
+      });
+    };
   });
 
 
