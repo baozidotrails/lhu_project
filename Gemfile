@@ -33,7 +33,7 @@ group :doc do
 end
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+gem 'bcrypt-ruby', '3.0.0'
 
 # Use unicorn as the app server
 # gem 'unicorn'
@@ -49,7 +49,7 @@ gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.0.3.0'
 
 # authtication
-gem 'devise'
+# gem 'devise'
 
 # figured out the issues between jQuery and turbolinks
 gem 'jquery-turbolinks'
@@ -68,5 +68,14 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 # gem "ransack", github: "activerecord-hackery/ransack", branch: "rails-4"
 # gem 'by_star', :git => "git://github.com/radar/by_star"
 
-gem 'carrierwave-dropbox'
+# uploading files to dropbox
+# gem 'carrierwave-dropbox'
+gem 'carrierwave'
+gem 'mini_magick'
+# gem "fog"
+
+# use env global variables in Rails
 gem 'dotenv-rails', :groups => [:development, :test]
+
+# simple form
+gem 'simple_form'

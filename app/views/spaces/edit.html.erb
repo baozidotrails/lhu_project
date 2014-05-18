@@ -3,14 +3,16 @@
   <li>場地資訊、租借時間設定</li>
   <li>瀏覽</li>
 </ol> -->
-<div class="container space-edit-container" style="width: 97%">
+<div class="container" style="width: 60%">
+  <!-- breadcrumb -->
+  <%= render 'layouts/breadcrumb' %>
+</div>
 
+<div class="container space-edit-container" style="width: 97%">
 
  <!--  <%= link_to '刪除該場地', @space, method: :delete, data: { confirm: '確定要刪除？' }, class: 'btn btn-xs btn-danger delete_block', style: 'float: right' %> -->
   <!-- <a href="/spaces/<%= @space.id %>" class="btn btn-default" id="apply_block_info">下一步</a> -->
 
-
-<br>
 
   <!-- space id -->
 
@@ -56,6 +58,7 @@
 
   <div class="step_contro">
     <%= link_to '主平面圖', edit_space_path(@space), id: 'reload_and_main_pic', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
+    <%= link_to '上一步', spaceinfo_space_path, class: 'btn btn-default' %>
     <%= link_to '下一步', detailize_space_path(@space), class: 'btn btn-primary' %>
   </div>
 

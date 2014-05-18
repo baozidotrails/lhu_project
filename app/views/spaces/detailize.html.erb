@@ -3,11 +3,13 @@
   <li class="active"><a href="#">場地資訊、租借時間設定</a></li>
   <li>瀏覽</li>
 </ol> -->
+<div class="container" style="width: 60%">
+  <!-- breadcrumb -->
+  <%= render 'layouts/breadcrumb' %>
+</div>
 <div class="container space-show-container" style="width: 97%">
 
 
-
-<br>
 
   <div class="main_display">
     <div class="show_sidebar">
@@ -49,7 +51,6 @@
     <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
     <%= link_to '上一步', edit_space_path, class: 'btn btn-default' %>
     <%= link_to '下一步', space_path, class: 'btn btn-primary' %>
-    <!-- <a href="#" class="btn btn-primary" id="apply_block_info">下一步</a> -->
 
   </div>
 

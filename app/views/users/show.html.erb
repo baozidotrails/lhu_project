@@ -1,0 +1,83 @@
+<div class="container">
+  <br>
+  <div class="jumbotron">
+    <div class="row">
+      <div class="col-md-2">
+        <% if @user.avatar? %>
+          <%= image_tag @user.avatar_url.to_s, style: 'width: 180px; height: 180px', class: 'user_profile' %>
+        <% else %>
+          <%= image_tag 'no_avatar.jpg', style: 'width: 180px; height: 180px', class: 'user_profile' %>
+        <% end %>
+      </div>
+      <div class="col-md-9 col-md-offset-1">
+        <% if @user.nickname? %>
+          <span class="user_nickname"><%= @user.nickname %></span>
+        <% else %>
+          <span class="user_nickname"><%= @user.name %></span>
+        <% end %>
+        <br><span class="user_info"><%= simple_format(@user.intro) %></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-md-offset-10">
+        <!-- edit -->
+        <% if current_user?(@user) %>
+          <%= link_to '編輯個人資料', edit_user_path(@user) ,class: 'user_edit_profile_btn btn btn-success' %>
+        <% end %>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="container">
+  <br>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">已刊登的場地</div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>名稱</th>
+            <th style="width: 34.5vh">編輯日期</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @user.spaces.each do |space| %>
+            <% if space.is_public %>
+              <tr>
+                <td><%= link_to space.name, preview_space_path(space) %></td>
+                <td><%= space.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">已租用場地</div>
+     <table class="table">
+      <thead>
+        <tr>
+          <th>單位</th>
+          <th>名稱</th>
+          <th>申請日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% current_user.registrations.where(is_pass: false).each do |record| %>
+          <tr>
+            <td><%= record.name %></td>
+            <td><%= record.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

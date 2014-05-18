@@ -1,7 +1,10 @@
+<div class="container" style="width: 60%">
+  <!-- breadcrumb -->
+  <%= render 'layouts/breadcrumb' %>
+</div>
 <div class="container space-show-container" style="width: 97%">
 
 
-<br>
 
   <div class="main_display">
     <div class="show_sidebar">
@@ -41,7 +44,8 @@
   <div class="step_contro">
     <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
     <%= link_to '上一步', detailize_space_path(@space), class: 'btn btn-default' %>
-    <%= link_to '刊登', space_path, class: 'btn btn-primary' %>
+    <%= link_to '刊登場地', place_space_path, class: 'btn btn-primary' %>
+
 
   </div>
 
@@ -191,4 +195,6 @@
     });
 
   } // space_show_sidebar
+
+
 </script>

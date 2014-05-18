@@ -1,0 +1,78 @@
+<div class="container">
+  <br>
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#">個人資料</a></li>
+    <li><%= link_to '刊登記錄', account_spaces_path %></li>
+    <li><%= link_to '租用記錄', account_rents_path %></li>
+  </ul>
+  <br>
+
+  <%= form_for @user, html: { mutilpart: true, class: 'form-horizontal' } do |f| %>
+    <div class="col-md-8">
+      <div class="form-group">
+        <%= f.label :name, '名字', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :name, class: 'col-sm-10 form-control', autofocus: true %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :nickname, '暱稱', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :nickname, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email, 'E-mail', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :email, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password, '密碼', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.password_field :password, class: 'form-control', placeholder: '必填欄位' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password_confirmation, '確認密碼', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.password_field :password_confirmation, class: 'form-control', placeholder: '必填欄位' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :website, '網站', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :website, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :intro, '個人簡介', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_area :intro, class: 'form-control', rows: 6 %>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+          <%= f.submit '儲存', class: 'btn btn-primary col-sm-2' %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <% if @user.avatar? %>
+        <%= image_tag @user.avatar_url.to_s, class: 'user_default' %>
+      <% else %>
+        <%= image_tag 'no_avatar.jpg', style: 'width: 250px; height: 250px', class: 'user_profile' %>
+      <% end %>
+      <%= f.file_field :avatar %>
+    </div>
+  <% end %>
+</div>

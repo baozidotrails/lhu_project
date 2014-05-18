@@ -1,0 +1,41 @@
+<div class="container">
+  <br>
+  <ul class="nav nav-tabs">
+    <li><%= link_to '個人資料', edit_user_path(current_user) %></li>
+    <li><%= link_to '刊登記錄', account_spaces_path %></li>
+    <li class="active"><a href="#">租用記錄</a></li>
+  </ul>
+  <br>
+  <div class="row">
+   <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">已租用的場地（審核中）</div>
+        <table class="table">
+          <thead>
+            <% if current_user.registrations.where(is_pass: false).length < 1 %>
+              <h2 align="center">您目前沒有審核中的場地。</h2>
+            <% else %>
+              <tr>
+                <th>名稱</th>
+                <th>申請日期</th>
+                <th>操作</th>
+              </tr>
+            <% end %>
+
+          </thead>
+
+          <tbody>
+            <% current_user.registrations.each do |record| %>
+              <% unless record.is_pass %>
+                <tr>
+                  <td><%= record.name %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <br>
+</div>

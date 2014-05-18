@@ -1,0 +1,10 @@
+.start-at, .end-at {
+  display: inline-block;
+}
+
+.rent-date, .rent-time {
+  display: block;
+  float: left;
+  overflow: hidden;
+  margin-left: 5px;
+}

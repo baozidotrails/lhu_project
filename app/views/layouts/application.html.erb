@@ -3,54 +3,51 @@
 <head>
   <title>Cloudspace</title>
 
-
-
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
 
-
-
-
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-
-
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 </head>
 <body>
+
+<!-- nav -->
 <nav class="navbar navbar-inverse" role="navigation">
   <div class="container">
     <!-- logo -->
-
     <%= link_to 'CloudSpace', root_path, class: 'navbar-brand' %>
 
-    <% if current_user.blank? %>
-      <!-- signup and login -->
-      <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to '註冊', new_user_registration_path %></li>
-        <li><%= link_to '登入', new_user_session_path %></li>
-      </ul>
-    <% else %>
+    <% if loged_in? %>
       <!-- user selection -->
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %> <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><% if current_user.avatar? %> <%= image_tag current_user.avatar.url.to_s, style: 'width: 32px; height: 32px;', class: 'user_default' %> <% else %> <%= image_tag 'no_avatar.jpg', style: 'width: 32px; height: 32px;', class: 'user_default' %> <% end %>&nbsp;<b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><%= link_to 'Blocks', blocks_path %></li>
-            <li><%= link_to '修改個資', edit_user_registration_path %></li>
+            <li><%= link_to '個人資料', current_user %></li>
             <li class="divider"></li>
-            <li><%= link_to '登出', destroy_user_session_path, method: :delete %></li>
+            <li><%= link_to '登出', logout_path, method: :delete %></li>
           </ul>
         </li>
       </ul>
+    <% else %>
+      <!-- signup and login -->
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to '註冊', signup_path %></li>
+        <li><%= link_to '登入', login_path %></li>
+      </ul>
     <% end %>
-
   </div>
 </nav>
+<!-- nav -->
 
+<!-- flash -->
+<% flash.each do |key, value| %>
+  <p class="bg-<%= key %>"><%= value %></p>
+<% end %>
 
 <%= yield %>
-
 
 </body>
 </html>

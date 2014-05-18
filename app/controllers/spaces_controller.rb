@@ -1,7 +1,9 @@
 class SpacesController < ApplicationController
 
-  before_action :authenticate_user!
-  before_action :set_space, only: [:show, :edit, :update]
+
+  before_action :set_space,     only: [:show, :edit, :update, :spaceinfo, :preview, :remove, :place]
+  before_action :loged_in_user, except: [:index, :preview]
+  before_action :correct_user,  except: [:index, :preview, :new, :create]
 
 
   def new
@@ -25,10 +27,18 @@ class SpacesController < ApplicationController
 
     if @space.save
       redirect_to edit_space_path(@space)
+    else
+      render 'new'
     end
   end
 
   def update
+    if @space.update(space_params)
+      redirect_to edit_space_path
+    else
+      flash.now[:notice] = "沒填的田一田"
+      render 'spaceinfo'
+    end
   end
 
   def destroy
@@ -45,7 +55,27 @@ class SpacesController < ApplicationController
     end
 
     @space.destroy
-    redirect_to new_space_path
+    redirect_to :back
+  end
+
+  def spaceinfo
+
+  end
+
+  def preview
+
+  end
+
+  def place
+    if @space.update(is_public: true)
+      redirect_to account_spaces_path
+    end
+  end
+
+  def remove
+    if @space.update(is_public: false)
+      redirect_to :back
+    end
   end
 
   private
@@ -56,7 +86,13 @@ class SpacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def space_params
-      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id)
+      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view)
+    end
+
+    def correct_user
+      unless Space.find(params[:id]).user == current_user
+        redirect_to root_url
+      end
     end
 
 end

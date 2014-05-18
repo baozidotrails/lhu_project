@@ -1,5 +1,5 @@
 class BlocksController < ApplicationController
-  before_action :set_block, only: [:show, :edit, :update, :destroy]
+  before_action :set_block, only: [:show, :edit, :update, :destroy, :apply]
 
 
   # GET /blocks
@@ -99,20 +99,26 @@ class BlocksController < ApplicationController
     render layout: false
   end
 
+  def apply
+    if @block.update(registration: current_user.registrations.create(name: @block.name))
+      redirect_to current_user
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_block
       @block = Block.find(params[:id])
 
-      if @block.lease_date
-        @lease_date = @block.lease_date.strftime('%Y-%m-%d')
+      if @block.start_at
+        @start_at = @block.start_at.strftime('%Y-%m-%d')
       else
-        @lease_date = "未設定"
+        @start_at = "未設定"
       end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def block_params
-      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor, :max_head_cap, :footage, :equipment, :fee, :photo, :lease_date, :lease_time, :end_time, :image)
+      params.require(:block).permit(:name, :left, :top, :width, :height, :space_id, :block_type, :parent_id, :is_floor, :max_head_cap, :footage, :equipment, :fee, :photo, :start_at, :end_at, :image, :intro, :user_id, :registration_id)
     end
 end

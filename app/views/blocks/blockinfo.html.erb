@@ -1,40 +1,70 @@
 <!-- block info -->
-<% if @block.block_type == 0 %>
-  <%= form_for @block, html: { mutilpart: true } do |f| %>
-    <div class="col-md-4">
-      <%= image_tag @block.image_url.to_s %>
-      <%= f.file_field :image %>
-    </div>
 
-    <div class="col-md-8">
-      <table class="table table-bordered">
-        <tr>
-          <th>最大容納人數</th>
-          <th>坪數</th>
-          <th>設備</th>
-        </tr>
+  <br>
+  <% if @block.block_type == 0 %>
+    <%= form_for @block, html: { mutilpart: true } do |f| %>
 
-        <tr>
-          <td><%= f.text_field :max_head_cap %></td>
-          <td><%= f.text_field :footage %></td>
-          <td><%= f.text_field :fee %></td>
-        </tr>
+      <div class="col-md-7">
+        <table class="table table-bordered">
+          <tr class="active">
+            <th>最大容納人數 (人)</td>
+            <th>場地大小 (坪)</th>
+            <th>設備</th>
+          </tr>
+          <tr>
+            <td><%= f.text_field :max_head_cap, class: 'form-control' %></td>
+            <td><%= f.text_field :footage, class: 'form-control' %></td>
+            <td><%= f.text_field :equipment, class: 'form-control' %></td>
+          </tr>
+        </table>
 
-        <%= f.submit '編輯', class:'btn edit_target_block', id: @block.id %>
-      </table>
+        <table class="table table-bordered">
+          <tr class="active">
+            <th>刊登時間</th>
+          </tr>
+          <tr>
+            <td>
+              <span class="start-at">
+                <input type="text" class="rent-date form-control" style="width: 100px">
+                <input type="text" class="rent-time form-control" style="width: 80px">
+              </span>
+              ~
+              <span class="end-at">
+                <input type="text" class="rent-date form-control" style="width: 100px">
+                <input type="text" class="rent-time form-control" style="width: 80px">
+              </span>
+            </td>
+          </tr>
+        </table>
 
-      <table class="table table-bordered">
-        <tr>
-          <th>日期</th>
-          <th>時間</th>
-          <th>收費</th>
-        </tr>
+        <table class="table table-bordered">
+          <tr class="active">
+            <th>場地描述</th>
+            <th>收費</th>
+          </tr>
+          <tr>
+            <td><%= f.text_area :intro, class: 'form-control' %></td>
+            <td><%= f.text_field :fee, class: 'form-control' %></td>
+          </tr>
+        </table>
+      </div>
 
-        <tr>
-          <td><%= f.text_field :lease_date, id: 'lease_date', :'data-date-format' => 'YYYY-MM-DD' %></td>
-          <td><%= f.text_field :lease_time, id: 'lease_time', :'data-date-format' => 'HH:mm' %> ~ <%= f.text_field :end_time, id: 'end_time', :'data-date-format' => 'HH:mm' %></td>
-        </tr>
-      </table>
-    </div>
+      <div class="col-md-4">
+        <table>
+          <tr>
+            <% if @block.image? %>
+              <td><%= image_tag @block.image_url.to_s %></td>
+            <% else %>
+              <th><%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %></th>
+            <% end %>
+          </tr>
+          <tr>
+            <td><%= f.file_field :image %></td>
+          </tr>
+        </table>
+      </div>
+
+        <%= f.submit '儲存', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
   <% end %>
-<% end %>

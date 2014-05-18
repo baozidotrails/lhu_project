@@ -17,5 +17,4 @@
  *= require_tree .
  */
 
-
-@import 'bootstrap-datetimepicker';
+ @import "bootstrap";
