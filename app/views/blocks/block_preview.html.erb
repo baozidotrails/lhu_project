@@ -1,0 +1,126 @@
+<!-- put floors -->
+<% if @blocks.length > 0 %>
+  <% @blocks.each do |block| %>
+
+    <% if block.is_floor %>
+      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+    <% else %>
+
+      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
+
+    <% end %>
+  <% end %>
+<% else %>
+  <div class="container">
+    <div class="col-md-6 col-md-offset-0">
+      <table class="table table-bordered">
+        <tr class="active">
+          <th>最大容納人數 (人)</td>
+          <th>場地大小 (坪)</th>
+          <th>設備</th>
+        </tr>
+        <tr>
+          <td><%= @block.max_head_cap %></td>
+          <td><%= @block.footage %></td>
+          <td><%= @block.equipment %></td>
+        </tr>
+      </table>
+
+      <table class="table table-bordered">
+        <tr class="active">
+          <th>刊登時間</th>
+        </tr>
+        <tr>
+          <td>
+            <span class="start-at">
+              <input type="text" class="rent-date form-control" style="width: 100px">
+              <input type="text" class="rent-time form-control" style="width: 80px">
+            </span>
+            ~
+            <span class="end-at">
+              <input type="text" class="rent-date form-control" style="width: 100px">
+              <input type="text" class="rent-time form-control" style="width: 80px">
+            </span>
+          </td>
+        </tr>
+      </table>
+
+      <table class="table table-bordered">
+        <tr class="active">
+          <th>場地描述</th>
+          <th>收費</th>
+        </tr>
+        <tr>
+          <td><%= @block.intro %></td>
+          <td><%= @block.fee %></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="col-md-3 col-md-offset-0">
+      <table>
+        <tr>
+          <% if @block.image? %>
+            <td><%= image_tag @block.image_url.to_s %></td>
+          <% else %>
+            <th><%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %></th>
+          <% end %>
+        </tr>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<div class="row">
+  <% if @block.block_type == 0 %>
+    <% if @block.registration.nil? %>
+      <%= link_to '租', rent_block_path(@block), class: 'btn btn-primary', method: :post %>
+    <% else %>
+      <%= link_to '已被租用', '#', class: 'btn btn-primary', disabled: 'disabled' %>
+    <% end %>
+  <% end %>
+</div>
+
+
+
+
+
+<script>
+  $('.iamfather, .block-show').hover(function() {
+    // 針對還有的
+    $(this).css({ 'cursor': 'pointer' });
+  }).click(function() {
+
+    var id = $(this).attr('id').split('-')[1];
+
+
+    $('#block_ul-' + id).css({ 'color': 'red' });
+    // $('.sidebar_father_name').css({ 'color': 'black' });
+    $('#block_fa-' + id).css({ 'color': 'blue' });
+
+    $('.sidebar_child_name').css({ 'color': 'black' });
+    $('#block_ch-' + id).css({ 'color': 'orange' });
+
+
+    if($('#block_fa-' + id).closest('ul').siblings('ul').hasClass('open')) {
+        $('#block_fa-' + id).closest('ul').siblings('ul').addClass('closed').removeClass('open');
+        $('#block_fa-' + id).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
+      }
+
+      $('#block_fa-' + id).closest('ul').addClass('open')
+                           .removeClass('closed')
+                           .find('.sidebar_child_name').slideDown('fast');
+
+
+    // remove other readers
+    $('.blocks_display').remove();
+
+    // if no father reader
+    if ($('.blocks_display').length == 0) {
+      $('.show_sidebar').after('<div class="blocks_display"></div>');
+    };
+
+    // load father
+    $('.blocks_display').load('/blocks/' + id + '/block_preview');
+  });
+</script>

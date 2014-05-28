@@ -1,13 +1,9 @@
 <div class="container">
   <br>
-  <ul class="nav nav-tabs">
-    <li><%= link_to '個人資料', edit_user_path(current_user) %></li>
-    <li><%= link_to '刊登記錄', account_spaces_path %></li>
-    <li class="active"><a href="#">租用記錄</a></li>
-  </ul>
+  <%= render 'layouts/breadcrumb_for_user' %>
   <br>
   <div class="row">
-   <div class="col-md-10">
+   <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">已租用的場地（審核中）</div>
         <table class="table">
@@ -16,8 +12,10 @@
               <h2 align="center">您目前沒有審核中的場地。</h2>
             <% else %>
               <tr>
-                <th>名稱</th>
+                <th>單位名稱</th>
+                <th>場地名稱</th>
                 <th>申請日期</th>
+                <th>負責人</th>
                 <th>操作</th>
               </tr>
             <% end %>
@@ -28,7 +26,10 @@
             <% current_user.registrations.each do |record| %>
               <% unless record.is_pass %>
                 <tr>
-                  <td><%= record.name %></td>
+                  <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
+                  <td><%= record.block.name %></td>
+                  <td>123</td>
+                  <td><%= link_to record.space.user.name, record.space.user %></td>
                 </tr>
               <% end %>
             <% end %>

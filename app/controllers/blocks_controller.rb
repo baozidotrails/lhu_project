@@ -1,18 +1,20 @@
 class BlocksController < ApplicationController
-  before_action :set_block, only: [:show, :edit, :update, :destroy, :apply]
+
+  before_action :set_block, only: [:show, :edit, :update, :destroy, :rent]
+  before_action :loged_in_user, only: [:rent]
 
 
   # GET /blocks
   # GET /blocks.json
   def index
 
-    @blocks = Block.all
+    @blocks = Block.order(:name)
 
-    # @blocks = @blocks.where("name like ?", "%#{params[:search]}%") if params[:search]
+    @blocks = @blocks.where("name like ?", "%#{params[:search]}%") if params[:search].present?
 
-    # @blocks = @blocks.where("lease_date >= ?", "#{params[:start_at]}") if params[:start_at]
+    @blocks = @blocks.where("start_at >= ?", params[:start_at]) if params[:start_at].present?
 
-    # @blocks = @blocks.where("lease_date <= ?", "#{params[:end_at]}") if params[:end_at]
+    @blocks = @blocks.where("end_at <= ?", params[:end_at]) if params[:end_at].present?
 
   end
 
@@ -62,7 +64,7 @@ class BlocksController < ApplicationController
   def update
      respond_to do |format|
       if @block.update(block_params)
-        format.html { redirect_to :back, notice: 'Block was successfully updated.' }
+        format.html { redirect_to :back, notice: '場地資料成功設定。' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -99,22 +101,35 @@ class BlocksController < ApplicationController
     render layout: false
   end
 
-  def apply
-    if @block.update(registration: current_user.registrations.create(name: @block.name))
-      redirect_to current_user
+  def block_preview
+    @blocks = Block.where(parent_id: params[:id]).order('name DESC')
+    @block = Block.find(params[:id])
+    render layout: false
+  end
+
+  def rent
+
+    the_child = @block
+
+    until the_child.space_id?
+      parent_block = Block.find(the_child.parent_id)
+      the_child = parent_block
     end
+
+    the_reg = @block.create_registration(user: current_user, space: the_child.space)
+    Order.create!(space: the_reg.space, block: the_reg.block, user: the_reg.space.user, registration: the_reg)
+    @block.update(is_available: false)
+    redirect_to account_rents_path
   end
 
   private
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_block
       @block = Block.find(params[:id])
 
-      if @block.start_at
-        @start_at = @block.start_at.strftime('%Y-%m-%d')
-      else
-        @start_at = "未設定"
-      end
+
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

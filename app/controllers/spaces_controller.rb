@@ -6,6 +6,12 @@ class SpacesController < ApplicationController
   before_action :correct_user,  except: [:index, :preview, :new, :create]
 
 
+  def index
+    @spaces = Space.all
+
+
+  end
+
   def new
     @space = current_user.spaces.new
   end
@@ -63,11 +69,13 @@ class SpacesController < ApplicationController
   end
 
   def preview
-
+    @user = Space.find(params[:id]).user
+    @blocks = @user.spaces.find(params[:id]).blocks
   end
 
   def place
     if @space.update(is_public: true)
+      flash[:notice] = "成功刊登場地！"
       redirect_to account_spaces_path
     end
   end
@@ -86,7 +94,7 @@ class SpacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def space_params
-      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view)
+      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface)
     end
 
     def correct_user

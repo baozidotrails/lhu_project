@@ -9,4 +9,8 @@ class AccountController < ApplicationController
   def rents
     @registrations = current_user.registrations
   end
+
+  def orders
+    @orders = current_user.orders
+  end
 end

@@ -1,19 +1,15 @@
 <div class="container">
   <br>
-  <ul class="nav nav-tabs">
-    <li><%= link_to '個人資料', edit_user_path(current_user) %></li>
-    <li class="active"><a href="#">刊登記錄</a></li>
-    <li><%= link_to '租用記錄', account_rents_path %></li>
-  </ul>
+  <%= render 'layouts/breadcrumb_for_user' %>
   <br>
   <div class="row">
-   <div class="col-md-10">
+   <div class="col-md-12">
       <div class="panel panel-default">
-        <div class="panel-heading">已刊登的場地</div>
+        <div class="panel-heading">刊登中的場地</div>
         <table class="table">
           <thead>
-            <% if current_user.spaces.where(is_public: true).length < 1 %>
-              <h2 align="center">您目前沒有刊登任何場地。</h2>
+            <% if current_user.spaces.where(is_public: true).count == 0 %>
+              <h2 align="center">您目前沒有刊登中的場地。</h2>
             <% else %>
               <tr>
                 <th>名稱</th>
@@ -41,12 +37,12 @@
   </div>
   <br>
   <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">編輯中的場地</div>
         <table class="table">
           <thead>
-            <% if current_user.spaces.where(is_public: false).length < 1 %>
+            <% if current_user.spaces.where(is_public: false).count == 0 %>
               <h2 align="center">您目前沒有編輯中的場地。</h2>
             <% else %>
               <tr>

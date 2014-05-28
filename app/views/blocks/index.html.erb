@@ -1,5 +1,5 @@
 <div class="container">
-
+<%= params %>
   <h1>Listing blocks</h1>
 
   <br>
@@ -7,8 +7,8 @@
     <%= form_for blocks_path, method: :get do %>
       <p>
         <%= text_field_tag :search, params[:search] %>
-        <%= text_field_tag :start_at, params[:start_at] %>
-        <%= text_field_tag :end_at, params[:end_at] %>
+        <%= text_field_tag :start_at, params[:start_at], id: 'start_at', data: { "date-format" => "YYYY/MM/DD" } %>
+        <%= text_field_tag :end_at, params[:end_at], id: 'end_at', data: { "date-format" => "YYYY/MM/DD" } %>
         <%= submit_tag "search", name: nil %>
       </p>
     <% end %>
@@ -59,3 +59,20 @@
   <%= link_to 'New Block', new_block_path %>
 
 </div>
+
+<script>
+  $(function() {
+    $('#start_at').datetimepicker({
+      pickTime: false
+    });
+    $('#end_at').datetimepicker({
+      pickTime: false
+    });
+    $("#start_at").on("dp.change",function (e) {
+       $('#end_at').data("DateTimePicker").setMinDate(e.date);
+    });
+    $("#end_at").on("dp.change",function (e) {
+       $('#start_at').data("DateTimePicker").setMaxDate(e.date);
+    });
+  });
+</script>

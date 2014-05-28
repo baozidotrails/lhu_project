@@ -8,10 +8,11 @@ class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :password, length: { minimum: 6 }
+  validates :password, length: { minimum: 6 }, on: :create
 
-  has_many :spaces
-  has_many :registrations
+  has_many :spaces, dependent: :destroy
+  has_many :registrations, dependent: :destroy
+  has_many :orders, dependent: :destroy
 
   # image uploader
   mount_uploader :avatar, AvatarUploader

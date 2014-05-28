@@ -1,6 +1,15 @@
 class PagesController < ApplicationController
+
   def home
     @blocks = Block.all
+  end
+
+  def about
+
+  end
+
+  def contact
+
   end
 
   def decision
@@ -10,4 +19,5 @@ class PagesController < ApplicationController
   def sandbox
 
   end
+
 end

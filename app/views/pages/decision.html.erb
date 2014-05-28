@@ -1,5 +1,15 @@
-<button id="surface_pic" class="btn btn-default btn-lg">平面圖</button>
-<button id="floor_pic" class="btn btn-default btn-lg">樓層圖</button>
+<div class="pic_warpper">
+  <button id="surface_pic" class="btn btn-default btn-lg pic_sel">繪製平面圖</button>
+  <button id="floor_pic" class="btn btn-default btn-lg pic_sel">新增樓層圖</button>
+  <div class="bg"></div>
+  <div class="content">
+    <h2>請輸入樓層數：</h2>
+    <div style="display: table; margin: auto;">
+      <input type="text" id="floor_count" class="form-control" />
+    </div>
+    <br><button id="confirm_floor_count" class="btn btn-success">確定</button>
+  </div>
+</div>
 
 <script>
 console.log('-------decision-------');
@@ -7,59 +17,67 @@ console.log('-------decision-------');
     $('#floor_pic').remove();
   }
 
-  $('#floor_pic').click(function() {
+
+  $('#floor_pic').click(function(){
+    $('.bg').fadeIn(200);
+    $('.content').fadeIn(400);
+  });
+
+  $('.bg').click(function(){
+    $('.bg').fadeOut(200);
+    $('.content').fadeOut(200);
+  });
 
 
-    $(this).after('<br><input type="text" id="floor_count" />樓<br><button id="confirm_floor_count">確定</button>');
-    $('#confirm_floor_count').click(function() {
+  $('#confirm_floor_count').click(function() {
 
-      var floor_count = $('#floor_count').val();
-      var parentId = sessionStorage.getItem('parent_id');
+    var floor_count = $('#floor_count').val();
+    var parentId = sessionStorage.getItem('parent_id');
 
-      for(var i = floor_count; i >= 1; i--) {
+    for(var i = floor_count; i >= 1; i--) {
 
-        var j = i;
+      var j = i;
 
-        // chain '0' to preposition of floor name
-        if(i < 10) {
-          j = '0' + j;
-        }
-
-        var block = {
-          'name': j + '樓',
-          'parent_id': parentId,
-          'width': '750',
-          'height': '50',
-          'block_type': 2,
-          'is_floor': true
-        }
-
-        $.ajax({
-          type: 'POST',
-          url: '/blocks',
-          data: JSON.stringify(block),
-          dataType: 'json',
-          contentType: 'application/json'
-        });
+      // chain '0' to preposition of floor name
+      if(i < 10) {
+        j = '0' + j;
       }
 
-      // change block type
+      var block = {
+        'name': j + '樓',
+        'parent_id': parentId,
+        'width': '750',
+        'height': '50',
+        'block_type': 2,
+        'is_floor': true
+      }
+
       $.ajax({
-        type: 'PUT',
-        url: '/blocks/' + parentId,
-        data: JSON.stringify({ 'block_type': 1 }),
+        type: 'POST',
+        url: '/blocks',
+        data: JSON.stringify(block),
         dataType: 'json',
-        contentType: 'application/json',
-        success: function() {
-          sessionStorage.removeItem('is_drawing');
-          sessionStorage.setItem('parent_type', 1);
-          sessionStorage.setItem('pre_page', parentId);
-          location.reload();
-          // 之後就會跳到「main.js」
-        }
+        contentType: 'application/json'
       });
+    }
+
+    // change block type
+    $.ajax({
+      type: 'PUT',
+      url: '/blocks/' + parentId,
+      data: JSON.stringify({ 'block_type': 1 }),
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function() {
+        sessionStorage.removeItem('is_drawing');
+        sessionStorage.setItem('parent_type', 1);
+        sessionStorage.setItem('pre_page', parentId);
+        location.reload();
+        // 之後就會跳到「main.js」
+      }
     });
-  }); // floor_pic
+  });
+
 
   $('#surface_pic').click(function() {
 

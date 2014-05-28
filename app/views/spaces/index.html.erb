@@ -1,4 +1,35 @@
 <div class="container">
-  <h1 align="center">所有場地</h1>
-  <hr>
-</div>
+  <br><br>
+  <div class="row">
+   <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">所有場地</div>
+        <table class="table">
+          <thead>
+            <% if @spaces.where(is_public: true).count == 0 %>
+              <h2 align="center">目前沒有任何已刊登的場地。</h2>
+            <% else %>
+              <tr>
+                <th>單位</th>
+                <th>建立日期</th>
+                <th>擁有者</th>
+              </tr>
+            <% end %>
+
+          </thead>
+
+          <tbody>
+            <% @spaces.where(is_public: true).each do |space| %>
+
+              <tr>
+                <td><%= link_to space.name, preview_space_path(space) %></td>
+                <td><%= space.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+                <td><%= link_to space.user.name, space.user %></td>
+              </tr>
+
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>

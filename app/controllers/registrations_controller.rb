@@ -2,16 +2,11 @@ class RegistrationsController < ApplicationController
 
 
 
-  def new
+  def create
 
   end
 
-  def create
-    @registration = Registration.new(registration_params)
-
-    if @registration.save
-      redirect_to current_user
-    end
+  def update
 
   end
 
@@ -19,12 +14,11 @@ class RegistrationsController < ApplicationController
 
   end
 
+
   private
 
-
-
     def registration_params
-      params.require(:registration).permit(:name, :email, :is_pass, :user_id, :block_id)
+      params.require(:registration).permit(:is_pass, :user_id, :block_id, :space_id)
     end
 
 end

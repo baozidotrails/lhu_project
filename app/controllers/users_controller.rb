@@ -16,8 +16,10 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user
+      flash[:notice] = "#{@user.name}，歡迎您的加入！"
       redirect_to @user
     else
+      flash.now[:notice] = '星號欄位為必填，請再次檢查。'
       render 'new'
     end
   end

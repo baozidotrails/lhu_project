@@ -6,7 +6,26 @@
 }
 
 body {
-  background: asset-url('bg_white_pattern.png', image);
+  // margin: 0;
+  // padding: 0;
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+}
+
+.login-wrapper {
+  display: block;
+  background: asset-url('bg-speech.jpg' ,image);
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0%;
+  left:0%;
+  z-index: -1;
 }
 
 
@@ -25,7 +44,7 @@ body {
     padding: 3px;
     margin-left: 3%;
     border-radius: 5px;
-    border: 1px solid #f8f8f8;
+    border: 1px solid #ffffff;
   }
 
   .active {
@@ -36,21 +55,23 @@ body {
   }
 }
 
-// remove radius
-.navbar {
-  border-radius: 0px;
-  margin-bottom: 0;
-  height: 51px;
-  .dropdown-toggle {
-    position: relative;
-    bottom: 5px;
-    height: 50px;
+
+.thumb_avatar {
+  border-radius: 16px;
+}
+
+.navbar-nav > li > a {
+
+  &:hover {
+    background: #e3e3e3 !important;
   }
 }
 
-.container {
-  width: 90%;
+a.dropdown-toggle {
+  padding-top: 10px !important;
+  padding-bottom: 8px !important;
 }
+
 
 .cented {
   display: table;
@@ -117,6 +138,7 @@ body {
 }
 
 .newdiv, .block-show {
+  cursor: move;
   position: absolute;
   box-shadow: 1px 1px 1px rgba(20%,20%,40%,0.2);
   border: 1px solid #7f7f7f;
@@ -160,44 +182,58 @@ body {
   cursor: pointer;
   float: right;
 }
-
+// fcff62
 // yellow board
 .board {
   display: block;
-  background: #fcff62;
-  padding: 100px 0;
-  letter-spacing: 5px;
-  text-shadow: 0 1px 3px #EEE;
+  height: 100%;
 
-  h1 {
+  // background: asset-url('bg-teach.jpg', image);
+  // background-attachment:fixed;
+
+  background: -webkit-linear-gradient(left,rgba(0,0,0,0.8),rgba(0,0,0,0)), asset-url('bg-teach.jpg', image);
+  background-position:center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+
+
+
+  // text-shadow: 0 1px 3px #EEE;
+  color: #ffffff;
+
+  .slogn {
+    letter-spacing: 5px;
     display: block;
-    font-size: 8em;
+
     position: relative;
-    top: -70px;
+    // text-align: center;
+    top: 257px;
+    font-size: 25px;
   }
 
-  h2 {
-    display: block;
+  .btns {
+    text-align: right;
     position: relative;
-    top: -70px;
-    left: 12px;
-    letter-spacing: 3px;
   }
+
+
 
   .btn-se {
     display: inline-block;
-    padding: 10px 30px;
-    background: #ffffff;
-    box-shadow: #dcdf55 0 -2px 0 inset;
+    padding: 5px 30px;
+    // box-shadow: #dcdf55 0 -2px 0 inset;
     font-size: 18px;
-    border: 1px solid #e3e3e3;
-    border-radius: 5px;
+    border: 2px solid #ffffff;
     text-decoration: none;
-    color: #7f7f7f;
-    -webkit-transition: all 0.1s ease-in-out;
+    color: #ffffff;
+
     &:hover {
-      color: #000;
+      -webkit-transition: all 0.2s linear;
+      background: white;
+      color: black;
     }
+
   }
 
   .se_divider {
@@ -205,13 +241,292 @@ body {
   }
 }
 
+.line {
+  float: left;
+  width: 100%;
+  padding: 60px 0 0px;
+
+  .box {
+    float: left;
+    width: 100%;
+    .title {
+      font-family: Open Sans, "Lantinghei TC", "Hiragino Kaku Gothic ProN", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 28px;
+      color: #202020;
+      margin-bottom: 20px;
+      margin-top: -80px;
+      padding-left: 90px;
+
+    }
+    .content {
+      float: left;
+      width: 100%;
+      font-family: Open Sans, "Lantinghei TC", "Hiragino Kaku Gothic ProN", sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 26px;
+      color: #666666;
+      margin-bottom: 50px;
+    }
+    .lg-padded {
+      padding-left: 90px;
+    }
+
+    .oldal-icon {
+      position: relative;
+      right: 55px;
+      top: 60px;
+      width: 85px;
+      height: 85px;
+      font-size: 40px;
+      line-height: 85px;
+    }
+  }
+
+  .title {
+    float: left;
+    font-family: Open Sans, "Lantinghei TC", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 48px;
+    color: #dddddd;
+    margin-bottom: 40px;
+    font-weight: bold;
+  }
+
+  .title-content {
+    font-family: Open Sans, "Lantinghei TC", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 32px;
+    color: #aaaaaa;
+    margin-bottom: 40px;
+  }
+
+}
+
 .signin-card {
-  width: 300px;
-  padding: 40px;
+  width: 400px;
+  padding: 50px;
   background: #f7f7f7;
-  margin: 30px auto 25px;
+  margin: 150px auto 25px;
   border: #e0e0e0 1px solid;
-  background: asset-url('bg_grey_pattern.png', image);
+  background: asset-url('center.png', image);
   // box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 
+}
+
+// flash message
+.flash_msg {
+  display: block;
+  position: fixed;
+  padding: 10px;
+  background: #3f3f3f;
+  color: #bfbfbf;
+  font-size: 15px;
+  border: 1px solid #e3e3e3;
+  border-radius: 5px;
+  right: 5px;
+  top: 55px;
+  z-index: 999;
+}
+
+/* footer */
+
+.simple-footer {
+  float: left;
+  width: 100%;
+  background: #202020;
+  padding: 100px;
+
+  position: relative;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+// decision
+
+.pic_warpper {
+  display: table;
+  margin: 40px auto;
+  .pic_sel {
+    font-size: 40px;
+    margin: 10px;
+    width: 300px;
+    height: 200px;
+  }
+
+  .bg {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    opacity: 0.7;
+  }
+
+  .content {
+    display: none;
+    text-align: center;
+    width: 350px;
+    height: 200px;
+    position: fixed;
+    top: 50%;
+    margin-top: -150px;
+    background: #fff;
+    z-index: 3;
+    left: 50%;
+    margin-left: -250px;
+    padding: 20px;
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+
+
+  .box {
+    .title {
+      position: relative !important;
+      left: 30% !important;
+      font-size: 2em !important;
+    }
+    .content {
+
+    }
+
+    .lg-padded {
+      padding: 0 14px !important;
+    }
+
+    .oldal-icon {
+      right: 70px !important;
+      font-size: 2em !important;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .box {
+    .title {
+      position: relative !important;
+      left: 24% !important;
+      font-size: 2em !important;
+    }
+    .content {
+
+    }
+
+    .lg-padded {
+      padding: 0 14px !important;
+    }
+
+    .oldal-icon {
+      right: 70px !important;
+      font-size: 2em !important;
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .box {
+    .title {
+      position: relative !important;
+      left: 20% !important;
+      font-size: 2em !important;
+    }
+    .content {
+
+    }
+
+    .lg-padded {
+      padding: 0 14px !important;
+    }
+
+    .oldal-icon {
+      right: 70px !important;
+      font-size: 2em !important;
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+
+  .signin-card {
+    width: 80% !important;
+  }
+
+  .title {
+    position: relative !important;
+    left: 17% !important;
+    font-size: 2em !important;
+  }
+  .slogn {
+    letter-spacing: 5px;
+    display: block;
+
+    position: relative;
+    // text-align: center;
+    top: 100px !important;
+    text-align: center;
+    font-size: 40px !important;
+  }
+
+  .btns {
+    text-align: center !important;
+    bottom: 50px !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+
+  .box {
+    .title {
+      position: relative !important;
+      left: 14% !important;
+      font-size: 2em !important;
+    }
+    .content {
+
+    }
+
+    .lg-padded {
+      padding: 0 14px !important;
+    }
+
+    .oldal-icon {
+      right: 70px !important;
+      font-size: 2em !important;
+    }
+  }
+}
+
+@media screen and (max-width: 451px) {
+  .slogn {
+    letter-spacing: 5px;
+    display: block;
+
+    position: relative;
+    // text-align: center;
+    top: 100px !important;
+    text-align: center;
+    font-size: 30px !important;
+  }
+}
+
+
+@media screen and (max-width: 366px) {
+  .btn-se {
+    padding: 5px 10px !important;
+  }
+
+  .slogn {
+    font-size: 20px !important;
+  }
 }

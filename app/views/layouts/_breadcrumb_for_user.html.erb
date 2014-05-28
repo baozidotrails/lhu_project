@@ -1,0 +1,6 @@
+<ul class="nav nav-tabs">
+  <li class="<%= is_active('edit') %>"><%= link_to '個人資料', edit_user_path(current_user) %></li>
+  <li class="<%= is_active('spaces') %>"><%= link_to '刊登記錄', account_spaces_path %></li>
+  <li class="<%= is_active('rents') %>"><%= link_to '租用記錄', account_rents_path %></li>
+  <li class="<%= is_active('orders') %>"><%= link_to '訂單記錄', account_orders_path %></li>
+</ul>

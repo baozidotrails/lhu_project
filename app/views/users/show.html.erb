@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-2">
         <% if @user.avatar? %>
-          <%= image_tag @user.avatar_url.to_s, style: 'width: 180px; height: 180px', class: 'user_profile' %>
+          <%= image_tag @user.avatar_url(:profile).to_s, style: 'width: 180px; height: 180px', class: 'user_profile' %>
         <% else %>
           <%= image_tag 'no_avatar.jpg', style: 'width: 180px; height: 180px', class: 'user_profile' %>
         <% end %>
@@ -73,7 +73,8 @@
       <tbody>
         <% current_user.registrations.where(is_pass: false).each do |record| %>
           <tr>
-            <td><%= record.name %></td>
+
+            <td><%= record.block.name %></td>
             <td><%= record.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
           </tr>
         <% end %>
