@@ -4,7 +4,7 @@
 </div>
 <div class="container space-show-container" style="width: 97%">
 
-
+  <section class="line"></section>
 
   <div class="main_display">
     <div class="show_sidebar">
@@ -36,18 +36,24 @@
     <!-- blocks -->
     <div class="blocks_display">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
+        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %></div>
       <% end %>
     </div> <!-- blocks_display -->
   </div> <!-- main_display -->
 
-  <div class="step_contro">
-    <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
-    <%= link_to '上一步', detailize_space_path(@space), class: 'btn btn-default' %>
-    <%= link_to '刊登場地', place_space_path, class: 'btn btn-primary' %>
 
+  <nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
+    <div class="row" style="margin-left: 2%; position:">
+      <div class="col-md-3 col-md-offset-1">
+        <%= link_to '主平面圖', @space, id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 15%;' %>
+      </div>
 
-  </div>
+      <div class="col-md-3" style="float: right">
+        <%= link_to '上一步', detailize_space_path(@space), class: 'btn btn-default' %>
+        <%= link_to '刊登場地', place_space_path, class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </nav>
 
 
 </div> <!-- container -->

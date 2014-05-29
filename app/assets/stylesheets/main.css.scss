@@ -31,12 +31,16 @@ body {
 
 // breadcrumb
 .now-step-bread {
+  display: table;
   cursor: default;
   border-radius: 10px;
   list-style: none;
-  margin: 10px 0 10px 0;
+  margin: auto;
   overflow: hidden;
-  padding: 8px 8px 8px 0px;
+  padding: 15px 8px 8px 0px;
+  width: 100%;
+  // background: #e3e3e3;
+  text-align: center;
 
   li {
     display: block;
@@ -58,6 +62,10 @@ body {
 
 .thumb_avatar {
   border-radius: 16px;
+}
+
+.navbar {
+  background: white;
 }
 
 .navbar-nav > li > a {
@@ -115,7 +123,7 @@ a.dropdown-toggle {
   }
 
 
-  .editor, .selection_panel, .tmp_reader, .blocks_display {
+  .editor, .selection_panel, .tmp_reader, .blocks_display, .selection_panel {
     position: relative;
     left: 10px;
     width: 85%;
@@ -127,8 +135,8 @@ a.dropdown-toggle {
     float: left;
   }
 
-  .selection_panel {
-    background: none;
+  .editor {
+    cursor:crosshair;
   }
 }
 
@@ -141,7 +149,7 @@ a.dropdown-toggle {
   cursor: move;
   position: absolute;
   box-shadow: 1px 1px 1px rgba(20%,20%,40%,0.2);
-  border: 1px solid #7f7f7f;
+  // border: 1px solid #ffffff;
   background: #f2f2f2;
   a {
     color: black;
@@ -151,14 +159,23 @@ a.dropdown-toggle {
   }
 }
 
+.namename {
+  margin-left: 1px;
+  border-radius: 2px;
+  border: 1px solid #7f7f7f;
+  background: #fff;
+  color: black;
+}
+
 
 .father_block {
-  border: 1px solid #7f7f7f;
+  // border: 1px solid #7f7f7f;
   box-shadow: 1px 1px 1px rgba(20%,20%,40%,0.2);
   background: #f2f2f2;
   margin: 20px;
   margin-bottom: 25px;
   padding-bottom: 25px;
+  // width: 60%;
   a {
     color: black;
     &:hover {
@@ -374,7 +391,7 @@ a.dropdown-toggle {
   .content {
     display: none;
     text-align: center;
-    width: 350px;
+    width: 500px;
     height: 200px;
     position: fixed;
     top: 50%;

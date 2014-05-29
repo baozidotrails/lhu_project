@@ -4,7 +4,7 @@
 <% if @block.block_type == 0 %>
   <%= form_for @block, html: { mutilpart: true } do |f| %>
 
-    <div class="col-md-7 col-md-offset-1">
+    <div class="col-md-7 col-md-offset-0">
       <table class="table table-bordered">
         <tr class="active">
           <th>最大容納人數 (人)</td>
@@ -65,7 +65,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6 col-md-offset-1">
+      <div class="col-md-6 col-md-offset-0">
         &nbsp;
         <%= f.submit '儲存設定', class: 'btn btn-primary' %>
       </div>

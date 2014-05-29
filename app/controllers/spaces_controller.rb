@@ -1,7 +1,7 @@
 class SpacesController < ApplicationController
 
 
-  before_action :set_space,     only: [:show, :edit, :update, :spaceinfo, :preview, :remove, :place]
+  before_action :set_space,     only: [:show, :edit, :update, :spaceinfo, :preview, :remove, :place, :detailize]
   before_action :loged_in_user, except: [:index, :preview]
   before_action :correct_user,  except: [:index, :preview, :new, :create]
 
@@ -94,7 +94,7 @@ class SpacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def space_params
-      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface)
+      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface, :height)
     end
 
     def correct_user

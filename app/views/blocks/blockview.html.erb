@@ -3,10 +3,10 @@
   <% @blocks.each do |block| %>
 
     <% if block.is_floor %>
-      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
     <% else %>
 
-      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
+      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"> <span class="namename"><%= block.name %></span> </div>
 
     <% end %>
   <% end %>

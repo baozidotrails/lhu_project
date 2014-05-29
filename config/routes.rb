@@ -28,7 +28,7 @@ Cloudspace::Application.routes.draw do
   resources :registrations, only: [:create, :update, :destroy]
   resources :orders, only: [:create, :update, :destroy] do
     member do
-      post 'pass'
+      post 'activate'
     end
   end
 

@@ -5,11 +5,11 @@
   <div class="row">
    <div class="col-md-12">
       <div class="panel panel-default">
-        <div class="panel-heading">已租用的場地（審核中）</div>
+        <div class="panel-heading">您租用的場地（審核中）</div>
         <table class="table">
-          <thead>
+        <thead>
             <% if current_user.registrations.where(is_pass: false).length < 1 %>
-              <h2 align="center">您目前沒有審核中的場地。</h2>
+              <h2 align="center">目前沒有記錄。</h2>
             <% else %>
               <tr>
                 <th>單位名稱</th>
@@ -23,13 +23,14 @@
           </thead>
 
           <tbody>
-            <% current_user.registrations.each do |record| %>
+            <% current_user.registrations.where(is_pass: false).each do |record| %>
               <% unless record.is_pass %>
                 <tr>
                   <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
                   <td><%= record.block.name %></td>
-                  <td>123</td>
+                  <td><%= record.created_at.strftime("%Y/%m/%d %H:%M") %></td>
                   <td><%= link_to record.space.user.name, record.space.user %></td>
+                  <td><%= link_to '取消申請', record , method: 'delete', confirm: "確定取消申請？" %></td>
                 </tr>
               <% end %>
             <% end %>
@@ -38,5 +39,43 @@
       </div>
     </div>
   </div>
+
+  <div class="row">
+   <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">成功租用的場地</div>
+        <table class="table">
+          <thead>
+            <% if current_user.registrations.where(is_pass: true).length < 1 %>
+              <h2 align="center">目前沒有記錄。</h2>
+            <% else %>
+              <tr>
+                <th>單位名稱</th>
+                <th>場地名稱</th>
+                <th>申請日期</th>
+                <th>負責人</th>
+              </tr>
+            <% end %>
+
+          </thead>
+
+          <tbody>
+            <% current_user.registrations.where(is_pass: true).each do |record| %>
+
+              <tr>
+                <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
+                <td><%= record.block.name %></td>
+                <td><%= record.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+                <td><%= link_to record.space.user.name, record.space.user %></td>
+
+              </tr>
+
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <br>
 </div>

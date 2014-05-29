@@ -13,8 +13,11 @@ class OrdersController < ApplicationController
   def destroy
   end
 
-  def pass
-
+  def activate
+    @order = Order.find(params[:id])
+    @order.update(is_activated: true)
+    @order.registration.update(is_pass: true)
+    redirect_to :back
   end
 
   private

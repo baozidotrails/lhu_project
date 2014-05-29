@@ -31,7 +31,7 @@
     <!-- blocks -->
     <div class="blocks_display">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"><%= block.name %></div>
+        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %></div>
       <% end %>
     </div> <!-- blocks_display -->
   </div> <!-- main_display -->
