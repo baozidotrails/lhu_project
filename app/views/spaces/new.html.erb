@@ -45,8 +45,10 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :surface, '自備平面圖' %>
-        <%= f.file_field :surface %>
+        <%= f.label :surface, '自備平面圖', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.file_field :surface %>
+        </div>
       </div>
       <hr>
       <div class="form-group">

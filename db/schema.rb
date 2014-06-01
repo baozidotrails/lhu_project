@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140529112011) do
+ActiveRecord::Schema.define(version: 20140531173402) do
 
   create_table "blocks", force: true do |t|
     t.string   "name"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20140529112011) do
     t.string   "intro"
     t.boolean  "is_available"
     t.string   "color",        default: "#efefef"
+    t.integer  "unit_id"
   end
 
   create_table "categories", force: true do |t|

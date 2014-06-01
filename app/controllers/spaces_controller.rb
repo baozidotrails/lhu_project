@@ -32,7 +32,11 @@ class SpacesController < ApplicationController
     @space = current_user.spaces.new(space_params)
 
     if @space.save
-      redirect_to edit_space_path(@space)
+      if params[:space][:surface].present?
+        render :crop
+      else
+        redirect_to edit_space_path(@space)
+      end
     else
       render 'new'
     end
@@ -40,7 +44,12 @@ class SpacesController < ApplicationController
 
   def update
     if @space.update(space_params)
-      redirect_to edit_space_path
+      if params[:space][:surface].present?
+        render :crop
+      else
+        redirect_to edit_space_path
+      end
+
     else
       flash.now[:notice] = "沒填的田一田"
       render 'spaceinfo'
@@ -94,7 +103,7 @@ class SpacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def space_params
-      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface, :height)
+      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface, :height, :crop_x, :crop_y, :crop_w, :crop_h)
     end
 
     def correct_user

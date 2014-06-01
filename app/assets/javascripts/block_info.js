@@ -5,8 +5,8 @@ $(function() {
 
 
 
-    $('.sidebar_grandpa_name').css({ 'color': 'black' });
-    $('#block_ul-' + id).css({ 'color': 'red' });
+    $('.sidebar_grandpa_name').css({ 'color': '#bfbfbf' });
+    $('#block_ul-' + id).css({ 'color': '#f68590' });
 
     $('.blocks_display').remove();
     $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');

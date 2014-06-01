@@ -73,7 +73,7 @@
 
     // add blick enter feature
     $('.block_enter').click(function() {
-      $('.sidebar_child_name').css({ 'color': 'black' });
+      $('.sidebar_child_name').css({ 'color': '#bfbfbf' });
 
       var id = $(this).closest('.father_block').attr('id').split('-')[1];
       sessionStorage.setItem('block_parent_id', $(this).closest('.father_block').data('parentid'));
@@ -83,8 +83,8 @@
 
       // $('.sidebar_grandpa_name').css({ 'color': 'black' });
       $('#block_ul-' + id).css({ 'color': 'red' });
-      $('.sidebar_father_name').css({ 'color': 'black' });
-      $('#block_fa-' + id).css({ 'color': 'blue' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
+      $('#block_fa-' + id).css({ 'color': '#539cff' });
 
 
       // menu controller
@@ -118,7 +118,7 @@
       $('.blocks_display').load('/blocks/' + id);
 
       if (sessionStorage.getItem('block_parent_id')) {
-        $('#detail_index').text('回到上一層').click(function() {
+        $('#detail_index').click(function() {
           sessionStorage.clear();
           sessionStorage.setItem('back_to_top', parentid);
         });
@@ -136,12 +136,12 @@
 
       var parentid = $(this).data('parentid');
 
-
-      $('.sidebar_father_name').css({ 'color': 'black' });
-      $('.sidebar_child_name').css({ 'color': 'black' });
-      $('#block_fa-' + id).css({ 'color': 'blue' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
+      $('.sidebar_child_name').css({ 'color': '#bfbfbf' });
+      $('#block_fa-' + id).css({ 'color': '#539cff' });
       $('#block_ch-' + id).css({ 'color': 'orange' });
-      $('#block_ch-' + id).siblings('.sidebar_father_name').css({ 'color': 'blue' });
+      $('#block_ch-' + id).siblings('.sidebar_father_name').css({ 'color': '#539cff' });
+
 
       $('.blocks_display').remove();
       $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');
@@ -153,7 +153,7 @@
       // }
 
       if (sessionStorage.getItem('update_info_redir')) {
-        $('#detail_index').text('回到上一層').click(function() {
+        $('#detail_index').click(function() {
           sessionStorage.clear();
           sessionStorage.setItem('back_to_top', parentid);
         });

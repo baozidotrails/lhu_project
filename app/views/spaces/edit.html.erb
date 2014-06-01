@@ -43,12 +43,12 @@
     </div> <!-- sidebar -->
 
     <!-- blocks -->
-    <div class="editor" data-spaceid="<%= @space.id %>" style="height: <%= @space.height %>;">
+    <div class="editor" data-spaceid="<%= @space.id %>" style="height: <%= @space.height %>; <% if @space.surface? %> background: url(<%= @space.surface_url(:thumb).to_s %>); background-repeat: no-repeat; <% end %> ">
 
       <% @blocks.each do |block| %>
         <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-spaceid="<%= block.space_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"><span class="namename"><%= best_in_place block, :name %></span><%= link_to '×', block, class: 'block_close', method: :delete %> <i class="fa fa-cog block_edit"></i> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %>
 
-          <div style="width: 22px; height: 24px; border: 1px solid #7f7f7f; position: absolute; bottom: 1%; left: 1%;">
+          <div style="position: absolute; bottom: 1%; left: 1%;">
             <select name="colorpicker" data-block="<%= block.id %>">
               <option value="<%= block.color %>"></option>
               <option value="#7bd148">Green</option>
@@ -68,26 +68,21 @@
       <% end %>
     </div> <!-- editor -->
   </div> <!-- main_function -->
-
-
-  <nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
-    <div class="row" style="margin-left: 2%; position:">
-      <div class="col-md-3 col-md-offset-1">
-        <%= link_to '主平面圖', edit_space_path(@space), id: 'reload_and_main_pic', class: 'btn btn-success', style: 'float: left; margin-left: 15%;' %>
-      </div>
-      <div class="col-md-3 col-md-offset-1">
-        <button class="enlarge btn btn-default">↓</button>
-        <button class="orig btn btn-default">維持原狀</button>
-        <button class="ensmall btn btn-default">↑</button>
-      </div>
-      <div class="col-md-3" style="float: right">
-        <%= link_to '上一步', spaceinfo_space_path, class: 'btn btn-default' %>
-        <%= link_to '下一步', detailize_space_path(@space), class: 'btn btn-primary' %>
-      </div>
-    </div>
-  </nav>
-
 </div> <!-- container -->
+
+<nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
+  <div class="control-btns">
+    <%= link_to '<i class="fa fa-home"></i>'.html_safe, edit_space_path(@space), id: 'reload_and_main_pic', class: 'btn btn-default' %>
+
+      <button class="enlarge btn btn-default"><i class="fa fa-chevron-down"></i></button>
+      <button class="orig btn btn-default"><i class="fa fa-undo"></i></button>
+      <button class="ensmall btn btn-default"><i class="fa fa-chevron-up"></i></button>
+
+
+      <%= link_to '<i class="fa fa-long-arrow-left"></i>'.html_safe, spaceinfo_space_path, class: 'btn btn-default' %>
+      <%= link_to '<i class="fa fa-long-arrow-right"></i>'.html_safe, detailize_space_path(@space), class: 'btn btn-default' %>
+  </div>
+</nav>
 
 
 
@@ -102,8 +97,13 @@
 
   $('.enlarge').click(function() {
     // alert(height);
+
+    // $('.editor').animate({
+    //   'height': $('.editor').height() + 100
+    // });
+
     $('.editor').css({
-      'height': $('.editor').height() + 100
+        'height': $('.editor').height() + 100
     });
 
     $.ajax({
@@ -119,8 +119,13 @@
     // alert(height);
 
     if($('.editor').height() > $('.sidebar').height()) {
+
+      // $('.editor').animate({
+      //   'height': $('.editor').height() - 100
+      // });
+
       $('.editor').css({
-        'height': $('.editor').height() - 100
+        'height': $('.editor').height() - 96
       });
 
       $.ajax({
@@ -137,9 +142,12 @@
   $('.orig').click(function() {
     // alert(height);
 
+    // $('.editor').animate({
+    //   'height': '72vh'
+    // });
 
     $('.editor').css({
-      'height': '72vh'
+        'height': '72vh'
     });
 
     $.ajax({

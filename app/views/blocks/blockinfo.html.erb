@@ -2,82 +2,77 @@
 
 <br>
 <% if @block.block_type == 0 %>
-  <%= form_for @block, html: { mutilpart: true } do |f| %>
+  <%= form_for @block, html: { mutilpart: true, class: 'form-horizontal' } do |f| %>
 
-    <div class="col-md-7 col-md-offset-0">
-      <table class="table table-bordered">
-        <tr class="active">
-          <th>最大容納人數 (人)</td>
-          <th>場地大小 (坪)</th>
-          <th>設備</th>
-        </tr>
-        <tr>
-          <td><%= f.text_field :max_head_cap, class: 'form-control' %></td>
-          <td><%= f.text_field :footage, class: 'form-control' %></td>
-          <td><%= f.text_field :equipment, class: 'form-control' %></td>
-        </tr>
-      </table>
+    <div class="col-md-8">
+      <div class="form-group">
+        <%= f.label :max_head_cap, '容納人數 (人)', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :max_head_cap, class: 'form-control', autofocus: true %>
+        </div>
+      </div>
 
-      <table class="table table-bordered">
-        <tr class="active">
-          <th>刊登時間</th>
-        </tr>
-        <tr>
-          <td>
-            <span class="start-at">
+      <div class="form-group">
+        <%= f.label :footage, '大小 (坪)', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :footage, class: 'form-control' %>
+        </div>
+      </div>
 
-              <%= f.text_field :start_at, id: 'start_at', class: 'form-control', data: { "date-format" => "YYYY/MM/DD HH:mm" } %>
+      <div class="form-group">
+        <%= f.label :equipment, '設備', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :equipment, class: 'form-control' %>
+        </div>
+      </div>
 
-            </span>
-            ~
-            <span class="end-at">
-              <%= f.text_field :end_at, id: 'end_at', class: 'form-control', data: { "date-format" => "YYYY/MM/DD HH:mm" } %>
-            </span>
-          </td>
-        </tr>
-      </table>
+      <div class="form-group">
+        <%= f.label :start_at, '開始時間', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :start_at, id: 'start_at', class: 'form-control', data: { "date-format" => "YYYY/MM/DD HH:mm" }, class: 'form-control' %>
+        </div>
+      </div>
 
-      <table class="table table-bordered">
-        <tr class="active">
-          <th>場地描述</th>
-          <th>收費</th>
-        </tr>
-        <tr>
-          <td><%= f.text_area :intro, class: 'form-control' %></td>
-          <td><%= f.text_field :fee, class: 'form-control' %></td>
-        </tr>
-      </table>
-    </div>
+      <div class="form-group">
+        <%= f.label :end_at, '結束時間', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :end_at, id: 'end_at', class: 'form-control', data: { "date-format" => "YYYY/MM/DD HH:mm" }, class: 'form-control' %>
+        </div>
+      </div>
 
-    <div class="col-md-3 col-md-offset-0">
-      <table>
-        <tr>
-          <% if @block.image? %>
-            <td><%= image_tag @block.image_url.to_s %></td>
-          <% else %>
-            <th><%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %></th>
-          <% end %>
-        </tr>
-        <tr>
-          <td><%= f.file_field :image %></td>
-        </tr>
-      </table>
-    </div>
+      <div class="form-group">
+        <%= f.label :fee, '收費', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_field :fee, class: 'form-control' %>
+        </div>
+      </div>
 
-    <div class="row">
-      <div class="col-md-6 col-md-offset-0">
-        &nbsp;
-        <%= f.submit '儲存設定', class: 'btn btn-primary' %>
+      <div class="form-group">
+        <%= f.label :intro, '場地描述', class: 'col-sm-2 control-label' %>
+        <div class="col-sm-10">
+          <%= f.text_area :intro, class: 'form-control' %>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+          <%= f.submit '儲存', class: 'btn btn-success col-sm-2' %>
+        </div>
       </div>
     </div>
 
+    <div class="col-md-4">
+      <% if @block.image? %>
+        <%= image_tag @block.image_url.to_s %>
+      <% else %>
+        <%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %>
+        <%= f.file_field :image %>
+      <% end %>
+    </div>
   <% end %>
 <% end %>
-
-
-
-
-
 
 <script>
   $(function() {

@@ -1,6 +1,7 @@
-
-<br>
 <div class="container space-show-container" style="width: 97%">
+
+  <section class="line"></section>
+
   <div class="main_display">
     <div class="show_sidebar">
 
@@ -31,20 +32,25 @@
     <!-- blocks -->
     <div class="blocks_display">
       <% @blocks.each do |block| %>
-        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %></div>
+        <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %></div>
       <% end %>
     </div> <!-- blocks_display -->
   </div> <!-- main_display -->
-
-  <div class="step_contro">
-    <%= link_to '主平面圖', preview_space_path(@space), id: 'detail_index', class: 'btn btn-success', style: 'float: left; margin-left: 14.7%;' %>
-
-
-
-  </div>
-
-
 </div> <!-- container -->
+
+<nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
+  <div class="control-btns">
+    <%= link_to '<i class="fa fa-home"></i>'.html_safe , preview_space_path(@space), id: 'detail_index', class: 'btn btn-default' %>
+    <button class="spaceinfo btn btn-default"><i class="fa fa-info-circle"></i></button>
+  </div>
+</nav>
+
+<div class="space_preview">
+  <div class="bg"></div>
+  <div class="content">
+    <%= @space.name %>
+  </div>
+</div>
 
 
 <script>
@@ -53,14 +59,24 @@
 
   space_show_sidebar();
 
+  $('.spaceinfo').click(function() {
+    $('.bg').fadeIn(200);
+    $('.content').fadeIn(400);
+  });
+
+  $('.bg').click(function(){
+    $('.bg').fadeOut(200);
+    $('.content').fadeOut(200);
+  });
+
   function enter_block() {
     $('.block-show').hover(function() {
       $(this).css({ 'cursor': 'pointer' }).click(function() {
         var id = $(this).attr('id').split('-')[1];
 
-        $('.sidebar_grandpa_name').css({ 'color': 'black' });
-        $('#block_ul-' + id).css({ 'color': 'red' });
-        $('.sidebar_father_name').css({ 'color': 'black' });
+        $('.sidebar_grandpa_name').css({ 'color': '#bfbfbf' });
+        $('#block_ul-' + id).css({ 'color': '#f68590' });
+        $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
 
         // menu controller
         if($('#block_ul-' + id).parent().siblings('ul').hasClass('open')) {
@@ -130,10 +146,10 @@
 
 
       // hightlight
-      $('.sidebar_grandpa_name').css({ 'color': 'black' });
-      $('.sidebar_father_name').css({ 'color': 'black' });
+      $('.sidebar_grandpa_name').css({ 'color': '#bfbfbf' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
 
-      $(this).css({ 'color': 'red' });
+      $(this).css({ 'color': '#f68590' });
     });
 
 
@@ -169,9 +185,9 @@
 
 
       // hightlight
-      $('.sidebar_father_name').css({ 'color': 'black' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
 
-      $(this).css({ 'color': 'blue' });
+      $(this).css({ 'color': '#539cff' });
     });
 
     $('.show_sidebar').find('.sidebar_child_name').click(function() {
@@ -184,7 +200,7 @@
       // then load the block show page
       $('.blocks_display').load('/blocks/' + id + '/block_preview');
 
-      $('.sidebar_child_name').css({ 'color': 'black' });
+      $('.sidebar_child_name').css({ 'color': '#bfbfbf' });
       $(this).css({ 'color': 'orange' });
     });
 

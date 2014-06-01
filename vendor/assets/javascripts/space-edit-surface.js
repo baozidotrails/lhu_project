@@ -1,8 +1,5 @@
 $(function() {
 
-  $('.newdiv').css({
-    'background': 'none'
-  });
 
   $('.delete_block').click(function() {
     sessionStorage.clear();
@@ -45,6 +42,8 @@ $(function() {
   boxer($('.editor'));
 
 
+
+
   // --------------------------------------------------
   // 給新建、最外層、體育館專用
   function boxer(obj) {
@@ -79,7 +78,7 @@ $(function() {
 
         if(!(width == 0) || !(height == 0)) {
           var block = {
-            'name': 'block',
+            'name': '區塊 ' + ($('.newdiv').length + 1),
             'width': width,
             'height': height,
             'left': beginX,
@@ -98,7 +97,8 @@ $(function() {
             contentType: 'application/json',
             success: function(data) {
 
-              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px; background: none"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span> <a class="block_close" data-method="delete" href="/blocks/' + data.id + '" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> </div>').draggable({
+              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"> <span class="namename"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">'+data.name+'</span></span> <a class="block_close" data-method="delete" href="/blocks/' + data.id + '" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> <div style="position: absolute; bottom: 1%; left: 1%;"><select name="colorpicker" data-block="'+data.id+'"><option value="'+data.color+'"></option><option value="#7bd148">Green</option><option value="#5484ed">Bold blue</option><option value="#a4bdfc">Blue</option><option value="#46d6db">Turquoise</option><option value="#7ae7bf">Light green</option><option value="#fbd75b">Yellow</option><option value="#ffb878">Orange</option><option value="#ff887c">Red</option><option value="#dbadff">Purple</option><option value="#efefef">Gray</option></select></div> </div>').draggable({
+                  snap: true,
                   opacity: 0.35,
                   stop: function(event, ui) {
 
@@ -141,6 +141,21 @@ $(function() {
 
               $('.best_in_place').best_in_place();
 
+              $('select[name="colorpicker"]').simplecolorpicker({
+                picker: true
+              }).on('change', function() {
+                var thisblock = $(this).data('block');
+                var color = $(this).val();
+                $('#block-' + thisblock).css('background-color', color);
+                $.ajax({
+                  type: 'PUT',
+                  url: '/blocks/' + thisblock,
+                  data: JSON.stringify( { 'color': color } ),
+                  dataType: 'json',
+                  contentType: 'application/json'
+                });
+              });
+
               // 側邊選單加入
               if($('.editor').data('blocktype') == 2) {
 
@@ -150,11 +165,11 @@ $(function() {
 
 
                 if($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').length > 0) {
-                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">'+ data.name +'</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
 
-                  $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">block</li>');
+                  $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">'+ data.name +'</li>');
                 } else {
-                  $('#block_fa-' + data.parent_id).after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item;">block</li>');
+                  $('#block_fa-' + data.parent_id).after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item;">'+ data.name +'</li>');
                 }
 
 
@@ -182,9 +197,9 @@ $(function() {
 
 
                 if($('#block_ul-' + data.parent_id).siblings('.father_holder').length > 0) {
-                  $('#block_ul-' + data.parent_id).closest('ul').find('.father_holder, .closed').last().after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">block</ul>');
+                  $('#block_ul-' + data.parent_id).closest('ul').find('.father_holder, .closed').last().after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">'+ data.name +'</ul>');
                 } else {
-                  $('#block_ul-' + data.parent_id).after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">block</ul>');
+                  $('#block_ul-' + data.parent_id).after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">'+ data.name +'</ul>');
                 }
 
 
@@ -233,7 +248,7 @@ $(function() {
               } else {
 
                 // alert("主要場地");
-                $('<ul class="closed"><span class="sidebar_grandpa_name" id="block_ul-'+ data.id +'" data-blocktype="0" data-spaceid="<%= @space.id %>" >block</span> </ul>').appendTo('.sidebar');
+                $('<ul class="closed"><span class="sidebar_grandpa_name" id="block_ul-'+ data.id +'" data-blocktype="0" data-spaceid="<%= @space.id %>" >'+ data.name +'</span> </ul>').appendTo('.sidebar');
 
                 $('.best_in_place').bind("ajax:success", function(event) {
 
@@ -281,7 +296,7 @@ $(function() {
         });
       }
     }).draggable({
-
+      snap: true,
       opacity: 0.35,
       stop: function(event, ui) {
 
@@ -353,6 +368,7 @@ $(function() {
 
         if ($('.editor').length == 0) {
           $('.sidebar').after('<div class="editor" data-iam="' + sessionStorage.getItem('parent_id') + '" data-blocktype="' + sessionStorage.getItem('parent_type') + '"></div>');
+          $('.editor').css({ 'height': '72vh' });
         }
 
         $('.editor').load('/blocks/' + id + '/edit', function() {
@@ -381,6 +397,7 @@ $(function() {
 
         if ($('.selection_panel').length == 0) {
           $('.sidebar').after('<div class="selection_panel"></div>');
+          $('.selection_panel').css({ 'height': '72vh' });
         };
 
         $('.selection_panel').load('/pages/decision');
@@ -458,6 +475,7 @@ $(function() {
       } else {
         if ($('.selection_panel').length == 0) {
           $('.sidebar').after('<div class="selection_panel"></div>');
+
         };
 
         $('.selection_panel').load('/pages/decision');
@@ -541,6 +559,7 @@ $(function() {
 
         if ($('.selection_panel').length == 0) {
           $('.sidebar').after('<div class="selection_panel"></div>');
+          $('.selection_panel').css({ 'height': '72vh' });
         };
 
         $('.selection_panel').load('/pages/decision');
@@ -583,6 +602,7 @@ $(function() {
 
       if(sessionStorage.getItem('parent_type') == 1) {
         $('.sidebar').after('<div class="tmp_reader"><div/>');
+        $('.tmp_reader').css({ 'height': '72vh' });
         $('.tmp_reader').load('/blocks/' + sessionStorage.getItem('parent_id') + '/edit');
       } else {
          $('.sidebar').after('<div class="editor" data-iam="' + sessionStorage.getItem('parent_id') + '" data-blocktype="' + sessionStorage.getItem('parent_type') + '"><div/>');

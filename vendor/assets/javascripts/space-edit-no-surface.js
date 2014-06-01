@@ -97,7 +97,7 @@ $(function() {
             contentType: 'application/json',
             success: function(data) {
 
-              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"> <span class="namename"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">'+data.name+'</span></span> <a class="block_close" data-method="delete" href="/blocks/' + data.id + '" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> <div style="width: 22px; height: 24px; border: 1px solid #7f7f7f; position: absolute; bottom: 1%; left: 1%;"><select name="colorpicker" data-block="'+data.id+'"><option value="'+data.color+'"></option><option value="#7bd148">Green</option><option value="#5484ed">Bold blue</option><option value="#a4bdfc">Blue</option><option value="#46d6db">Turquoise</option><option value="#7ae7bf">Light green</option><option value="#fbd75b">Yellow</option><option value="#ffb878">Orange</option><option value="#ff887c">Red</option><option value="#dbadff">Purple</option><option value="#efefef">Gray</option></select></div> </div>').draggable({
+              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"> <span class="namename"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">'+data.name+'</span></span> <a class="block_close" data-method="delete" href="/blocks/' + data.id + '" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> <div style="position: absolute; bottom: 1%; left: 1%;"><select name="colorpicker" data-block="'+data.id+'"><option value="'+data.color+'"></option><option value="#7bd148">Green</option><option value="#5484ed">Bold blue</option><option value="#a4bdfc">Blue</option><option value="#46d6db">Turquoise</option><option value="#7ae7bf">Light green</option><option value="#fbd75b">Yellow</option><option value="#ffb878">Orange</option><option value="#ff887c">Red</option><option value="#dbadff">Purple</option><option value="#efefef">Gray</option></select></div> </div>').draggable({
                   snap: true,
                   opacity: 0.35,
                   stop: function(event, ui) {
@@ -165,7 +165,7 @@ $(function() {
 
 
                 if($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').length > 0) {
-                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">'+ data.name +'</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #bfbfbf;">'+ data.name +'</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
 
                   $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">'+ data.name +'</li>');
                 } else {
@@ -197,9 +197,9 @@ $(function() {
 
 
                 if($('#block_ul-' + data.parent_id).siblings('.father_holder').length > 0) {
-                  $('#block_ul-' + data.parent_id).closest('ul').find('.father_holder, .closed').last().after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">'+ data.name +'</ul>');
+                  $('#block_ul-' + data.parent_id).closest('ul').find('.father_holder, .closed').last().after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: #bfbfbf;">'+ data.name +'</ul>');
                 } else {
-                  $('#block_ul-' + data.parent_id).after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: black;">'+ data.name +'</ul>');
+                  $('#block_ul-' + data.parent_id).after('<ul class="father_holder closed" style="display: block;"><span class="sidebar_father_name" id="block_fa-' + data.id + '" data-blocktype="0" style="color: #bfbfbf;">'+ data.name +'</ul>');
                 }
 
 
@@ -342,8 +342,8 @@ $(function() {
       // sessionStorage.setItem('parent_name', name);
 
       // hight light the sidebar li
-      $('#block_ul-' + id).css({ 'color': 'red' });
-      $('.sidebar_father_name').css({ 'color': 'black' });
+      $('#block_ul-' + id).css({ 'color': '#f68590' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
 
       // menu controller
       if($('#block_ul-' + id).parent().siblings('ul').hasClass('open')) {
@@ -484,9 +484,9 @@ $(function() {
 
 
       // hightlight
-      $('.sidebar_grandpa_name').css({ 'color': 'black' });
-      $('.sidebar_father_name').css({ 'color': 'black' });
-      $(this).css({ 'color': 'red' });
+      $('.sidebar_grandpa_name').css({ 'color': '#bfbfbf' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
+      $(this).css({ 'color': '#f68590' });
     });
 
 
@@ -569,9 +569,9 @@ $(function() {
 
 
       // hightlight
-      $('.sidebar_father_name').css({ 'color': 'black' });
+      $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
 
-      $(this).css({ 'color': 'blue' });
+      $(this).css({ 'color': '#539cff' });
     });
   } // bindSideBarBlockLink
 
@@ -587,14 +587,14 @@ $(function() {
                                                   .removeClass('closed')
                                                   .addClass('open')
                                                   .end()
-                                                  .css({ 'color': 'red' });
+                                                  .css({ 'color': '#f68590' });
 
       // grandpa highlight
-      $('#block_fa-' + prePage).closest('.father_holder').siblings('.sidebar_grandpa_name').css({ 'color': 'red' }).closest('ul').removeClass('closed').addClass('open');
+      $('#block_fa-' + prePage).closest('.father_holder').siblings('.sidebar_grandpa_name').css({ 'color': '#f68590' }).closest('ul').removeClass('closed').addClass('open');
 
       // father highlight
       $('#block_fa-' + prePage).closest('.father_holder').removeClass('closed').addClass('open');
-      $('#block_fa-' + prePage).css({ 'color': 'blue' });
+      $('#block_fa-' + prePage).css({ 'color': '#539cff' });
 
 
 

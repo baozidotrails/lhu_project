@@ -32,8 +32,28 @@ class SurfaceUploader < CarrierWave::Uploader::Base
   # end
 
   # Create different versions of your uploaded files:
+
+  version :large do
+    resize_to_limit(1000, 1000)
+  end
+
   version :thumb do
-    process :resize_to_fit => [800, 800]
+    process :crop
+    resize_to_fit(900, 900)
+  end
+
+  def crop
+    if model.crop_x.present?
+      resize_to_limit(1000, 1000)
+      manipulate! do |img|
+        x = model.crop_x.to_i
+        y = model.crop_y.to_i
+        w = model.crop_w.to_i
+        h = model.crop_h.to_i
+        img.crop("#{w}x#{h}+#{x}+#{y}")
+        img
+      end
+    end
   end
 
   # Add a white list of extensions which are allowed to be uploaded.

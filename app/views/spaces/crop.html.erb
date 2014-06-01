@@ -1,0 +1,11 @@
+<h1>裁剪平面圖囉</h1>
+<%= image_tag @space.surface_url(:large), id: 'cropbox' %>
+
+<%= form_for @space do |f| %>
+  <div class="actions">
+    <% %w[x y w h].each do |attribute| %>
+      <%= f.text_field "crop_#{attribute}" %>
+    <% end %>
+    <%= f.submit "Crop" %>
+  </div>
+<% end %>

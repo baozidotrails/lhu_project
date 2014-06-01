@@ -28,7 +28,7 @@
         <th>Block type</th>
         <th>Parent</th>
         <th>Date</th>
-        <th></th>
+        <th>廬山真面目</th>
         <th></th>
       </tr>
     </thead>
@@ -45,7 +45,7 @@
           <td><%= block.space_id %></td>
           <td><%= block.block_type %></td>
           <td><%= block.parent_id %></td>
-
+          <td><%= block.space.name if block.space.present? %></td>
           <td><%= link_to 'Show', block %></td>
           <td><%= link_to 'Edit', edit_block_path(block) %></td>
           <td><%= link_to 'Destroy', block, method: :delete, data: { confirm: 'Are you sure?' } %></td>

@@ -54,7 +54,7 @@
           </thead>
 
           <tbody>
-            <% current_user.spaces.each do |space| %>
+            <% current_user.spaces.where(is_public: false).order('created_at DESC').each do |space| %>
               <% if !space.is_public %>
                 <tr>
                   <td><%= link_to space.name, preview_space_path(space) %></td>

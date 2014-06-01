@@ -5,7 +5,7 @@
   <% if block.is_floor %>
     <div id="block-<%= block.id %>" class="father_block" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="background-color: <%= block.color %>"> <span class="namename"><%= best_in_place block, :name %></span> <%= link_to '×', block, class: 'block_close', method: :delete, data: { confirm: '確定要刪除？' } %> <i class="fa fa-pencil-square-o block_edit"></i> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %>
 
-      <div style="width: 22px; height: 24px; border: 1px solid #7f7f7f; position: relative; top: 23px; left: 3px;">
+      <div style="position: relative; top: 23px; left: 3px;">
         <select name="colorpicker" data-block="<%= block.id %>">
           <option value="<%= block.color %>"></option>
           <option value="#7bd148">Green</option>
@@ -25,7 +25,7 @@
   <% else %>
     <div id="block-<%= block.id %>" class="newdiv" data-blocktype="<%= block.block_type %>" data-parentId="<%= block.parent_id %>" data-isfloor="<%= block.is_floor %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"> <span class="namename"><%= best_in_place block, :name %></span> <a class="block_close" >×</a> <i class="fa fa-pencil-square-o block_edit"></i>
 
-      <div style="width: 22px; height: 24px; border: 1px solid #7f7f7f; position: absolute; bottom: 1%; left: 1%;">
+      <div style="position: absolute; bottom: 1%; left: 1%;">
       <select name="colorpicker" data-block="<%= block.id %>">
         <option value="<%= block.color %>"></option>
         <option value="#7bd148">Green</option>
@@ -99,26 +99,12 @@
   //    $('#lease_begin_at').data("DateTimePicker").setMaxDate(e.date);
   // });
 
-  $('#lease_date').datetimepicker({
-    language: 'zh-TW',
-    pickTime: false
-  });
-
-  $('#lease_time').datetimepicker({
-    language: 'zh-TW',
-    pickDate: false
-  });
-
-  $('#end_time').datetimepicker({
-    language: 'zh-TW',
-    pickDate: false
-  });
-
 
 // console.log('-------block edit-------');
   // 如果是葉子，就移除「編輯按鈕」
   if($('.newdiv').data('blocktype') == 0) {
-    $('.fa').remove();
+    $('.fa-cog').remove();
+    $('.fa-pencil-square-o').remove();
   }
 
   $('.best_in_place').best_in_place();
@@ -156,8 +142,8 @@
     sessionStorage.setItem('is_floor', $(this).parent().data('isfloor'));
 
     // sidebar highlight
-    $('.sidebar_father_name').css({ 'color': 'black' });
-    $('#block_fa-' + id).css({ 'color': 'blue' });
+    $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
+    $('#block_fa-' + id).css({ 'color': '#539cff' });
 
 
     $('.sidebar').after('<div class="selection_panel"></div>');
@@ -209,12 +195,12 @@
       $('.selection_panel').load('/pages/decision');
     }
 
-    if (sessionStorage.getItem('parent_type') == 2) {
-      $('#reload_and_main_pic').text('回到上一層').click(function() {
-        var id = $('#block_fa-' + sessionStorage.getItem('parent_id')).closest('.father_holder').siblings('.sidebar_grandpa_name').attr('id').split('-')[1];
-        sessionStorage.setItem('pre_page', id);
-      });
-    };
+    // if (sessionStorage.getItem('parent_type') == 2) {
+    //   $('#reload_and_main_pic').text('<i class="fa fa-home"></i>').click(function() {
+    //     var id = $('#block_fa-' + sessionStorage.getItem('parent_id')).closest('.father_holder').siblings('.sidebar_grandpa_name').attr('id').split('-')[1];
+    //     sessionStorage.setItem('pre_page', id);
+    //   });
+    // };
   });
 
 
@@ -249,7 +235,7 @@
         if(!(width == 0) || !(height == 0)) {
           // generate block object when finish drawing
           var block = {
-            'name': 'block',
+            'name': '區塊 ' + ($('.newdiv').length + 1),
             'width': width,
             'height': height,
             'left': beginX,
@@ -265,7 +251,7 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function(data) {
-              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">block</span><a class="block_close">×</a></div>').draggable({
+              $('<div id="block-'+ data.id +'" class="newdiv" data-blocktype="'+ data.block_type +'" style="position: absolute; width: '+ data.width +'px; height: '+ data.height +'px; left: '+ data.left +'px; top: '+ data.top +'px;"><span class="namename"><span class="best_in_place ui-selectee" id="best_in_place_block_'+ data.id +'_name" data-url="/blocks/'+ data.id +'" data-object="block" data-attribute="name" data-type="input">'+data.name+'</span></span> <a class="block_close" data-method="delete" href="/blocks/' + data.id + '" rel="nofollow">×</a> <i class="fa fa-cog block_edit"></i> <div style="position: absolute; bottom: 1%; left: 1%;"><select name="colorpicker" data-block="'+data.id+'"><option value="'+data.color+'"></option><option value="#7bd148">Green</option><option value="#5484ed">Bold blue</option><option value="#a4bdfc">Blue</option><option value="#46d6db">Turquoise</option><option value="#7ae7bf">Light green</option><option value="#fbd75b">Yellow</option><option value="#ffb878">Orange</option><option value="#ff887c">Red</option><option value="#dbadff">Purple</option><option value="#efefef">Gray</option></select></div> </div>').draggable({
                   opacity: 0.35,
                   stop: function(event, ui) {
 
@@ -309,11 +295,11 @@
               if($('.editor').data('blocktype') == 2) {
 
                 if($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').length > 0) {
-                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #000;">block</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
+                  $('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #bfbfbf;">'+ data.name +'</li>').insertAfter($('#block_fa-' + data.parent_id).siblings('.sidebar_child_name').last());
 
-                    $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: rgb(0, 0, 0);">block</li>');
+                    $('#block_fa-' + data.parent_id).find('li').last().after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item; color: #bfbfbf">'+ data.name +'</li>');
                 } else {
-                  $('#block_fa-' + data.parent_id).after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item;">block</li>');
+                  $('#block_fa-' + data.parent_id).after('<li class="sidebar_child_name" id="block_ch-' + data.id + '" data-blocktype="0" style="display: list-item;">'+ data.name +'</li>');
                 }
 
 
@@ -334,6 +320,22 @@
                 // 側邊選單名稱變更
                 $('#block_ch-' + whichBlock).text(newName);
 
+              });
+
+
+              $('select[name="colorpicker"]').simplecolorpicker({
+                picker: true
+              }).on('change', function() {
+                var thisblock = $(this).data('block');
+                var color = $(this).val();
+                $('#block-' + thisblock).css('background-color', color);
+                $.ajax({
+                  type: 'PUT',
+                  url: '/blocks/' + thisblock,
+                  data: JSON.stringify( { 'color': color } ),
+                  dataType: 'json',
+                  contentType: 'application/json'
+                });
               });
 
             }
@@ -366,6 +368,7 @@
         });
       }
     }).draggable({
+      snap: true,
       opacity: 0.35,
       stop: function(event, ui) {
 

@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery.turbolinks
 //= require jquery_ujs
+//= require jquery.Jcrop
 //= require jquery.ui.resizable
 //= require jquery.ui.draggable
 //= require jquery.ui.selectable
