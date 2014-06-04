@@ -55,7 +55,10 @@
 <div class="space_preview">
   <div class="bg"></div>
   <div class="content">
-    <%= @space.name %>
+    <h2><%= @space.name %></h2>
+    <p><%= @space.address %></p>
+    <%= @space.user.name %>
+    <p><%= @space.phone %></p>
   </div>
 </div>
 

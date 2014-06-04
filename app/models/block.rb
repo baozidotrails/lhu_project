@@ -12,6 +12,7 @@ class Block < ActiveRecord::Base
     text :intro
     time :start_at
     time :end_at
+    integer :fee
     boolean :is_floor
   end
 

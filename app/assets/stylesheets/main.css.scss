@@ -491,26 +491,63 @@ a.dropdown-toggle {
 .side-block {
   width: 268px;
   float: left;
-  margin-left: 20px;
+  margin-left: 14px;
+  background: asset-url('bg_grey_pattern.png', image);
+  padding: 15px;
+  border-radius: 5px;
 }
 
 .space-block {
   width: 870px;
-  float: right;
+  float: left;
 }
 
 .space-list {
   li {
     display: block;
-    margin-bottom: 10px;
-    border: 1px solid #e3e3e3;
+    margin-bottom: 25px;
+    border: 1px solid #7f7f7f;
     border-radius: 10px;
     padding: 10px;
   }
 }
 
+.brows_space {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
 .space-image {
+
+
+  float: left;
+}
+
+.information {
+  float: left;
+  margin-left: 20px;
   position: relative;
+  top: -17px;
+  a {
+    color: #000;
+  }
+  div {
+    margin: 5px 0;
+  }
+  i {
+    color: #ff7f00;
+  }
+}
+
+.descri {
+  clear: both;
+  float: left;
+  margin-bottom: 50px;
+  padding: 10px;
+  background: #f5f5f5;
+  color: #999;
+  border: 1px #e3e3e3 solid;
 }
 
 
@@ -737,6 +774,74 @@ a.dropdown-toggle {
   display: table;
   margin: 30px auto;
 }
+
+
+@media screen and (max-width: 1199px) {
+  .space-block {
+    width: 550px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .space-block {
+    width: 410px;
+  }
+}
+
+@media screen and (max-width: 692px) {
+  .side-block {
+    float: none;
+    display: table;
+    margin: 0 auto;
+    width: 90%;
+    margin-bottom: 100px;
+  }
+
+  .space-block {
+    float: none;
+    display: table;
+    margin: 0 auto;
+    width: 92%;
+    position: relative;
+    right: 20px;
+  }
+
+  .space-list {
+    li {
+      border-radius: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 550px) {
+
+  .space-block {
+    position: relative;
+    right: 0;
+  }
+
+  .space-image {
+    float: none;
+    display: table;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+
+  .information {
+    float: none;
+
+    h2 {
+      text-align: center;
+      font-size: 25px;
+      margin-right: 15px;
+    }
+  }
+
+  .space-list {
+    padding: 12px;
+  }
+}
+
 
 
 // 首頁

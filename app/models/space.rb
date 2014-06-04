@@ -31,6 +31,8 @@ class Space < ActiveRecord::Base
       user.name
     end
 
+    integer :category_id, :references => Category
+
     time :created_at
     time :updated_at
     boolean :is_public

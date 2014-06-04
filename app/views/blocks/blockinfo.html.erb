@@ -6,16 +6,22 @@
 
     <div class="col-md-8">
       <div class="form-group">
-        <%= f.label :max_head_cap, '容納人數', class: 'col-sm-2 control-label' %>
+        <%= f.label :max_head_cap, '可容納', class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :max_head_cap, class: 'form-control', autofocus: true, placeholder: '單位：人' %>
+          <div class="input-group">
+            <%= f.text_field :max_head_cap, class: 'form-control', autofocus: true %>
+            <span class="input-group-addon">人</span>
+          </div>
         </div>
       </div>
 
       <div class="form-group">
         <%= f.label :footage, '大小', class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :footage, class: 'form-control', placeholder: '單位：坪' %>
+          <div class="input-group">
+            <%= f.text_field :footage, class: 'form-control' %>
+            <span class="input-group-addon">坪</span>
+          </div>
         </div>
       </div>
 
@@ -43,7 +49,11 @@
       <div class="form-group">
         <%= f.label :fee, '收費', class: 'col-sm-2 control-label' %>
         <div class="col-sm-10">
-          <%= f.text_field :fee, class: 'form-control', placeholder: '/小時' %>
+          <div class="input-group">
+            <span class="input-group-addon">NTD.</span>
+            <%= f.text_field :fee, class: 'form-control' %>
+            <span class="input-group-addon">每小時</span>
+          </div>
         </div>
       </div>
 

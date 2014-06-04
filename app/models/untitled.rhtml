@@ -1,0 +1,16 @@
+<div class="space-image">
+  <% if space.space_view.present? %>
+    <%= image_tag space.space_view_url(:index).to_s, style: 'width: 120px; height: 120px' %>
+  <% else %>
+    <%= image_tag 'block-default.png', style: 'width: 120px; height: 120px' %>
+  <% end %>
+</div>
+
+<div class="information">
+  <h3><%= link_to space.name, preview_space_path(space) %></h3>
+  <div class="date"><%= space.updated_at.strftime("%Y/%m/%d %H:%M") %></div>
+  <div class="owner"><%= space.user.name %></div>
+  <div class="category"><%= space.category.name if space.category.present? %></div>
+  <div class="description"><%= space.intro %></div>
+</div>
+<%= link_to '瀏覽場地', preview_space_path(space), class: 'btn btn-success pull-right' %>

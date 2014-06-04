@@ -11,8 +11,12 @@ class BlocksController < ApplicationController
     @search = Block.search do
       fulltext params[:search]
       without(:is_floor, true)
+      without(:start_at, nil)
+      without(:end_at, nil)
       with(:start_at).greater_than_or_equal_to(params[:start_at].to_time) if params[:start_at].present?
       with(:end_at).less_than_or_equal_to(params[:end_at].to_time) if params[:end_at].present?
+      with(:fee).greater_than_or_equal_to(params[:fee_start]) if params[:fee_start].present?
+      with(:fee).less_than_or_equal_to(params[:fee_end]) if params[:fee_end].present?
     end
 
     @blocks = @search.results

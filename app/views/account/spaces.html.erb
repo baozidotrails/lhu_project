@@ -12,6 +12,7 @@
               <h2 align="center">您目前沒有刊登中的場地。</h2>
             <% else %>
               <tr>
+                <th></th>
                 <th>名稱</th>
                 <th>編輯日期</th>
                 <th>操作</th>
@@ -20,9 +21,16 @@
 
           </thead>
           <tbody>
-            <% current_user.spaces.each do |space| %>
+            <% current_user.spaces.order("updated_at DESC").each do |space| %>
               <% if space.is_public %>
                 <tr id="i-am-tr-<%= space.id %>">
+                  <td>
+                    <% if space.space_view.present? %>
+                      <%= image_tag space.space_view_url(:index).to_s, style: 'width: 100px; height: 100px' %>
+                    <% else %>
+                      <%= image_tag 'block-default.png', style: 'width: 100px; height: 100px' %>
+                    <% end %>
+                  </td>
                   <td><%= link_to space.name, preview_space_path(space) %></td>
                   <td><%= space.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
                   <td><%= link_to '取消刊登', remove_space_path(space), confirm: '確定要取消刊登？' %> | <%= link_to '刪除場地', space, method: :delete, confirm: '確定要刪除？' %></td>
@@ -45,6 +53,7 @@
               <h2 align="center">您目前沒有編輯中的場地。</h2>
             <% else %>
               <tr>
+                <th></th>
                 <th>名稱</th>
                 <th>編輯日期</th>
                 <th>操作</th>
@@ -56,6 +65,13 @@
             <% current_user.spaces.where(is_public: false).order('created_at DESC').each do |space| %>
 
               <tr>
+                <td>
+                  <% if space.space_view.present? %>
+                    <%= image_tag space.space_view_url(:index).to_s, style: 'width: 100px; height: 100px' %>
+                  <% else %>
+                    <%= image_tag 'block-default.png', style: 'width: 100px; height: 100px' %>
+                  <% end %>
+                </td>
                 <td><%= link_to space.name, preview_space_path(space) %></td>
                 <td><%= space.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
                 <td><%= link_to '編輯場地', spaceinfo_space_path(space) %> | <%= link_to '刊登場地', place_space_path(space), confirm: '確定要刊登？' %> | <%= link_to '刪除場地', space, method: :delete, confirm: '確定要刪除？' %></td>

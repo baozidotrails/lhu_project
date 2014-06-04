@@ -11,6 +11,7 @@ class SpacesController < ApplicationController
     @search = Space.search do
       fulltext params[:search]
       without(:is_public, false)
+      with(:category_id).equal_to(params[:category_id]) if params[:category_id].present?
       with(:updated_at).greater_than_or_equal_to(params[:start_at].to_time) if params[:start_at].present?
       with(:updated_at).less_than_or_equal_to(params[:end_at].to_time) if params[:end_at].present?
       order_by(:updated_at, :desc)
