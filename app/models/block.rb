@@ -7,6 +7,14 @@ class Block < ActiveRecord::Base
 
   mount_uploader :image, ImageUploader
 
+  searchable do
+    text :name
+    text :intro
+    time :start_at
+    time :end_at
+    boolean :is_floor
+  end
+
 end
 
 

@@ -44,6 +44,7 @@ Cloudspace::Application.routes.draw do
 
   get '/signup', to: 'users#new'
   get '/login', to: 'sessions#new'
+  get '/features', to: 'pages#features'
   delete '/logout', to: 'sessions#destroy'
 
   root "pages#home"

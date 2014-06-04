@@ -11,8 +11,9 @@
     <% end %>
   <% end %>
 <% else %>
-  <div class="container">
-    <div class="col-md-6 col-md-offset-0">
+  <h1 align="center"><%= @block.name %></h1>
+    <br>
+    <div class="col-md-8">
       <table class="table table-bordered">
         <tr class="active">
           <th>最大容納人數 (人)</td>
@@ -28,59 +29,62 @@
 
       <table class="table table-bordered">
         <tr class="active">
-          <th>刊登時間</th>
+          <th>開放租借時間</th>
         </tr>
         <tr>
           <td>
-            <span class="start-at">
-              <input type="text" class="rent-date form-control" style="width: 100px">
-              <input type="text" class="rent-time form-control" style="width: 80px">
-            </span>
-            ~
-            <span class="end-at">
-              <input type="text" class="rent-date form-control" style="width: 100px">
-              <input type="text" class="rent-time form-control" style="width: 80px">
-            </span>
+            <%= @block.start_at.strftime("%Y/%m/%d %H:%M") if @block.end_at.present? %> ~ <%= @block.end_at.strftime("%Y/%m/%d %H:%M") if @block.end_at.present? %>
           </td>
         </tr>
       </table>
 
       <table class="table table-bordered">
         <tr class="active">
-          <th>場地描述</th>
           <th>收費</th>
         </tr>
         <tr>
-          <td><%= @block.intro %></td>
           <td><%= @block.fee %></td>
+        </tr>
+      </table>
+
+      <table class="table table-bordered">
+        <tr class="active">
+          <th>場地描述</th>
+        </tr>
+        <tr>
+          <td><%= @block.intro %></td>
+        </tr>
+      </table>
+
+      <table class="table" style="position: relative; left: -10px">
+        <tr>
+          <td>
+            <% if @block.block_type == 0 %>
+              <% if @block.registration.nil? %>
+                <%= link_to '我要租用', rent_block_path(@block), class: 'btn btn-primary', method: :post %>
+              <% else %>
+                <%= link_to '已被租用', '#', class: 'btn btn-primary', disabled: 'disabled' %>
+              <% end %>
+            <% end %>
+          </td>
         </tr>
       </table>
     </div>
 
-    <div class="col-md-3 col-md-offset-0">
+    <div class="col-md-4">
       <table>
         <tr>
           <% if @block.image? %>
-            <td><%= image_tag @block.image_url.to_s %></td>
+            <td><%= image_tag @block.image_url.to_s, style: 'width: 250px; height: 250px;' %></td>
           <% else %>
             <th><%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %></th>
           <% end %>
         </tr>
       </table>
     </div>
-  </div>
+
+
 <% end %>
-
-<div class="row">
-  <% if @block.block_type == 0 %>
-    <% if @block.registration.nil? %>
-      <%= link_to '租', rent_block_path(@block), class: 'btn btn-primary', method: :post %>
-    <% else %>
-      <%= link_to '已被租用', '#', class: 'btn btn-primary', disabled: 'disabled' %>
-    <% end %>
-  <% end %>
-</div>
-
 
 
 
@@ -95,10 +99,10 @@
 
 
     $('#block_ul-' + id).css({ 'color': 'red' });
-    // $('.sidebar_father_name').css({ 'color': 'black' });
-    $('#block_fa-' + id).css({ 'color': 'blue' });
+    // $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
+    $('#block_fa-' + id).css({ 'color': '#539cff' });
 
-    $('.sidebar_child_name').css({ 'color': 'black' });
+    $('.sidebar_child_name').css({ 'color': '#bfbfbf' });
     $('#block_ch-' + id).css({ 'color': 'orange' });
 
 

@@ -8,13 +8,22 @@ class BlocksController < ApplicationController
   # GET /blocks.json
   def index
 
-    @blocks = Block.order(:name)
+    @search = Block.search do
+      fulltext params[:search]
+      without(:is_floor, true)
+      with(:start_at).greater_than_or_equal_to(params[:start_at].to_time) if params[:start_at].present?
+      with(:end_at).less_than_or_equal_to(params[:end_at].to_time) if params[:end_at].present?
+    end
 
-    @blocks = @blocks.where("name like ?", "%#{params[:search]}%") if params[:search].present?
+    @blocks = @search.results
 
-    @blocks = @blocks.where("start_at >= ?", params[:start_at]) if params[:start_at].present?
+    # @blocks = Block.order(:name)
 
-    @blocks = @blocks.where("end_at <= ?", params[:end_at]) if params[:end_at].present?
+    # @blocks = @blocks.where("name like ?", "%#{params[:search]}%") if params[:search].present?
+
+    # @blocks = @blocks.where("start_at >= ?", params[:start_at]) if params[:start_at].present?
+
+    # @blocks = @blocks.where("end_at <= ?", params[:end_at]) if params[:end_at].present?
 
   end
 
@@ -119,6 +128,9 @@ class BlocksController < ApplicationController
     the_reg = @block.create_registration(user: current_user, space: the_child.space)
     Order.create!(space: the_reg.space, block: the_reg.block, user: the_reg.space.user, registration: the_reg)
     @block.update(is_available: false)
+
+    flash[:notice] = "申請租用成功，場地「#{@block.name}」"
+
     redirect_to account_rents_path
   end
 

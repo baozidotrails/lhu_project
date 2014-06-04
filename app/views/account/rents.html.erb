@@ -6,7 +6,7 @@
    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">您租用的場地（審核中）</div>
-        <table class="table">
+        <table class="table table-hover">
         <thead>
             <% if current_user.registrations.where(is_pass: false).length < 1 %>
               <h2 align="center">目前沒有記錄。</h2>
@@ -24,15 +24,15 @@
 
           <tbody>
             <% current_user.registrations.where(is_pass: false).each do |record| %>
-              <% unless record.is_pass %>
-                <tr>
-                  <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
-                  <td><%= record.block.name %></td>
-                  <td><%= record.created_at.strftime("%Y/%m/%d %H:%M") %></td>
-                  <td><%= link_to record.space.user.name, record.space.user %></td>
-                  <td><%= link_to '取消申請', record , method: 'delete', confirm: "確定取消申請？" %></td>
-                </tr>
-              <% end %>
+
+              <tr>
+                <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
+                <td><%= record.block.name %></td>
+                <td><%= record.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+                <td><%= link_to record.space.user.name, record.space.user %></td>
+                <td><%= link_to '取消申請', record , method: :delete, confirm: "確定取消申請？" %></td>
+              </tr>
+
             <% end %>
           </tbody>
         </table>
@@ -44,7 +44,7 @@
    <div class="col-md-12">
       <div class="panel panel-default">
         <div class="panel-heading">成功租用的場地</div>
-        <table class="table">
+        <table class="table table-hover">
           <thead>
             <% if current_user.registrations.where(is_pass: true).length < 1 %>
               <h2 align="center">目前沒有記錄。</h2>

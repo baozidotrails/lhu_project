@@ -1,0 +1,5 @@
+top: 100px;
+
+    <%= link_to '<i class="fa fa-home"></i>'.html_safe , preview_space_path(@space), id: 'detail_index', class: 'btn btn-default' %>
+
+    <button class="spaceinfo btn btn-default"><i class="fa fa-info-circle"></i></button>

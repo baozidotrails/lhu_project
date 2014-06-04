@@ -1,13 +1,24 @@
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="top: 40px; background: #fff; z-index: 99; border: none">
-  <div class="container">
-    <ol class="now-step-bread">
-      <li class="<%= is_active('create') %>">設定場地資料</li>
-      <li>></li>
-      <li class="<%= is_active('edit') %>">繪製場地平面圖</li>
-      <li>></li>
-      <li class="<%= is_active('detailize') %>">設定區塊資料</li>
-      <li>></li>
-      <li class="<%= is_active('show') %>">瀏覽場地</li>
-    </ol>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="top: 60px; background: #fff; z-index: 99; border: none">
+  <div class="stepwizard">
+    <div class="stepwizard-row">
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-default btn-circle" disabled="disabled">1</button>
+        <p>1.設定場地資料</p>
+      </div>
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-default btn-circle" disabled="disabled">2</button>
+        <p>2.繪製場地平面圖</p>
+      </div>
+
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-default btn-circle" disabled="disabled">2</button>
+        <p>3.設定區塊資料</p>
+      </div>
+
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-default btn-circle" disabled="disabled">3</button>
+        <p>4.瀏覽場地</p>
+      </div>
+    </div>
   </div>
 </nav>

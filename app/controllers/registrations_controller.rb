@@ -11,7 +11,9 @@ class RegistrationsController < ApplicationController
   end
 
   def destroy
-
+    @registration = Registration.find(params[:id])
+    @registration.destroy
+    redirect_to :back
   end
 
 

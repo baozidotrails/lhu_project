@@ -39,7 +39,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>名稱</th>
+            <th>單位</th>
             <th style="width: 34.5vh">編輯日期</th>
           </tr>
         </thead>
@@ -61,21 +61,23 @@
   <div class="col-md-6">
 
   <div class="panel panel-default">
-    <div class="panel-heading">已租用場地</div>
+    <div class="panel-heading">成功出租的場地</div>
      <table class="table">
       <thead>
         <tr>
           <th>單位</th>
           <th>名稱</th>
           <th>申請日期</th>
+          <th>申請人</th>
         </tr>
       </thead>
       <tbody>
-        <% current_user.registrations.where(is_pass: false).each do |record| %>
+        <% @user.orders.where(is_activated: true).each do |record| %>
           <tr>
-
+            <td><%= link_to record.space.name, preview_space_path(record.space) %></td>
             <td><%= record.block.name %></td>
             <td><%= record.updated_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td><%= link_to record.registration.user.name, record.registration.user %></td>
           </tr>
         <% end %>
       </tbody>

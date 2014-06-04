@@ -20,4 +20,8 @@ class PagesController < ApplicationController
 
   end
 
+  def features
+
+  end
+
 end

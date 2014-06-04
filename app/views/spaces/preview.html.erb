@@ -1,27 +1,28 @@
+<br><br><br>
 <div class="container space-show-container" style="width: 97%">
 
   <section class="line"></section>
 
   <div class="main_display">
-    <div class="show_sidebar">
+    <div class="show_sidebar" style="top: 100px;">
 
-      <% @blocks.each do |block| %>
+      <% @blocks.where("parent_id is NULL").each do |block| %>
         <ul class="closed">
 
           <!-- grandpa block name -->
-          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>"><%= block.name %> <% if Block.where(parent_id: block.id).count > 0 %> (<%= Block.where(parent_id: block.id).count %>) <% end %> </span>
+          <span class="sidebar_grandpa_name" id="block_ul-<%= block.id %>" data-blocktype="<%= block.block_type %>"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: block.id).count %>)</span> <% end %>
 
           <!-- father blocks -->
           <% Block.where(parent_id: block.id).order('name DESC').each do |father| %>
             <ul class="father_holder closed">
 
               <!-- father name -->
-              <span class="sidebar_father_name" id="block_fa-<%= father.id %>"><%= father.name %> <% if Block.where(parent_id: father.id).count > 0 %> (<%= Block.where(parent_id: father.id).count %>) <% end %></span>
+              <span class="sidebar_father_name" id="block_fa-<%= father.id %>" data-blocktype="<%= father.block_type %>"><%= father.name %></span> <% if Block.where(parent_id: father.id).count > 0 %> <span class="block_qty">(<%= Block.where(parent_id: father.id).count %>)</span> <% end %>
 
 
               <!-- child blocks -->
               <% Block.where(parent_id: father.id).each do |child| %>
-                <li class="sidebar_child_name" id="block_ch-<%= child.id %>"><span><%= child.name %></span></li>
+                <li class="sidebar_child_name" id="block_ch-<%= child.id %>" data-blocktype="<%= child.block_type %>"><span><%= child.name %></span></li>
               <% end %>
             </ul>
           <% end %>
@@ -30,8 +31,8 @@
     </div> <!-- sidebar -->
 
     <!-- blocks -->
-    <div class="blocks_display">
-      <% @blocks.each do |block| %>
+    <div class="blocks_display" style="height: <%= @space.height %>; <% if @space.surface? %> background: url(<%= @space.surface_url(:thumb).to_s %>); background-repeat: no-repeat; <% end %>">
+      <% @blocks.where("parent_id is NULL").each do |block| %>
         <div id="block-<%= block.id %>" class="block-show" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; background-color: <%= block.color %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %></div>
       <% end %>
     </div> <!-- blocks_display -->
@@ -39,9 +40,15 @@
 </div> <!-- container -->
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
-  <div class="control-btns">
+
+  <div class="btn-toolbar control-btns" role="toolbar">
+    <div class="btn-group">
     <%= link_to '<i class="fa fa-home"></i>'.html_safe , preview_space_path(@space), id: 'detail_index', class: 'btn btn-default' %>
-    <button class="spaceinfo btn btn-default"><i class="fa fa-info-circle"></i></button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="btn-group">
+      <button class="spaceinfo btn btn-default"><i class="fa fa-info-circle"></i></button>
+    </div>
   </div>
 </nav>
 
@@ -68,6 +75,8 @@
     $('.bg').fadeOut(200);
     $('.content').fadeOut(200);
   });
+
+
 
   function enter_block() {
     $('.block-show').hover(function() {

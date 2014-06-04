@@ -1,11 +1,13 @@
-<h1>裁剪平面圖囉</h1>
-<%= image_tag @space.surface_url(:large), id: 'cropbox' %>
+<div style="display: table; margin: 0 auto;">
+  <h1>請裁剪您的平面圖</h1>
+  <%= image_tag @space.surface_url(:large), id: 'cropbox' %>
 
-<%= form_for @space do |f| %>
-  <div class="actions">
-    <% %w[x y w h].each do |attribute| %>
-      <%= f.text_field "crop_#{attribute}" %>
-    <% end %>
-    <%= f.submit "Crop" %>
-  </div>
-<% end %>
+  <%= form_for @space do |f| %>
+    <div class="actions">
+      <% %w[x y w h].each do |attribute| %>
+        <%= f.hidden_field "crop_#{attribute}" %>
+      <% end %>
+    </div>
+    <p><%= f.submit "確定裁切", class: 'btn btn-success btn-lg', style: 'margin-top: 10px; float: right;' %></p>
+  <% end %>
+</div>

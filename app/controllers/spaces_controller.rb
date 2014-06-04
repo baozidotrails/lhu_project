@@ -4,12 +4,19 @@ class SpacesController < ApplicationController
   before_action :set_space,     only: [:show, :edit, :update, :spaceinfo, :preview, :remove, :place, :detailize]
   before_action :loged_in_user, except: [:index, :preview]
   before_action :correct_user,  except: [:index, :preview, :new, :create]
+  before_action :is_public_to_see, only: [:preview]
 
 
   def index
-    @spaces = Space.all
+    @search = Space.search do
+      fulltext params[:search]
+      without(:is_public, false)
+      with(:updated_at).greater_than_or_equal_to(params[:start_at].to_time) if params[:start_at].present?
+      with(:updated_at).less_than_or_equal_to(params[:end_at].to_time) if params[:end_at].present?
+      order_by(:updated_at, :desc)
+    end
 
-
+    @spaces = @search.results
   end
 
   def new
@@ -84,7 +91,7 @@ class SpacesController < ApplicationController
 
   def place
     if @space.update(is_public: true)
-      flash[:notice] = "成功刊登場地！"
+      flash[:"#{@space.id}"] = "成功刊登場地「#{@space.name}」"
       redirect_to account_spaces_path
     end
   end
@@ -103,12 +110,21 @@ class SpacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def space_params
-      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface, :height, :crop_x, :crop_y, :crop_w, :crop_h)
+      params.require(:space).permit(:name, :address, :city_id, :county_id, :user_id, :intro, :category_id, :is_public, :is_ava, :space_view, :surface, :height, :crop_x, :crop_y, :crop_w, :crop_h, :phone)
     end
 
     def correct_user
       unless Space.find(params[:id]).user == current_user
         redirect_to root_url
+      end
+    end
+
+    def is_public_to_see
+      @space = Space.find(params[:id])
+      unless @space.is_public
+        unless @space.user == current_user
+          redirect_back_or root_path
+        end
       end
     end
 

@@ -3,15 +3,16 @@
   <% @blocks.each do |block| %>
 
     <% if block.is_floor %>
-      <div id="block-<%= block.id %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
+      <div id="block-<%= block.id %>" style="background-color: <%= block.color %>" class="father_block <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" data-parentid="<%= block.parent_id %>"> <span class="namename"><%= block.name %></span> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
     <% else %>
 
-      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"> <span class="namename"><%= block.name %></span> </div>
+      <div id="block-<%= block.id %>" class="block-show" data-blockparentid="<%= block.parent_id %>" data-parentid="<%= block.parent_id %>" style="background-color: <%= block.color %>; width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px"> <span class="namename"><%= block.name %></span> </div>
 
     <% end %>
   <% end %>
 <% else %>
-  <div class="container">
+    <h1 align="center"><%= @block.name %></h1>
+    <br>
     <div class="col-md-8">
       <table class="table table-bordered">
         <tr class="active">
@@ -28,31 +29,30 @@
 
       <table class="table table-bordered">
         <tr class="active">
-          <th>刊登時間</th>
+          <th>開放租借時間</th>
         </tr>
         <tr>
           <td>
-            <span class="start-at">
-              <input type="text" class="rent-date form-control" style="width: 100px">
-              <input type="text" class="rent-time form-control" style="width: 80px">
-            </span>
-            ~
-            <span class="end-at">
-              <input type="text" class="rent-date form-control" style="width: 100px">
-              <input type="text" class="rent-time form-control" style="width: 80px">
-            </span>
+            <%= @block.start_at.strftime("%Y/%m/%d %H:%M") if @block.end_at.present? %> ~ <%= @block.end_at.strftime("%Y/%m/%d %H:%M") if @block.end_at.present? %>
           </td>
         </tr>
       </table>
 
       <table class="table table-bordered">
         <tr class="active">
-          <th>場地描述</th>
           <th>收費</th>
         </tr>
         <tr>
-          <td><%= @block.intro %></td>
           <td><%= @block.fee %></td>
+        </tr>
+      </table>
+
+      <table class="table table-bordered">
+        <tr class="active">
+          <th>場地描述</th>
+        </tr>
+        <tr>
+          <td><%= @block.intro %></td>
         </tr>
       </table>
     </div>
@@ -61,14 +61,14 @@
       <table>
         <tr>
           <% if @block.image? %>
-            <td><%= image_tag @block.image_url.to_s %></td>
+            <td><%= image_tag @block.image_url.to_s, style: 'width: 250px; height: 250px;' %></td>
           <% else %>
             <th><%= image_tag 'block-default.png', style: 'width: 250px; height: 250px; text-align: center;' %></th>
           <% end %>
         </tr>
       </table>
     </div>
-  </div>
+
 <% end %>
 
 
@@ -80,6 +80,9 @@
   }).click(function() {
 
     var id = $(this).attr('id').split('-')[1];
+    var parentid = $(this).data('parentid');
+
+    sessionStorage.setItem('block_parent_id', parentid);
 
 
     $('#block_ul-' + id).css({ 'color': '#f68590' });
@@ -110,5 +113,13 @@
 
     // load father
     $('.blocks_display').load('/blocks/' + id + '/blockview');
+
+    if (sessionStorage.getItem('block_parent_id')) {
+      $('#show_index').click(function() {
+        sessionStorage.clear();
+        sessionStorage.setItem('back_to_top', parentid);
+      });
+    }
+
   });
 </script>

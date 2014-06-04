@@ -20,4 +20,20 @@ class Space < ActiveRecord::Base
     surface.recreate_versions! if crop_x.present?
   end
 
+  searchable do
+    text :name, :address, :intro, :phone
+
+    text :blocks do
+      blocks.map(&:name)
+    end
+
+    text :user do
+      user.name
+    end
+
+    time :created_at
+    time :updated_at
+    boolean :is_public
+  end
+
 end

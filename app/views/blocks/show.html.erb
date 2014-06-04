@@ -13,61 +13,6 @@
 <script>
   $(function() {
 
-    // $('.edit_target_block').click(function() {
-    //   var id = $(this).closest('.block-show').attr('id').split('-')[1];
-    //   $('.blocks_display').remove();
-    //   $('.show_sidebar').after('<div class="blocks_display tmp_display"></div>');
-    //   $('.tmp_display').load('/blocks/' + id + '/blockinfo');
-    //   sessionStorage.setItem('update_info_redir', id);
-    // });
-
-    // $('.father_block').hover(function() {
-    //   if($(this).hasClass('iamfather')) {
-    //     $(this).css({
-    //       'cursor': 'pointer'
-    //     }).click(function() {
-    //       var id = $(this).attr('id').split('-')[1];
-
-
-    //       // $('.sidebar_grandpa_name').css({ 'color': 'black' });
-    //       $('#block_ul-' + id).css({ 'color': 'red' });
-    //       $('.sidebar_father_name').css({ 'color': 'black' });
-    //       $('#block_fa-' + id).css({ 'color': 'blue' });
-
-
-    //       // menu controller
-    //       if($('#block_ul-' + id).parent().siblings('ul').hasClass('open')) {
-    //         $('#block_ul-' + id).parent().siblings('ul').addClass('closed').removeClass('open');
-    //         $('#block_ul-' + id).parent().siblings('ul').find('.father_holder').slideUp('fast');
-    //       }
-
-    //       $('#block_ul-' + id).parent().addClass('open')
-    //                       .removeClass('closed')
-    //                       .find('.father_holder').slideDown('fast');
-
-    //       if($('#block_fa-' + id).closest('ul').siblings('ul').hasClass('open')) {
-    //         $('#block_fa-' + id).closest('ul').siblings('ul').addClass('closed').removeClass('open');
-    //         $('#block_fa-' + id).closest('ul').siblings('ul').find('.sidebar_child_name').slideUp('fast');
-    //       }
-
-    //       $('#block_fa-' + id).closest('ul').addClass('open')
-    //                            .removeClass('closed')
-    //                            .find('.sidebar_child_name').slideDown('fast');
-
-    //       // remove other readers
-    //       $('.blocks_display').remove();
-
-    //       // if no father reader
-    //       if ($('.blocks_display').length == 0) {
-    //         $('.show_sidebar').after('<div class="blocks_display"></div>');
-    //       };
-
-    //       // load father
-    //       $('.blocks_display').load('/blocks/' + id);
-    //     });
-    //   }
-    // });
-
     // add block enter icon
     $('.iamfather').append('<i class="fa fa-th block_enter"></i>');
 
@@ -75,14 +20,15 @@
     $('.block_enter').click(function() {
       $('.sidebar_child_name').css({ 'color': '#bfbfbf' });
 
+      // get floor id
       var id = $(this).closest('.father_block').attr('id').split('-')[1];
-      sessionStorage.setItem('block_parent_id', $(this).closest('.father_block').data('parentid'));
       var parentid = $(this).closest('.father_block').data('parentid');
+      sessionStorage.setItem('block_parent_id', parentid);
 
 
 
       // $('.sidebar_grandpa_name').css({ 'color': 'black' });
-      $('#block_ul-' + id).css({ 'color': 'red' });
+      $('#block_ul-' + id).css({ 'color': '#f68590' });
       $('.sidebar_father_name').css({ 'color': '#bfbfbf' });
       $('#block_fa-' + id).css({ 'color': '#539cff' });
 
@@ -122,7 +68,7 @@
           sessionStorage.clear();
           sessionStorage.setItem('back_to_top', parentid);
         });
-      };
+      }
 
     });
 

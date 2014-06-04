@@ -1,12 +1,29 @@
-<!-- <ol class="breadcrumb">
-  <li><a href="#">場地規劃</a></li>
-  <li class="active"><a href="#">場地資訊、租借時間設定</a></li>
-  <li>瀏覽</li>
-</ol> -->
-<div class="container" style="width: 60%">
-  <!-- breadcrumb -->
-  <%= render 'layouts/breadcrumb' %>
-</div>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="padding-top: 10px; top: 51px; background: #fff; z-index: 99; border: none">
+  <div class="stepwizard">
+    <div class="stepwizard-row">
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-danger btn-circle" disabled="disabled">1</button>
+        <p>填寫單位資料</p>
+      </div>
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-danger btn-circle" disabled="disabled">2</button>
+        <p>畫場地平面圖</p>
+      </div>
+
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-danger btn-circle" disabled="disabled">3</button>
+        <p>填寫場地資料</p>
+      </div>
+
+      <div class="stepwizard-step">
+        <button type="button" class="btn btn-default btn-circle" disabled="disabled">4</button>
+        <p>瀏覽完成場地</p>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<br><br><br><br><br>
 <div class="container space-show-container" style="width: 97%">
 
   <section class="line"></section>
@@ -14,7 +31,7 @@
     <div class="show_sidebar">
 
 
-      <% @blocks.each do |block| %>
+      <% @blocks.where("parent_id is NULL").each do |block| %>
         <ul class="closed">
 
           <!-- grandpa block name -->
@@ -40,7 +57,7 @@
 
     <!-- blocks -->
     <div class="blocks_display" style="height: <%= @space.height %>; <% if @space.surface? %> background: url(<%= @space.surface_url(:thumb).to_s %>); background-repeat: no-repeat; <% end %> ">
-      <% @blocks.each do |block| %>
+      <% @blocks.where("parent_id is NULL").each do |block| %>
         <div id="block-<%= block.id %>" class="block-show <% if Block.where(parent_id: block.id).count > 0 %>iamfather<% end %>" style="width: <%= block.width %>px; height: <%= block.height %>px; top: <%= block.top %>px; left: <%= block.left %>px; cursor: default; background-color: <%= block.color %>"> <span class="namename"><%= block.name %></span> <%= "<i class='fa fa-pencil block_info'></i>".html_safe if block.block_type == 0 %> <% if Block.where(parent_id: block.id).count > 0 %> (<span class="block_qty"><%= Block.where(parent_id: block.id).count %></span>) <% end %> </div>
       <% end %>
     </div> <!-- blocks_display -->
@@ -48,10 +65,21 @@
 </div> <!-- container -->
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="border: none" role="navigation">
-  <div class="control-btns">
+  <div class="btn-toolbar control-btns" role="toolbar">
+    <div class="btn-group">
     <%= link_to '<i class="fa fa-home"></i>'.html_safe , detailize_space_path(@space), id: 'detail_index', class: 'btn btn-default' %>
-    <%= link_to '<i class="fa fa-long-arrow-left"></i>'.html_safe, edit_space_path, class: 'btn btn-default' %>
-    <%= link_to '<i class="fa fa-long-arrow-right"></i>'.html_safe, space_path, class: 'btn btn-default' %>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="btn-group">
+      <button class="enlarge btn btn-default" disabled="disabled"><i class="fa fa-plus"></i></button>
+      <button class="ensmall btn btn-default" disabled="disabled"><i class="fa fa-minus"></i></button>
+      <button class="orig btn btn-default" disabled="disabled"><i class="fa fa-undo"></i></button>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="btn-group">
+    <%= link_to '<i class="fa fa-long-arrow-left"></i> PREV'.html_safe, edit_space_path, class: 'btn btn-default' %>
+    <%= link_to 'NEXT <i class="fa fa-long-arrow-right"></i>'.html_safe, space_path, class: 'btn btn-default' %>
+    </div>
   </div>
 </nav>
 
@@ -245,13 +273,6 @@
       });
 
       sessionStorage.clear();
-      // if (true) {
-      //   $('#detail_index').text('回到上一層').click(function() {
-
-      //   });
-      // }
-
-
     };
 
     if(sessionStorage.getItem('update_info_redir')) {
